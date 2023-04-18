@@ -66,6 +66,9 @@ namespace Keystrokes
 
             keyData.KEY_LOCATION_X = keyData_.KEY_LOCATION_X;
             keyData.KEY_LOCATION_Y = keyData_.KEY_LOCATION_Y;
+
+            keyData.KEY_SNAP_X = keyData_.KEY_SNAP_X;
+            keyData.KEY_SNAP_Y = keyData_.KEY_SNAP_Y;
         }
 
         private void key_Load(object sender, EventArgs e)
@@ -81,7 +84,12 @@ namespace Keystrokes
             keyLabel.Text = keyData.keyText;
             keyLabel.Location = new Point((Width / 2) - (keyLabel.Width / 2), (Height / 2) - (keyLabel.Height / 2));
 
+            snapXTextbox.Text = keyData.KEY_SNAP_X.ToString();
+            snapYTextbox.Text = keyData.KEY_SNAP_Y.ToString();
+
             closeButton.Visible = false;
+            snapXTextbox.Visible = false;
+            snapYTextbox.Visible = false;
 
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
@@ -207,7 +215,10 @@ namespace Keystrokes
                           keyData.keyBorder.ToString() + "|" +
 
                           Location.X.ToString() + "|" +
-                          Location.Y.ToString();
+                          Location.Y.ToString() + "|" +
+
+                          snapXTextbox.Text + "|" +
+                          snapYTextbox.Text;
 
             File.WriteAllText("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key", config);
         }
@@ -226,21 +237,34 @@ namespace Keystrokes
                     closeButton.Visible = true;
                 else
                     closeButton.Visible = false;
+
+                if (snapXTextbox.Visible == false)
+                    snapXTextbox.Visible = true;
+                else
+                    snapXTextbox.Visible = false;
+
+                if (snapYTextbox.Visible == false)
+                    snapYTextbox.Visible = true;
+                else
+                    snapYTextbox.Visible = false;
             }
 
-            int x_snap_size = 50;
-            int y_snap_size = 50;
-            int x_snap_threshold = Width;
-            int y_snap_threshold = Height;
+            keyData.KEY_SNAP_X = 50;
+            keyData.KEY_SNAP_Y = 50;
 
-            double x_snap = x_snap_threshold * ((double)x_snap_size / 100);
-            double y_snap = y_snap_threshold * ((double)y_snap_size / 100);
+            if (isNumber(snapXTextbox.Text, "int") == true && snapXTextbox.Text != "")
+                keyData.KEY_SNAP_X = Int32.Parse(snapXTextbox.Text);
+            if (isNumber(snapYTextbox.Text, "int") == true && snapYTextbox.Text != "")
+                keyData.KEY_SNAP_Y = Int32.Parse(snapYTextbox.Text);
 
-            double x_snap_location = (Left - (x_snap_threshold / 2)) * (1 / x_snap);
-            double y_snap_location = (Top - (y_snap_threshold / 2)) * (1 / y_snap);
+            double x_snap = Width * ((double)keyData.KEY_SNAP_X / 100);
+            double y_snap = Height * ((double)keyData.KEY_SNAP_Y / 100);
 
-            int x_location_new = (int)(Math.Floor(x_snap_location) * x_snap) + x_snap_threshold / 2;
-            int y_location_new = (int)(Math.Floor(y_snap_location) * y_snap) + y_snap_threshold / 2;
+            double x_snap_location = Left * (1 / x_snap);
+            double y_snap_location = Top * (1 / y_snap);
+
+            int x_location_new = (int)(Math.Floor(x_snap_location) * x_snap);
+            int y_location_new = (int)(Math.Floor(y_snap_location) * y_snap);
 
             Left = x_location_new;
             Top = y_location_new;

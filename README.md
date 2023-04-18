@@ -65,7 +65,9 @@ You can double-click on a key to dispose of it.
     - **Key Opacity Textbox** The opacity of the key
     - **Key Border Style Dropdown** The border style of the key
 - Key
-    - **Double-Click** Double-click the key to show the dispose button
+    - **Double-Click** Double-click the key to show key settings
+        - **Close Button** Closes the key
+        - **X and Y snapping options** Defines the key snapping grid related to the size of the key (100% means each grid unit is one key length)
 
 ---
 

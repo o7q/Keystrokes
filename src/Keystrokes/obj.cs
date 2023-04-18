@@ -43,11 +43,14 @@ namespace Keystrokes.obj
         // dynamic
         public int KEY_LOCATION_X;
         public int KEY_LOCATION_Y;
+
+        public int KEY_SNAP_X;
+        public int KEY_SNAP_Y;
     }
 
     public static class keyTools
     {
-        public static string VERSION = "v1.0.0";
+        public static string VERSION = "v1.1.0";
 
         public static List<Form> keys = new List<Form>();
 

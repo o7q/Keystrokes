@@ -49,6 +49,9 @@ namespace Keystrokes
             keyData_.keyTextColorPressedG = 0;
             keyData_.keyTextColorPressedB = 0;
 
+            keyData_.KEY_SNAP_X = 50;
+            keyData_.KEY_SNAP_Y = 50;
+
             keyBorderCombobox.SelectedIndex = 2;
 
             // configure key preview window

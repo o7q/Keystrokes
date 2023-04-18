@@ -88,6 +88,9 @@ namespace Keystrokes
                 keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[23]);
                 keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[24]);
 
+                keyData_.KEY_SNAP_X = Int32.Parse(keySetting[25]);
+                keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[26]);
+
                 // display key with keyData_ settings
                 key newKey = new key(keyData_);
                 newKey.Show();
@@ -115,10 +118,15 @@ namespace Keystrokes
 
         private void addKeyButton_Click(object sender, EventArgs e)
         {
+            FormCollection allForms = Application.OpenForms;
+
+            foreach (Form form in allForms)
+                if (form.Name == "keymaker") return;
+
             // open key editor
             keymaker keyEditor = new keymaker();
             keyEditor.FormClosed += keymakerFormClosed;
-            keyEditor.ShowDialog();
+            keyEditor.Show();
         }
 
         private void refreshPresetsButton_Click(object sender, EventArgs e)
