@@ -143,7 +143,7 @@ namespace Keystrokes
                 {
                     Invoke((MethodInvoker)delegate
                     {
-                        // restore key color
+                        // restore key colors
                         BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
                         keyLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
                     });

@@ -98,7 +98,7 @@ namespace Keystrokes.obj
             "[", "OemOpenBrackets",
             "]", "Oem6",
             "\\", "Oem5",
-            "CapsLk", "Capital",
+            "Caps", "Capital",
             ";", "Oem1",
             "'", "Oem7",
             "Shift", "ShiftKey",
