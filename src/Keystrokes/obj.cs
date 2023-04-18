@@ -50,7 +50,7 @@ namespace Keystrokes.obj
 
     public static class keyTools
     {
-        public static string VERSION = "v1.1.0";
+        public static string VERSION = "v1.1.1";
 
         public static List<Form> keys = new List<Form>();
 
@@ -96,7 +96,7 @@ namespace Keystrokes.obj
             "9", "D9",
             "0", "D0",
             "-", "OemMinus",
-            "+", "Oemplus",
+            "=", "Oemplus",
             "⬅", "Back",
             "[", "OemOpenBrackets",
             "]", "Oem6",
