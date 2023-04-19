@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(keymaker));
             this.closeButton = new System.Windows.Forms.Button();
             this.createKeyButton = new System.Windows.Forms.Button();
@@ -57,6 +58,7 @@
             this.keyColorPressedInvertCheckbox = new System.Windows.Forms.CheckBox();
             this.keyTextColorPressedInvertCheckbox = new System.Windows.Forms.CheckBox();
             this.presetNameCombobox = new System.Windows.Forms.ComboBox();
+            this.keymakerTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.titlebarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bannerPicture)).BeginInit();
             this.keyPreviewPanel.SuspendLayout();
@@ -410,6 +412,10 @@
             this.presetNameCombobox.TabIndex = 1;
             this.presetNameCombobox.Text = "Default";
             // 
+            // keymakerTooltip
+            // 
+            this.keymakerTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.keymakerTooltip_Draw);
+            // 
             // keymaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -485,5 +491,6 @@
         private System.Windows.Forms.CheckBox keyTextColorPressedInvertCheckbox;
         private System.Windows.Forms.ComboBox presetNameCombobox;
         private System.Windows.Forms.PictureBox bannerPicture;
+        private System.Windows.Forms.ToolTip keymakerTooltip;
     }
 }

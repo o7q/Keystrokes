@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(key));
             this.keyLabel = new System.Windows.Forms.Label();
             this.closeButton = new System.Windows.Forms.Button();
             this.snapXTextbox = new System.Windows.Forms.TextBox();
             this.snapYTextbox = new System.Windows.Forms.TextBox();
+            this.keyTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // keyLabel
@@ -81,6 +83,10 @@
             this.snapYTextbox.Size = new System.Drawing.Size(52, 13);
             this.snapYTextbox.TabIndex = 2;
             // 
+            // keyTooltip
+            // 
+            this.keyTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.keyTooltip_Draw);
+            // 
             // key
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -114,5 +120,6 @@
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.TextBox snapXTextbox;
         private System.Windows.Forms.TextBox snapYTextbox;
+        private System.Windows.Forms.ToolTip keyTooltip;
     }
 }

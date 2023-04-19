@@ -52,7 +52,7 @@ namespace Keystrokes
             keyData_.KEY_SNAP_X = 50;
             keyData_.KEY_SNAP_Y = 50;
 
-            keyBorderCombobox.SelectedIndex = 2;
+            keyBorderCombobox.SelectedIndex = 0;
 
             // configure key preview window
             keyPreviewTextLabel.Font = new Font(keyPreviewTextLabel.Font.Name, 20);
@@ -64,6 +64,43 @@ namespace Keystrokes
             keyPreviewTextLabel.ForeColor = Color.FromArgb(255, 255, 255, 255);
 
             formatKeyPreview();
+
+            #region tooltipDictionary
+            // bind tooltips
+            string[] tooltipMap =
+            {
+                "closeButton", "Close",
+                "presetNameCombobox", "Name of preset to edit/create",
+                "keyWidthTextbox", "Key width in pixels",
+                "keyHeightTextbox", "Key height in pixels",
+                "fontSizeTextbox", "Font size",
+                "keyColorButton", "Key background color",
+                "keyTextColorButton", "Key text color",
+                "keyColorPressedButton", "Key background color when pressed",
+                "keyTextColorPressedButton", "Key text color when pressed",
+                "keyColorPressedInvertCheckbox", "Invert key color when pressed",
+                "keyOpacityTextbox", "Opacity of key",
+                "keyBorderCombobox", "Border style of key",
+                "createKeyButton", "Create new key with specified settings"
+            };
+            #endregion
+
+            // configure tooltips
+            for (int i = 0; i < tooltipMap.Length; i += 2)
+                keymakerTooltip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
+
+            // configure tooltip draw
+            keymakerTooltip.AutoPopDelay = 10000;
+            keymakerTooltip.OwnerDraw = true;
+            keymakerTooltip.BackColor = Color.FromArgb(20, 22, 20);
+            keymakerTooltip.ForeColor = Color.FromArgb(150, 152, 150);
+        }
+
+        private void keymakerTooltip_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            e.DrawBackground();
+            e.DrawBorder();
+            e.DrawText();
         }
 
         private void keyWidthTextbox_TextChanged(object sender, EventArgs e)
@@ -75,6 +112,7 @@ namespace Keystrokes
             keyPreviewPanel.Width = Int32.Parse(keyWidthTextbox.Text);
             formatKeyPreview();
 
+            // resize form to fit key preview
             resizeForm();
         }
 
@@ -87,6 +125,7 @@ namespace Keystrokes
             keyPreviewPanel.Height = Int32.Parse(keyHeightTextbox.Text);
             formatKeyPreview();
 
+            // resize form to fit key preview
             resizeForm();
         }
 
@@ -102,8 +141,10 @@ namespace Keystrokes
 
         private void keyColorButton_Click(object sender, EventArgs e)
         {
+            // open new color dialog
             var rgb = openColorDialog();
 
+            // split r, g, b values
             keyData_.keyColorR = rgb.Item1;
             keyData_.keyColorG = rgb.Item2;
             keyData_.keyColorB = rgb.Item3;
@@ -115,8 +156,10 @@ namespace Keystrokes
 
         private void keyTextColorButton_Click(object sender, EventArgs e)
         {
+            // open new color dialog
             var rgb = openColorDialog();
 
+            // split r, g, b values
             keyData_.keyTextColorR = rgb.Item1;
             keyData_.keyTextColorG = rgb.Item2;
             keyData_.keyTextColorB = rgb.Item3;
@@ -128,8 +171,10 @@ namespace Keystrokes
 
         private void keyColorPressedButton_Click(object sender, EventArgs e)
         {
+            // open new color dialog
             var rgb = openColorDialog();
 
+            // split r, g, b values
             keyData_.keyColorPressedR = rgb.Item1;
             keyData_.keyColorPressedG = rgb.Item2;
             keyData_.keyColorPressedB = rgb.Item3;
@@ -140,8 +185,10 @@ namespace Keystrokes
 
         private void keyTextColorPressedButton_Click(object sender, EventArgs e)
         {
+            // open new color dialog
             var rgb = openColorDialog();
 
+            // split r, g, b values
             keyData_.keyTextColorPressedR = rgb.Item1;
             keyData_.keyTextColorPressedG = rgb.Item2;
             keyData_.keyTextColorPressedB = rgb.Item3;
@@ -157,11 +204,13 @@ namespace Keystrokes
             // ask user to input key
             createKeyButton.Font = new Font(createKeyButton.Font.Name, 10, FontStyle.Bold);
             createKeyButton.Text = "Press a key...";
+
             allowKeyCreation = true;
         }
 
         private void createKeyButton_KeyDown(object sender, KeyEventArgs e)
         {
+            // prevent user from making a new key if the create button was not pressed
             if (allowKeyCreation == false) return;
 
             Keys keyCode = e.KeyCode;
@@ -169,6 +218,7 @@ namespace Keystrokes
             Keys key = (Keys)converter.ConvertFrom(keyCode.ToString());
             string hexValue = ((int)key).ToString("X2");
 
+            // restore create button text
             createKeyButton.Text = "Create Key";
             createKeyButton.Font = new Font(createKeyButton.Font.Name, 16, FontStyle.Bold);
 
@@ -213,8 +263,10 @@ namespace Keystrokes
             // display key with keyData_ settings
             key newKey = new key(keyData_);
             newKey.Show();
+            // add key to child list
             keys.Add(newKey);
 
+            // lock create button
             allowKeyCreation = false;
         }
 
@@ -225,6 +277,7 @@ namespace Keystrokes
 
         private void keyPreviewPanel_Paint(object sender, PaintEventArgs e)
         {
+            // draw custom key preview border
             int r = keyData_.keyColorR - 50 < 0 ? 0 : keyData_.keyColorR - 50;
             int g = keyData_.keyColorG - 50 < 0 ? 0 : keyData_.keyColorG - 50;
             int b = keyData_.keyColorB - 50 < 0 ? 0 : keyData_.keyColorB - 50;

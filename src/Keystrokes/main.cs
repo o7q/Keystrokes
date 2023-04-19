@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Keystrokes.obj;
@@ -34,6 +35,40 @@ namespace Keystrokes
             // display keystrokes credit text
             creditLabel.Text = "Keystrokes " + VERSION;
             credit2Label.Left = creditLabel.Width + 12;
+
+            #region tooltipDictionary
+            // bind tooltips
+            string[] tooltipMap =
+            {
+                "minimizeButton", "Minimize",
+                "closeButton", "Close",
+                "presetListbox", "List of user presets",
+                "creditLabel", "Keystrokes " + VERSION + " by o7q",
+                "credit2Label", "Keystrokes " + VERSION + " by o7q",
+                "refreshPresetsButton", "Refresh presets list",
+                "loadPresetButton", "Load selected preset",
+                "clearKeysButton", "Unload all presets",
+                "deletePresetButton", "Delete selected preset",
+                "addKeyButton", "Open key editor"
+            };
+            #endregion
+
+            // configure tooltips
+            for (int i = 0; i < tooltipMap.Length; i += 2)
+                mainTooltip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
+
+            // configure tooltip draw
+            mainTooltip.AutoPopDelay = 10000;
+            mainTooltip.OwnerDraw = true;
+            mainTooltip.BackColor = Color.FromArgb(20, 20, 20);
+            mainTooltip.ForeColor = Color.FromArgb(150, 150, 150);
+        }
+
+        private void mainTooltip_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            e.DrawBackground();
+            e.DrawBorder();
+            e.DrawText();
         }
 
         private void loadPresetButton_Click(object sender, EventArgs e)
@@ -51,45 +86,54 @@ namespace Keystrokes
                 string[] keySetting = keyFile.Split('|');
                 keyInfo keyData_;
 
-                // load all settings into keyData_
-                keyData_.presetName = keySetting[0];
+                try
+                {
+                    // load all settings into keyData_
+                    keyData_.presetName = keySetting[0];
 
-                keyData_.keyId = keySetting[1];
+                    keyData_.keyId = keySetting[1];
 
-                keyData_.keyText = keySetting[2];
-                keyData_.keyCode = Int32.Parse(keySetting[3]);
+                    keyData_.keyText = keySetting[2];
+                    keyData_.keyCode = Int32.Parse(keySetting[3]);
 
-                keyData_.keySizeX = Int32.Parse(keySetting[4]);
-                keyData_.keySizeY = Int32.Parse(keySetting[5]);
+                    keyData_.keySizeX = Int32.Parse(keySetting[4]);
+                    keyData_.keySizeY = Int32.Parse(keySetting[5]);
 
-                keyData_.fontSize = Int32.Parse(keySetting[6]);
+                    keyData_.fontSize = Int32.Parse(keySetting[6]);
 
-                keyData_.keyColorR = Int32.Parse(keySetting[7]);
-                keyData_.keyColorG = Int32.Parse(keySetting[8]);
-                keyData_.keyColorB = Int32.Parse(keySetting[9]);
+                    keyData_.keyColorR = Int32.Parse(keySetting[7]);
+                    keyData_.keyColorG = Int32.Parse(keySetting[8]);
+                    keyData_.keyColorB = Int32.Parse(keySetting[9]);
 
-                keyData_.keyTextColorR = Int32.Parse(keySetting[10]);
-                keyData_.keyTextColorG = Int32.Parse(keySetting[11]);
-                keyData_.keyTextColorB = Int32.Parse(keySetting[12]);
+                    keyData_.keyTextColorR = Int32.Parse(keySetting[10]);
+                    keyData_.keyTextColorG = Int32.Parse(keySetting[11]);
+                    keyData_.keyTextColorB = Int32.Parse(keySetting[12]);
 
-                keyData_.keyColorPressedR = Int32.Parse(keySetting[13]);
-                keyData_.keyColorPressedG = Int32.Parse(keySetting[14]);
-                keyData_.keyColorPressedB = Int32.Parse(keySetting[15]);
-                keyData_.keyColorPressedInvert = bool.Parse(keySetting[16]);
+                    keyData_.keyColorPressedR = Int32.Parse(keySetting[13]);
+                    keyData_.keyColorPressedG = Int32.Parse(keySetting[14]);
+                    keyData_.keyColorPressedB = Int32.Parse(keySetting[15]);
+                    keyData_.keyColorPressedInvert = bool.Parse(keySetting[16]);
 
-                keyData_.keyTextColorPressedR = Int32.Parse(keySetting[17]);
-                keyData_.keyTextColorPressedG = Int32.Parse(keySetting[18]);
-                keyData_.keyTextColorPressedB = Int32.Parse(keySetting[19]);
-                keyData_.keyTextColorPressedInvert = bool.Parse(keySetting[20]);
-                keyData_.keyOpacity = float.Parse(keySetting[21]);
+                    keyData_.keyTextColorPressedR = Int32.Parse(keySetting[17]);
+                    keyData_.keyTextColorPressedG = Int32.Parse(keySetting[18]);
+                    keyData_.keyTextColorPressedB = Int32.Parse(keySetting[19]);
+                    keyData_.keyTextColorPressedInvert = bool.Parse(keySetting[20]);
+                    keyData_.keyOpacity = float.Parse(keySetting[21]);
 
-                keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[22]);
+                    keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[22]);
 
-                keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[23]);
-                keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[24]);
+                    keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[23]);
+                    keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[24]);
 
-                keyData_.KEY_SNAP_X = Int32.Parse(keySetting[25]);
-                keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[26]);
+                    keyData_.KEY_SNAP_X = Int32.Parse(keySetting[25]);
+                    keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[26]);
+                }
+                catch (Exception ex)
+                {
+                    DialogResult prompt = MessageBox.Show("Unable to load key: " + (keySetting[1] == null ? "NULL" : keySetting[1]) + "\nWas it created in an older version?\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
+                    if (prompt == DialogResult.Cancel) return;
+                    continue;
+                }
 
                 // display key with keyData_ settings
                 key newKey = new key(keyData_);
@@ -118,8 +162,8 @@ namespace Keystrokes
 
         private void addKeyButton_Click(object sender, EventArgs e)
         {
+            // prevent multiple editors from being opened
             FormCollection allForms = Application.OpenForms;
-
             foreach (Form form in allForms)
                 if (form.Name == "keymaker") return;
 
@@ -152,7 +196,7 @@ namespace Keystrokes
                 presetListbox.Items.Add(Path.GetFileName(file));
 
             // set selectedindex to 0 if there is at least 1 preset
-            if (presetListbox.Items.Count < 1 == false) presetListbox.SelectedIndex = 0;
+            if (presetListbox.Items.Count > 1 == true) presetListbox.SelectedIndex = 0;
         }
 
         private void keymakerFormClosed(object sender, FormClosedEventArgs e)

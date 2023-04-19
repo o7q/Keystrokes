@@ -50,7 +50,7 @@ namespace Keystrokes.obj
 
     public static class keyTools
     {
-        public static string VERSION = "v1.1.1";
+        public static string VERSION = "v1.1.2";
 
         public static List<Form> keys = new List<Form>();
 

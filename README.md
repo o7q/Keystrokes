@@ -18,7 +18,7 @@ Keystrokes allows the user to create and customize key presets that are displaye
 
 # Usage
 **TIP:** \
-You can double-click on a key to dispose of it.
+You can double-click on a key to edit its snapping settings.
 
 ## Tutorial
 

@@ -28,20 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main));
             this.addKeyButton = new System.Windows.Forms.Button();
             this.presetListbox = new System.Windows.Forms.ListBox();
             this.titlebarPanel = new System.Windows.Forms.Panel();
+            this.bannerPicture = new System.Windows.Forms.PictureBox();
             this.minimizeButton = new System.Windows.Forms.Button();
             this.closeButton = new System.Windows.Forms.Button();
             this.creditLabel = new System.Windows.Forms.Label();
             this.presetsLabel = new System.Windows.Forms.Label();
             this.credit2Label = new System.Windows.Forms.Label();
-            this.bannerPicture = new System.Windows.Forms.PictureBox();
             this.refreshPresetsButton = new System.Windows.Forms.Button();
             this.clearKeysButton = new System.Windows.Forms.Button();
             this.deletePresetButton = new System.Windows.Forms.Button();
             this.loadPresetButton = new System.Windows.Forms.Button();
+            this.mainTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.titlebarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bannerPicture)).BeginInit();
             this.SuspendLayout();
@@ -84,9 +86,20 @@
             this.titlebarPanel.TabIndex = 0;
             this.titlebarPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.titlebarPanel_MouseDown);
             // 
+            // bannerPicture
+            // 
+            this.bannerPicture.Image = global::Keystrokes.Properties.Resources.program_banner;
+            this.bannerPicture.Location = new System.Drawing.Point(2, 16);
+            this.bannerPicture.Name = "bannerPicture";
+            this.bannerPicture.Size = new System.Drawing.Size(155, 17);
+            this.bannerPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.bannerPicture.TabIndex = 0;
+            this.bannerPicture.TabStop = false;
+            this.bannerPicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bannerPicture_MouseDown);
+            // 
             // minimizeButton
             // 
-            this.minimizeButton.BackColor = System.Drawing.Color.Transparent;
+            this.minimizeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.minimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.minimizeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.minimizeButton.Location = new System.Drawing.Point(183, 3);
@@ -99,7 +112,7 @@
             // 
             // closeButton
             // 
-            this.closeButton.BackColor = System.Drawing.Color.Transparent;
+            this.closeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.closeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.closeButton.Location = new System.Drawing.Point(208, 3);
@@ -144,17 +157,6 @@
             this.credit2Label.Size = new System.Drawing.Size(32, 12);
             this.credit2Label.TabIndex = 0;
             this.credit2Label.Text = "by o7q";
-            // 
-            // bannerPicture
-            // 
-            this.bannerPicture.Image = global::Keystrokes.Properties.Resources.program_banner;
-            this.bannerPicture.Location = new System.Drawing.Point(2, 16);
-            this.bannerPicture.Name = "bannerPicture";
-            this.bannerPicture.Size = new System.Drawing.Size(155, 17);
-            this.bannerPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.bannerPicture.TabIndex = 0;
-            this.bannerPicture.TabStop = false;
-            this.bannerPicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bannerPicture_MouseDown);
             // 
             // refreshPresetsButton
             // 
@@ -209,6 +211,10 @@
             this.loadPresetButton.UseVisualStyleBackColor = true;
             this.loadPresetButton.Click += new System.EventHandler(this.loadPresetButton_Click);
             // 
+            // mainTooltip
+            // 
+            this.mainTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.mainTooltip_Draw);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -252,6 +258,7 @@
         private System.Windows.Forms.Button minimizeButton;
         private System.Windows.Forms.Label credit2Label;
         private System.Windows.Forms.PictureBox bannerPicture;
+        private System.Windows.Forms.ToolTip mainTooltip;
     }
 }
 
