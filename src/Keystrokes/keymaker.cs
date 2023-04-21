@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Keystrokes.obj;
 using static Keystrokes.obj.keyTools;
@@ -21,6 +23,14 @@ namespace Keystrokes
         public static extern bool ReleaseCapture();
 
         keyInfo keyData_;
+
+        // form settings
+        int form_SizeX = 236;
+        int form_SizeY = 369;
+        int titlebarPanel_SizeX = 303;
+        int titlebarPanel_SizeY = 31;
+        int closeButton_LocationX = 216;
+        int closeButton_LocationY = 6;
 
         public keymaker()
         {
@@ -52,6 +62,8 @@ namespace Keystrokes
             keyData_.KEY_SNAP_X = 50;
             keyData_.KEY_SNAP_Y = 50;
 
+            keyData_.KEY_LOCKED = false;
+
             keyBorderCombobox.SelectedIndex = 0;
 
             // configure key preview window
@@ -62,8 +74,12 @@ namespace Keystrokes
 
             keyPreviewPanel.BackColor = Color.FromArgb(255, 0, 0, 0);
             keyPreviewTextLabel.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            counterLabel.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            counterLabel.Text = "";
 
             formatKeyPreview();
+
+            resizeForm();
 
             #region tooltipDictionary
             // bind tooltips
@@ -73,15 +89,30 @@ namespace Keystrokes
                 "presetNameCombobox", "Name of preset to edit/create",
                 "keyWidthTextbox", "Key width in pixels",
                 "keyHeightTextbox", "Key height in pixels",
-                "fontSizeTextbox", "Font size",
+                "fontSizeTextbox", "Text font size",
+                "showTextCheckbox", "Display key text",
+
                 "keyColorButton", "Key background color",
                 "keyTextColorButton", "Key text color",
+                "imageButton", "Display an image as the key background",
+                "imageDisposeButton", "Remove image",
+                "soundButton", "Play a sound effect",
+                "soundDisposeButton", "Remove sound effect",
+
                 "keyColorPressedButton", "Key background color when pressed",
                 "keyTextColorPressedButton", "Key text color when pressed",
+                "imagePressedButton", "Display an image as the key background when pressed",
+                "imagePressedDisposeButton", "Remove image",
+                "soundPressedButton", "Play a sound effect when pressed",
+                "soundPressedDisposeButton", "Remove sound effect",
+
                 "keyColorPressedInvertCheckbox", "Invert key color when pressed",
+                "keyTextColorPressedInvertCheckbox", "Invert text color when pressed",
+
                 "keyOpacityTextbox", "Opacity of key",
+                "useKeyCountCheckbox", "Display counter that counts up when the key is pressed",
                 "keyBorderCombobox", "Border style of key",
-                "createKeyButton", "Create new key with specified settings"
+                "createKeyButton", "Create a new key with specified settings"
             };
             #endregion
 
@@ -139,6 +170,11 @@ namespace Keystrokes
             formatKeyPreview();
         }
 
+        private void showTextCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            keyPreviewTextLabel.Text = showTextCheckbox.Checked == true ? "A" : "";
+        }
+
         private void keyColorButton_Click(object sender, EventArgs e)
         {
             // open new color dialog
@@ -166,6 +202,7 @@ namespace Keystrokes
 
             // update component visuals
             keyPreviewTextLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
+            counterLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
             keyTextColorButton.FlatAppearance.BorderColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
         }
 
@@ -197,8 +234,60 @@ namespace Keystrokes
             keyTextColorPressedButton.FlatAppearance.BorderColor = Color.FromArgb(255, keyData_.keyTextColorPressedR, keyData_.keyTextColorPressedG, keyData_.keyTextColorPressedB);
         }
 
-        bool allowKeyCreation = false;
+        private void imageButton_Click(object sender, EventArgs e)
+        {
+            keyData_.keyBackgroundImage = prepareImageDialog();
 
+            if (keyData_.keyBackgroundImage == "" || presetNameCombobox.Text == "") return;
+
+            Image backgroundImage = Image.FromFile(keyData_.keyBackgroundImage);
+            keyPreviewPanel.BackgroundImage = backgroundImage;
+            keyPreviewPanel.BackgroundImageLayout = ImageLayout.Stretch;
+        }
+
+        private void imageDisposeButton_Click(object sender, EventArgs e)
+        {
+            keyData_.keyBackgroundImage = "";
+
+            keyPreviewPanel.BackgroundImage = null;
+        }
+
+        private void imagePressedButton_Click(object sender, EventArgs e)
+        {
+            keyData_.keyBackgroundImagePressed = prepareImageDialog();
+        }
+
+        private void imagePressedDisposeButton_Click(object sender, EventArgs e)
+        {
+            keyData_.keyBackgroundImage = "";
+        }
+
+        private void soundButton_Click(object sender, EventArgs e)
+        {
+            keyData_.sound = prepareAudioDialog();
+        }
+
+        private void soundDisposeButton_Click(object sender, EventArgs e)
+        {
+            keyData_.sound = "";
+        }
+
+        private void soundPressedButton_Click(object sender, EventArgs e)
+        {
+            keyData_.soundPressed = prepareAudioDialog();
+        }
+
+        private void soundPressedDisposeButton_Click(object sender, EventArgs e)
+        {
+            keyData_.soundPressed = "";
+        }
+
+        private void useKeyCountCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            counterLabel.Text = useKeyCountCheckbox.Checked == true ? "0" : "";
+        }
+
+        bool allowKeyCreation = false;
         private void createKeyButton_Click(object sender, EventArgs e)
         {
             // ask user to input key
@@ -227,6 +316,11 @@ namespace Keystrokes
             if (isNumber(keyHeightTextbox.Text, "int") == false) keyHeightTextbox.Text = "60";
             if (isNumber(fontSizeTextbox.Text, "int") == false) fontSizeTextbox.Text = "20";
             if (isNumber(keyOpacityTextbox.Text, "float") == false) keyOpacityTextbox.Text = "0.8";
+            if (isNumber(wiggleAmountTextbox.Text, "int") == false) keyWidthTextbox.Text = "2";
+            if (isNumber(wiggleBiasUpTextbox.Text, "int") == false) wiggleBiasUpTextbox.Text = "0";
+            if (isNumber(wiggleBiasDownTextbox.Text, "int") == false) wiggleBiasDownTextbox.Text = "0";
+            if (isNumber(wiggleBiasRightTextbox.Text, "int") == false) wiggleBiasRightTextbox.Text = "0";
+            if (isNumber(wiggleBiasLeftTextbox.Text, "int") == false) wiggleBiasLeftTextbox.Text = "0";
 
             // send user data to keyData_
             keyData_.presetName = presetNameCombobox.Text;
@@ -243,6 +337,7 @@ namespace Keystrokes
             keyData_.keySizeY = Int32.Parse(keyHeightTextbox.Text);
 
             keyData_.fontSize = Int32.Parse(fontSizeTextbox.Text);
+            keyData_.showText = showTextCheckbox.Checked;
 
             keyData_.keyColorPressedInvert = keyColorPressedInvertCheckbox.Checked;
             keyData_.keyTextColorPressedInvert = keyTextColorPressedInvertCheckbox.Checked;
@@ -258,7 +353,16 @@ namespace Keystrokes
                 case 4: keyData_.keyBorder = ButtonBorderStyle.None; break;
             }
 
-            Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName);
+            keyData_.USE_KEY_COUNT = useKeyCountCheckbox.Checked;
+
+            keyData_.wiggleMode = wiggleModeCheckbox.Checked == true ? true : false;
+            keyData_.wiggleMode_wiggleAmount = Int32.Parse(wiggleAmountTextbox.Text);
+            keyData_.wiggleMode_biasUp = Int32.Parse(wiggleBiasUpTextbox.Text);
+            keyData_.wiggleMode_biasDown = Int32.Parse(wiggleBiasDownTextbox.Text);
+            keyData_.wiggleMode_biasRight = Int32.Parse(wiggleBiasRightTextbox.Text);
+            keyData_.wiggleMode_biasLeft = Int32.Parse(wiggleBiasLeftTextbox.Text);
+
+            Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
 
             // display key with keyData_ settings
             key newKey = new key(keyData_);
@@ -303,20 +407,61 @@ namespace Keystrokes
             return Tuple.Create(r, g, b);
         }
 
+        private string prepareImageDialog()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "All Files (*.*)|*.*";
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (presetNameCombobox.Text == "") presetNameCombobox.Text = "Default";
+
+                Directory.CreateDirectory("Keystrokes\\presets\\" + presetNameCombobox.Text + "\\assets");
+
+                Image image = Image.FromFile(fileDialog.FileName);
+                ImageCodecInfo codec = ImageCodecInfo.GetImageDecoders().FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
+
+                EncoderParameters parameters = new EncoderParameters(1);
+                parameters.Param[0] = new EncoderParameter(Encoder.Quality, 90L);
+
+                string output = "Keystrokes\\presets\\" + presetNameCombobox.Text + "\\assets\\" + generateID(8) + ".jpg";
+                image.Save(output, codec, parameters);
+                image.Dispose();
+
+                return output;
+            }
+
+            return "";
+        }
+
+        private string prepareAudioDialog()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Wave File (*.wav)|*.wav";
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (presetNameCombobox.Text == "") presetNameCombobox.Text = "Default";
+
+                Directory.CreateDirectory("Keystrokes\\presets\\" + presetNameCombobox.Text + "\\assets");
+
+                string output = "Keystrokes\\presets\\" + presetNameCombobox.Text + "\\assets\\" + generateID(8) + ".wav";
+                File.Copy(fileDialog.FileName, output);
+
+                return output;
+            }
+
+            return "";
+        }
+
         private void formatKeyPreview()
         {
             keyPreviewTextLabel.Location = new Point((keyPreviewPanel.Width / 2) - (keyPreviewTextLabel.Width / 2), (keyPreviewPanel.Height / 2) - (keyPreviewTextLabel.Height / 2));
+            counterLabel.Location = new Point(counterLabel.Location.X, keyPreviewPanel.Height - 16);
         }
 
         private void resizeForm()
         {
-            int form_SizeX = 236;
-            int form_SizeY = 280;
-            int titlebarPanel_SizeX = 303;
-            int titlebarPanel_SizeY = 31;
-            int closeButton_LocationX = 216;
-            int closeButton_LocationY = 6;
-
             if (form_SizeX + keyPreviewPanel.Width - 60 < form_SizeX) return;
             if (form_SizeY + keyPreviewPanel.Height - 60 < form_SizeY) return;
 

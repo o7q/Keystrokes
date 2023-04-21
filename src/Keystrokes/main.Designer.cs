@@ -56,7 +56,7 @@
             this.addKeyButton.Location = new System.Drawing.Point(104, 177);
             this.addKeyButton.Name = "addKeyButton";
             this.addKeyButton.Size = new System.Drawing.Size(110, 30);
-            this.addKeyButton.TabIndex = 7;
+            this.addKeyButton.TabIndex = 6;
             this.addKeyButton.Text = "Open Editor";
             this.addKeyButton.UseVisualStyleBackColor = true;
             this.addKeyButton.Click += new System.EventHandler(this.addKeyButton_Click);
@@ -72,7 +72,7 @@
             this.presetListbox.Location = new System.Drawing.Point(14, 37);
             this.presetListbox.Name = "presetListbox";
             this.presetListbox.Size = new System.Drawing.Size(200, 140);
-            this.presetListbox.TabIndex = 2;
+            this.presetListbox.TabIndex = 0;
             // 
             // titlebarPanel
             // 
@@ -168,7 +168,7 @@
             this.refreshPresetsButton.Location = new System.Drawing.Point(189, 152);
             this.refreshPresetsButton.Name = "refreshPresetsButton";
             this.refreshPresetsButton.Size = new System.Drawing.Size(25, 25);
-            this.refreshPresetsButton.TabIndex = 3;
+            this.refreshPresetsButton.TabIndex = 2;
             this.refreshPresetsButton.UseVisualStyleBackColor = false;
             this.refreshPresetsButton.Click += new System.EventHandler(this.refreshPresetsButton_Click);
             // 
@@ -181,7 +181,7 @@
             this.clearKeysButton.Location = new System.Drawing.Point(44, 177);
             this.clearKeysButton.Name = "clearKeysButton";
             this.clearKeysButton.Size = new System.Drawing.Size(30, 30);
-            this.clearKeysButton.TabIndex = 5;
+            this.clearKeysButton.TabIndex = 4;
             this.clearKeysButton.UseVisualStyleBackColor = true;
             this.clearKeysButton.Click += new System.EventHandler(this.clearKeysButton_Click);
             // 
@@ -194,7 +194,7 @@
             this.deletePresetButton.Location = new System.Drawing.Point(74, 177);
             this.deletePresetButton.Name = "deletePresetButton";
             this.deletePresetButton.Size = new System.Drawing.Size(30, 30);
-            this.deletePresetButton.TabIndex = 6;
+            this.deletePresetButton.TabIndex = 5;
             this.deletePresetButton.UseVisualStyleBackColor = true;
             this.deletePresetButton.Click += new System.EventHandler(this.deletePresetButton_Click);
             // 
@@ -207,7 +207,7 @@
             this.loadPresetButton.Location = new System.Drawing.Point(14, 177);
             this.loadPresetButton.Name = "loadPresetButton";
             this.loadPresetButton.Size = new System.Drawing.Size(30, 30);
-            this.loadPresetButton.TabIndex = 4;
+            this.loadPresetButton.TabIndex = 3;
             this.loadPresetButton.UseVisualStyleBackColor = true;
             this.loadPresetButton.Click += new System.EventHandler(this.loadPresetButton_Click);
             // 

@@ -1,3 +1,11 @@
+~ v1.2.0.0
+- Added an option to set custom background images and sounds
+- Added a new feature to display a counter that shows how many times you pressed a key
+- Added a feature to lock the key in place
+- Added a new feature to hide key text
+- Fixed a bug with null strings trying to be parsed as numbers
+- Added an awesome feature ;)
+
 ~ v1.1.2.0
 - Added tooltips
 - Improved the error system

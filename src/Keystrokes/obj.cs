@@ -1,6 +1,8 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System;
 
 namespace Keystrokes.obj
 {
@@ -17,6 +19,7 @@ namespace Keystrokes.obj
         public int keySizeY;
 
         public int fontSize;
+        public bool showText;
 
         public int keyColorR;
         public int keyColorG;
@@ -38,6 +41,12 @@ namespace Keystrokes.obj
 
         public float keyOpacity;
 
+        public string keyBackgroundImage;
+        public string keyBackgroundImagePressed;
+
+        public string sound;
+        public string soundPressed;
+
         public ButtonBorderStyle keyBorder;
 
         // dynamic
@@ -46,11 +55,24 @@ namespace Keystrokes.obj
 
         public int KEY_SNAP_X;
         public int KEY_SNAP_Y;
+
+        public bool KEY_LOCKED;
+
+        public bool USE_KEY_COUNT;
+        public int KEY_COUNT;
+
+        // secret
+        public bool wiggleMode;
+        public int wiggleMode_wiggleAmount;
+        public int wiggleMode_biasUp;
+        public int wiggleMode_biasDown;
+        public int wiggleMode_biasRight;
+        public int wiggleMode_biasLeft;
     }
 
     public static class keyTools
     {
-        public static string VERSION = "v1.1.2";
+        public static string VERSION = "v1.2.0";
 
         public static List<Form> keys = new List<Form>();
 
@@ -76,8 +98,24 @@ namespace Keystrokes.obj
                 if (float.TryParse(input, out _) == true) return true;
             if (type == "double")
                 if (double.TryParse(input, out _) == true) return true;
+            if (input == "")
+                return false;
 
             return false;
+        }
+
+        public static string generateID(int length)
+        {
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                var stringChars = new char[length];
+                var random = new Random();
+
+                for (int i = 0; i < stringChars.Length; i++)
+                    stringChars[i] = chars[random.Next(chars.Length)];
+
+                var finalString = new String(stringChars);
+
+                return finalString;
         }
 
         public static string[] keyTextFixes =

@@ -35,11 +35,14 @@
             this.snapXTextbox = new System.Windows.Forms.TextBox();
             this.snapYTextbox = new System.Windows.Forms.TextBox();
             this.keyTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.lockButton = new System.Windows.Forms.Button();
+            this.countLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // keyLabel
             // 
             this.keyLabel.AutoSize = true;
+            this.keyLabel.BackColor = System.Drawing.Color.Transparent;
             this.keyLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyLabel.ForeColor = System.Drawing.Color.White;
             this.keyLabel.Location = new System.Drawing.Point(60, 61);
@@ -71,7 +74,7 @@
             this.snapXTextbox.Location = new System.Drawing.Point(26, 0);
             this.snapXTextbox.Name = "snapXTextbox";
             this.snapXTextbox.Size = new System.Drawing.Size(52, 13);
-            this.snapXTextbox.TabIndex = 1;
+            this.snapXTextbox.TabIndex = 2;
             // 
             // snapYTextbox
             // 
@@ -81,11 +84,35 @@
             this.snapYTextbox.Location = new System.Drawing.Point(26, 13);
             this.snapYTextbox.Name = "snapYTextbox";
             this.snapYTextbox.Size = new System.Drawing.Size(52, 13);
-            this.snapYTextbox.TabIndex = 2;
+            this.snapYTextbox.TabIndex = 3;
             // 
             // keyTooltip
             // 
             this.keyTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.keyTooltip_Draw);
+            // 
+            // lockButton
+            // 
+            this.lockButton.BackColor = System.Drawing.Color.Gray;
+            this.lockButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lockButton.ForeColor = System.Drawing.Color.White;
+            this.lockButton.Location = new System.Drawing.Point(0, 26);
+            this.lockButton.Name = "lockButton";
+            this.lockButton.Size = new System.Drawing.Size(26, 26);
+            this.lockButton.TabIndex = 1;
+            this.lockButton.Text = "🔒";
+            this.lockButton.UseVisualStyleBackColor = false;
+            this.lockButton.Click += new System.EventHandler(this.lockButton_Click);
+            // 
+            // countLabel
+            // 
+            this.countLabel.AutoSize = true;
+            this.countLabel.BackColor = System.Drawing.Color.Transparent;
+            this.countLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.countLabel.Location = new System.Drawing.Point(1, 54);
+            this.countLabel.Name = "countLabel";
+            this.countLabel.Size = new System.Drawing.Size(13, 13);
+            this.countLabel.TabIndex = 0;
+            this.countLabel.Text = "0";
             // 
             // key
             // 
@@ -93,6 +120,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(100, 100);
+            this.Controls.Add(this.countLabel);
+            this.Controls.Add(this.lockButton);
             this.Controls.Add(this.snapYTextbox);
             this.Controls.Add(this.snapXTextbox);
             this.Controls.Add(this.closeButton);
@@ -121,5 +150,7 @@
         private System.Windows.Forms.TextBox snapXTextbox;
         private System.Windows.Forms.TextBox snapYTextbox;
         private System.Windows.Forms.ToolTip keyTooltip;
+        private System.Windows.Forms.Button lockButton;
+        private System.Windows.Forms.Label countLabel;
     }
 }

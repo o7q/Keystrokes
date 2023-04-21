@@ -100,33 +100,54 @@ namespace Keystrokes
                     keyData_.keySizeY = Int32.Parse(keySetting[5]);
 
                     keyData_.fontSize = Int32.Parse(keySetting[6]);
+                    keyData_.showText = bool.Parse(keySetting[7]);
 
-                    keyData_.keyColorR = Int32.Parse(keySetting[7]);
-                    keyData_.keyColorG = Int32.Parse(keySetting[8]);
-                    keyData_.keyColorB = Int32.Parse(keySetting[9]);
+                    keyData_.keyColorR = Int32.Parse(keySetting[8]);
+                    keyData_.keyColorG = Int32.Parse(keySetting[9]);
+                    keyData_.keyColorB = Int32.Parse(keySetting[10]);
 
-                    keyData_.keyTextColorR = Int32.Parse(keySetting[10]);
-                    keyData_.keyTextColorG = Int32.Parse(keySetting[11]);
-                    keyData_.keyTextColorB = Int32.Parse(keySetting[12]);
+                    keyData_.keyTextColorR = Int32.Parse(keySetting[11]);
+                    keyData_.keyTextColorG = Int32.Parse(keySetting[12]);
+                    keyData_.keyTextColorB = Int32.Parse(keySetting[13]);
 
-                    keyData_.keyColorPressedR = Int32.Parse(keySetting[13]);
-                    keyData_.keyColorPressedG = Int32.Parse(keySetting[14]);
-                    keyData_.keyColorPressedB = Int32.Parse(keySetting[15]);
-                    keyData_.keyColorPressedInvert = bool.Parse(keySetting[16]);
+                    keyData_.keyColorPressedR = Int32.Parse(keySetting[14]);
+                    keyData_.keyColorPressedG = Int32.Parse(keySetting[15]);
+                    keyData_.keyColorPressedB = Int32.Parse(keySetting[16]);
+                    keyData_.keyColorPressedInvert = bool.Parse(keySetting[17]);
 
-                    keyData_.keyTextColorPressedR = Int32.Parse(keySetting[17]);
-                    keyData_.keyTextColorPressedG = Int32.Parse(keySetting[18]);
-                    keyData_.keyTextColorPressedB = Int32.Parse(keySetting[19]);
-                    keyData_.keyTextColorPressedInvert = bool.Parse(keySetting[20]);
-                    keyData_.keyOpacity = float.Parse(keySetting[21]);
+                    keyData_.keyTextColorPressedR = Int32.Parse(keySetting[18]);
+                    keyData_.keyTextColorPressedG = Int32.Parse(keySetting[19]);
+                    keyData_.keyTextColorPressedB = Int32.Parse(keySetting[20]);
+                    keyData_.keyTextColorPressedInvert = bool.Parse(keySetting[21]);
+                    keyData_.keyOpacity = float.Parse(keySetting[22]);
 
-                    keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[22]);
+                    keyData_.keyBackgroundImage = keySetting[23];
+                    keyData_.keyBackgroundImagePressed = keySetting[24];
 
-                    keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[23]);
-                    keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[24]);
+                    keyData_.sound = keySetting[25];
+                    keyData_.soundPressed = keySetting[26];
 
-                    keyData_.KEY_SNAP_X = Int32.Parse(keySetting[25]);
-                    keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[26]);
+                    keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[27]);
+
+                    // dynamic
+                    keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[28]);
+                    keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[29]);
+
+                    keyData_.KEY_SNAP_X = Int32.Parse(keySetting[30]);
+                    keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[31]);
+
+                    keyData_.KEY_LOCKED = bool.Parse(keySetting[32]);
+
+                    keyData_.USE_KEY_COUNT = bool.Parse(keySetting[33]);
+                    keyData_.KEY_COUNT = Int32.Parse(keySetting[34]);
+
+                    // secret
+                    keyData_.wiggleMode = bool.Parse(keySetting[35]);
+                    keyData_.wiggleMode_wiggleAmount = Int32.Parse(keySetting[36]);
+                    keyData_.wiggleMode_biasUp = Int32.Parse(keySetting[37]);
+                    keyData_.wiggleMode_biasDown = Int32.Parse(keySetting[38]);
+                    keyData_.wiggleMode_biasRight = Int32.Parse(keySetting[39]);
+                    keyData_.wiggleMode_biasLeft = Int32.Parse(keySetting[40]);
                 }
                 catch (Exception ex)
                 {
@@ -156,7 +177,7 @@ namespace Keystrokes
             if (Directory.GetDirectories("Keystrokes\\presets").Length == 0) return;
 
             // delete selected preset
-            Directory.Delete("Keystrokes\\presets\\" + presetListbox.SelectedItem, true);
+            try { Directory.Delete("Keystrokes\\presets\\" + presetListbox.SelectedItem, true); } catch { }
             refreshPresetList();
         }
 
@@ -196,7 +217,7 @@ namespace Keystrokes
                 presetListbox.Items.Add(Path.GetFileName(file));
 
             // set selectedindex to 0 if there is at least 1 preset
-            if (presetListbox.Items.Count > 1 == true) presetListbox.SelectedIndex = 0;
+            if (presetListbox.Items.Count >= 1 == true) presetListbox.SelectedIndex = 0;
         }
 
         private void keymakerFormClosed(object sender, FormClosedEventArgs e)

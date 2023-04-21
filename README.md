@@ -52,20 +52,26 @@ You can double-click on a key to edit its snapping settings.
     - **Preset Name Dropdown** The selected preset, any changes will be applied to this preset
     - **Key Size Textboxes** The width and height of the key
     - **Font Size Textbox** The font size of the key
-    - **Key Color**
+    - **Show Text** Choose to show text on the key or not
+    - **Key Unpressed**
         - **Color 1 Button** Opens the color picker for the background of the key
         - **Color 2 Button** Opens the color picker for the text of the key
-    - **Key Pressed Color**
+        - **Image** Set the key background to an image
+        - **Sound** Play a sound when the key is unpressed
+    - **Key Pressed**
         - **Color 1 Button** Opens the color picker for the pressed background of the key
         - **Color 2 Button** Opens the color picker for the pressed text of the key
-    - **Invert Colors Checkboxes**
+        - **Image** Set the key background to a different image when pressed
+        - **Sound** Play a sound when the key is pressed
         - **Invert Key Color** Should the key invert its colors when pressed?
         - **Invert Text Color** Should the key text invert its colors when pressed?
     - **Key Opacity Textbox** The opacity of the key
+    - **Display Counter** Displays a counter that displays how many times you clicked the key
     - **Key Border Style Dropdown** The border style of the key
 - Key
     - **Double-Click** Double-click the key to show key settings
         - **Close Button** Closes the key
+        - **Lock Button** Lock the key and prevent mouse interaction
         - **X and Y snapping options** Defines the key snapping grid related to the size of the key (100% means each grid unit is one key length)
 
 ---
