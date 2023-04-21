@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="includes\keyTools.cs" />
     <Compile Include="key.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,7 +70,7 @@
       <DependentUpon>main.cs</DependentUpon>
     </Compile>
     <Compile Include="init.cs" />
-    <Compile Include="obj.cs" />
+    <Compile Include="includes\keyStructure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="key.resx">
       <DependentUpon>key.cs</DependentUpon>

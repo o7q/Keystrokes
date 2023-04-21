@@ -1,75 +1,10 @@
-﻿using System.Drawing;
+﻿using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System;
 
-namespace Keystrokes.obj
+namespace Keystrokes.Tools
 {
-    public struct keyInfo
-    {
-        public string presetName;
-
-        public string keyId;
-
-        public string keyText;
-        public int keyCode;
-
-        public int keySizeX;
-        public int keySizeY;
-
-        public int fontSize;
-        public bool showText;
-
-        public int keyColorR;
-        public int keyColorG;
-        public int keyColorB;
-
-        public int keyTextColorR;
-        public int keyTextColorG;
-        public int keyTextColorB;
-
-        public int keyColorPressedR;
-        public int keyColorPressedG;
-        public int keyColorPressedB;
-        public bool keyColorPressedInvert;
-
-        public int keyTextColorPressedR;
-        public int keyTextColorPressedG;
-        public int keyTextColorPressedB;
-        public bool keyTextColorPressedInvert;
-
-        public float keyOpacity;
-
-        public string keyBackgroundImage;
-        public string keyBackgroundImagePressed;
-
-        public string sound;
-        public string soundPressed;
-
-        public ButtonBorderStyle keyBorder;
-
-        // dynamic
-        public int KEY_LOCATION_X;
-        public int KEY_LOCATION_Y;
-
-        public int KEY_SNAP_X;
-        public int KEY_SNAP_Y;
-
-        public bool KEY_LOCKED;
-
-        public bool USE_KEY_COUNT;
-        public int KEY_COUNT;
-
-        // secret
-        public bool wiggleMode;
-        public int wiggleMode_wiggleAmount;
-        public int wiggleMode_biasUp;
-        public int wiggleMode_biasDown;
-        public int wiggleMode_biasRight;
-        public int wiggleMode_biasLeft;
-    }
-
     public static class keyTools
     {
         public static string VERSION = "v1.2.0";
@@ -106,16 +41,16 @@ namespace Keystrokes.obj
 
         public static string generateID(int length)
         {
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                var stringChars = new char[length];
-                var random = new Random();
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var stringChars = new char[length];
+            var random = new Random();
 
-                for (int i = 0; i < stringChars.Length; i++)
-                    stringChars[i] = chars[random.Next(chars.Length)];
+            for (int i = 0; i < stringChars.Length; i++)
+                stringChars[i] = chars[random.Next(chars.Length)];
 
-                var finalString = new String(stringChars);
+            var finalString = new String(stringChars);
 
-                return finalString;
+            return finalString;
         }
 
         public static string[] keyTextFixes =

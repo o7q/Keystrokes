@@ -5,8 +5,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using Keystrokes.obj;
-using static Keystrokes.obj.keyTools;
+using Keystrokes.Structure;
+using static Keystrokes.Tools.keyTools;
 
 namespace Keystrokes
 {
