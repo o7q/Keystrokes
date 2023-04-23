@@ -559,5 +559,10 @@ namespace Keystrokes
         {
             moveKey(e);
         }
+
+        private void countLabel_MouseDown(object sender, MouseEventArgs e)
+        {
+            moveKey(e);
+        }
     }
 }

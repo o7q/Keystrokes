@@ -113,6 +113,7 @@
             this.countLabel.Size = new System.Drawing.Size(13, 13);
             this.countLabel.TabIndex = 0;
             this.countLabel.Text = "0";
+            this.countLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.countLabel_MouseDown);
             // 
             // key
             // 
