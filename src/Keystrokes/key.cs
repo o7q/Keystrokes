@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Media;
 using System.Timers;
 using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Media = System.Windows.Media;
 using Keystrokes.Structure;
 using static Keystrokes.Tools.keyTools;
 
@@ -21,9 +21,9 @@ namespace Keystrokes
         public const int WM_NCLBUTTONDOWN = 0xA1;
 
         // grab dlls for mousedown
-        [DllImportAttribute("user32.dll")]
+        [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImportAttribute("user32.dll")]
+        [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
         keyInfo keyData;
@@ -81,6 +81,9 @@ namespace Keystrokes
 
             keyData.sound = keyData_.sound;
             keyData.soundPressed = keyData_.soundPressed;
+            //
+            keyData.soundVolume = keyData_.soundVolume;
+            keyData.soundPressedVolume = keyData_.soundPressedVolume;
 
             keyData.keyBorder = keyData_.keyBorder;
 
@@ -163,7 +166,7 @@ namespace Keystrokes
 
             // generate id for key if it doesn't have one
             if (keyData.keyId == null)
-                keyData.keyId = keyData.keyText + "_" + generateID(8);
+                keyData.keyId = keyData.keyCode + "_" + generateID(8);
 
             #region tooltipDictionary
             // bind tooltips
@@ -216,6 +219,16 @@ namespace Keystrokes
             snapXTextbox.Location = new Point(closeButton.Width, snapXTextbox.Top);
             snapYTextbox.Location = new Point(closeButton.Width, snapYTextbox.Top);
         }
+        // hide in task manager
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                cp.ExStyle |= 0x80;  // turn on WS_EX_TOOLWINDOW
+                return cp;
+            }
+        }
 
         private void keyTooltip_Draw(object sender, DrawToolTipEventArgs e)
         {
@@ -262,10 +275,12 @@ namespace Keystrokes
                         if (useBackgroundImagePressed == true)
                             BackgroundImage = backgroundImagePressed;
 
-                        if (useSound == true)
+                        if (useSoundPressed == true)
                         {
-                            var soundPlayer = new SoundPlayer(keyData.sound);
-                            soundPlayer.Play();
+                            var mediaPlayer = new Media.MediaPlayer();
+                            mediaPlayer.Open(new Uri(keyData.soundPressed, UriKind.RelativeOrAbsolute));
+                            mediaPlayer.Volume = keyData.soundPressedVolume;
+                            mediaPlayer.Play();
                         }
 
                         // update key colors
@@ -300,10 +315,12 @@ namespace Keystrokes
                         if (useBackgroundImage == true)
                             BackgroundImage = backgroundImage;
 
-                        if (useSoundPressed == true)
+                        if (useSound == true)
                         {
-                            var soundPlayer = new SoundPlayer(keyData.soundPressed);
-                            soundPlayer.Play();
+                            var mediaPlayer = new Media.MediaPlayer();
+                            mediaPlayer.Open(new Uri(keyData.sound, UriKind.RelativeOrAbsolute));
+                            mediaPlayer.Volume = keyData.soundVolume;
+                            mediaPlayer.Play();
                         }
 
                         // restore key colors
@@ -417,6 +434,9 @@ namespace Keystrokes
 
                           keyData.sound + "|" +
                           keyData.soundPressed + "|" +
+                          //
+                          keyData.soundVolume + "|" +
+                          keyData.soundPressedVolume + "|" +
 
                           keyData.keyBorder + "|" +
 

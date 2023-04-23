@@ -1,3 +1,10 @@
+~ v1.3.0.0
+- Added support for special keys (tab, arrow keys)
+- Added an option to change the text of the key
+- Improved the key symbols
+- Improved the sound player
+- Optimized the key form
+
 ~ v1.2.0.0
 - Added an option to set custom background images and sounds
 - Added a new feature to display a counter that shows how many times you pressed a key

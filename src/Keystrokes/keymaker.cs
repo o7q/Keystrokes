@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Keystrokes.Structure;
 using static Keystrokes.Tools.keyTools;
+using static Keystrokes.Fixes.keyFixes;
 
 namespace Keystrokes
 {
@@ -25,12 +26,12 @@ namespace Keystrokes
         keyInfo keyData_;
 
         // form settings
-        int form_SizeX = 236;
-        int form_SizeY = 369;
-        int titlebarPanel_SizeX = 303;
-        int titlebarPanel_SizeY = 31;
-        int closeButton_LocationX = 216;
-        int closeButton_LocationY = 6;
+        const int form_SizeX = 236;
+        const int form_SizeY = 351;
+        const int titlebarPanel_SizeX = 303;
+        const int titlebarPanel_SizeY = 31;
+        const int closeButton_LocationX = 216;
+        const int closeButton_LocationY = 6;
 
         public keymaker()
         {
@@ -134,6 +135,96 @@ namespace Keystrokes
             e.DrawText();
         }
 
+        bool allowKeyCreation = false;
+        private void createKeyButton_Click(object sender, EventArgs e)
+        {
+            // ask user to input key
+            createKeyButton.Font = new Font(createKeyButton.Font.Name, 10, FontStyle.Bold);
+            createKeyButton.Text = "Press a key...";
+
+            allowKeyCreation = true;
+        }
+
+        private void createKeyButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            // prevent user from making a new key if the create button was not pressed
+            if (allowKeyCreation == false) return;
+
+            Keys keyCode = e.KeyCode;
+            KeysConverter converter = new KeysConverter();
+            Keys key = (Keys)converter.ConvertFrom(keyCode.ToString());
+            string hexValue = ((int)key).ToString("X2");
+
+            // restore create button text
+            createKeyButton.Text = "Create Key";
+            createKeyButton.Font = new Font(createKeyButton.Font.Name, 16, FontStyle.Bold);
+
+            // are user options valid? if not, assign them the default values
+            if (isNumber(keyWidthTextbox.Text, "int") == false) keyWidthTextbox.Text = "60";
+            if (isNumber(keyHeightTextbox.Text, "int") == false) keyHeightTextbox.Text = "60";
+            if (isNumber(fontSizeTextbox.Text, "int") == false) fontSizeTextbox.Text = "20";
+            if (isNumber(keyOpacityTextbox.Text, "float") == false) keyOpacityTextbox.Text = "0.8";
+            if (isNumber(wiggleAmountTextbox.Text, "int") == false) keyWidthTextbox.Text = "2";
+            if (isNumber(wiggleBiasUpTextbox.Text, "int") == false) wiggleBiasUpTextbox.Text = "0";
+            if (isNumber(wiggleBiasDownTextbox.Text, "int") == false) wiggleBiasDownTextbox.Text = "0";
+            if (isNumber(wiggleBiasRightTextbox.Text, "int") == false) wiggleBiasRightTextbox.Text = "0";
+            if (isNumber(wiggleBiasLeftTextbox.Text, "int") == false) wiggleBiasLeftTextbox.Text = "0";
+
+            // send user data to keyData_
+            keyData_.presetName = presetNameCombobox.Text;
+
+            keyData_.keyText = keyTextTextbox.Text == "" ? keyCode.ToString() : keyTextTextbox.Text;
+
+            // fix keytext with proper keys
+            for (int i = 0; i < keyTextFixes.Length; i += 2)
+                if (keyData_.keyText == keyTextFixes[i + 1]) keyData_.keyText = keyTextFixes[i];
+
+            keyData_.keyCode = Convert.ToInt32(hexValue, 16);
+
+            keyData_.keySizeX = Int32.Parse(keyWidthTextbox.Text);
+            keyData_.keySizeY = Int32.Parse(keyHeightTextbox.Text);
+
+            keyData_.fontSize = Int32.Parse(fontSizeTextbox.Text);
+            keyData_.showText = showTextCheckbox.Checked;
+
+            keyData_.keyColorPressedInvert = keyColorPressedInvertCheckbox.Checked;
+            keyData_.keyTextColorPressedInvert = keyTextColorPressedInvertCheckbox.Checked;
+
+            keyData_.keyOpacity = float.Parse(keyOpacityTextbox.Text) / 100;
+
+            keyData_.soundVolume = float.Parse(soundVolumeTextbox.Text) / 100;
+            keyData_.soundPressedVolume = float.Parse(soundPressedVolumeTextbox.Text) / 100;
+
+            switch (keyBorderCombobox.SelectedIndex)
+            {
+                case 0: keyData_.keyBorder = ButtonBorderStyle.Solid; break;
+                case 1: keyData_.keyBorder = ButtonBorderStyle.Inset; break;
+                case 2: keyData_.keyBorder = ButtonBorderStyle.Outset; break;
+                case 3: keyData_.keyBorder = ButtonBorderStyle.Dashed; break;
+                case 4: keyData_.keyBorder = ButtonBorderStyle.None; break;
+            }
+
+            keyData_.USE_KEY_COUNT = useKeyCountCheckbox.Checked;
+
+            keyData_.wiggleMode = wiggleModeCheckbox.Checked == true ? true : false;
+            keyData_.wiggleMode_wiggleAmount = Int32.Parse(wiggleAmountTextbox.Text);
+            keyData_.wiggleMode_biasUp = Int32.Parse(wiggleBiasUpTextbox.Text);
+            keyData_.wiggleMode_biasDown = Int32.Parse(wiggleBiasDownTextbox.Text);
+            keyData_.wiggleMode_biasRight = Int32.Parse(wiggleBiasRightTextbox.Text);
+            keyData_.wiggleMode_biasLeft = Int32.Parse(wiggleBiasLeftTextbox.Text);
+
+            Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
+
+            // display key with keyData_ settings
+            key newKey = new key(keyData_);
+            newKey.Show();
+            // add key to child list
+            keys.Add(newKey);
+
+            // lock create button
+            allowKeyCreation = false;
+        }
+
         private void keyWidthTextbox_TextChanged(object sender, EventArgs e)
         {
             // is data a number? if not, return
@@ -172,13 +263,14 @@ namespace Keystrokes
 
         private void showTextCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            keyPreviewTextLabel.Text = showTextCheckbox.Checked == true ? "A" : "";
+            keyPreviewTextLabel.Text = showTextCheckbox.Checked == true ? (keyTextTextbox.Text == "" ? "A" : keyTextTextbox.Text) : "";
         }
 
         private void keyColorButton_Click(object sender, EventArgs e)
         {
             // open new color dialog
             var rgb = openColorDialog();
+            if (rgb == null) return;
 
             // split r, g, b values
             keyData_.keyColorR = rgb.Item1;
@@ -194,6 +286,7 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
+            if (rgb == null) return;
 
             // split r, g, b values
             keyData_.keyTextColorR = rgb.Item1;
@@ -210,6 +303,7 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
+            if (rgb == null) return;
 
             // split r, g, b values
             keyData_.keyColorPressedR = rgb.Item1;
@@ -224,6 +318,7 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
+            if (rgb == null) return;
 
             // split r, g, b values
             keyData_.keyTextColorPressedR = rgb.Item1;
@@ -243,6 +338,8 @@ namespace Keystrokes
             Image backgroundImage = Image.FromFile(keyData_.keyBackgroundImage);
             keyPreviewPanel.BackgroundImage = backgroundImage;
             keyPreviewPanel.BackgroundImageLayout = ImageLayout.Stretch;
+
+            imageDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void imageDisposeButton_Click(object sender, EventArgs e)
@@ -250,128 +347,58 @@ namespace Keystrokes
             keyData_.keyBackgroundImage = "";
 
             keyPreviewPanel.BackgroundImage = null;
+
+            imageDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
 
         private void imagePressedButton_Click(object sender, EventArgs e)
         {
             keyData_.keyBackgroundImagePressed = prepareImageDialog();
+
+            if (keyData_.keyBackgroundImagePressed == "") return;
+            imagePressedDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void imagePressedDisposeButton_Click(object sender, EventArgs e)
         {
             keyData_.keyBackgroundImage = "";
+
+            imagePressedDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
 
         private void soundButton_Click(object sender, EventArgs e)
         {
             keyData_.sound = prepareAudioDialog();
+
+            if (keyData_.sound == "") return;
+            soundDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void soundDisposeButton_Click(object sender, EventArgs e)
         {
             keyData_.sound = "";
+
+            soundDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
 
         private void soundPressedButton_Click(object sender, EventArgs e)
         {
             keyData_.soundPressed = prepareAudioDialog();
+
+            if (keyData_.soundPressed == "") return;
+            soundPressedDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void soundPressedDisposeButton_Click(object sender, EventArgs e)
         {
             keyData_.soundPressed = "";
+
+            soundPressedDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
 
         private void useKeyCountCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             counterLabel.Text = useKeyCountCheckbox.Checked == true ? "0" : "";
-        }
-
-        bool allowKeyCreation = false;
-        private void createKeyButton_Click(object sender, EventArgs e)
-        {
-            // ask user to input key
-            createKeyButton.Font = new Font(createKeyButton.Font.Name, 10, FontStyle.Bold);
-            createKeyButton.Text = "Press a key...";
-
-            allowKeyCreation = true;
-        }
-
-        private void createKeyButton_KeyDown(object sender, KeyEventArgs e)
-        {
-            // prevent user from making a new key if the create button was not pressed
-            if (allowKeyCreation == false) return;
-
-            Keys keyCode = e.KeyCode;
-            KeysConverter converter = new KeysConverter();
-            Keys key = (Keys)converter.ConvertFrom(keyCode.ToString());
-            string hexValue = ((int)key).ToString("X2");
-
-            // restore create button text
-            createKeyButton.Text = "Create Key";
-            createKeyButton.Font = new Font(createKeyButton.Font.Name, 16, FontStyle.Bold);
-
-            // are user options valid? if not, assign them the default values
-            if (isNumber(keyWidthTextbox.Text, "int") == false) keyWidthTextbox.Text = "60";
-            if (isNumber(keyHeightTextbox.Text, "int") == false) keyHeightTextbox.Text = "60";
-            if (isNumber(fontSizeTextbox.Text, "int") == false) fontSizeTextbox.Text = "20";
-            if (isNumber(keyOpacityTextbox.Text, "float") == false) keyOpacityTextbox.Text = "0.8";
-            if (isNumber(wiggleAmountTextbox.Text, "int") == false) keyWidthTextbox.Text = "2";
-            if (isNumber(wiggleBiasUpTextbox.Text, "int") == false) wiggleBiasUpTextbox.Text = "0";
-            if (isNumber(wiggleBiasDownTextbox.Text, "int") == false) wiggleBiasDownTextbox.Text = "0";
-            if (isNumber(wiggleBiasRightTextbox.Text, "int") == false) wiggleBiasRightTextbox.Text = "0";
-            if (isNumber(wiggleBiasLeftTextbox.Text, "int") == false) wiggleBiasLeftTextbox.Text = "0";
-
-            // send user data to keyData_
-            keyData_.presetName = presetNameCombobox.Text;
-
-            keyData_.keyText = keyCode.ToString();
-
-            // fix keytext with proper keys
-            for (int i = 0; i < keyTextFixes.Length; i += 2)
-                if (keyData_.keyText == keyTextFixes[i + 1]) keyData_.keyText = keyTextFixes[i];
-
-            keyData_.keyCode = Convert.ToInt32(hexValue, 16);
-
-            keyData_.keySizeX = Int32.Parse(keyWidthTextbox.Text);
-            keyData_.keySizeY = Int32.Parse(keyHeightTextbox.Text);
-
-            keyData_.fontSize = Int32.Parse(fontSizeTextbox.Text);
-            keyData_.showText = showTextCheckbox.Checked;
-
-            keyData_.keyColorPressedInvert = keyColorPressedInvertCheckbox.Checked;
-            keyData_.keyTextColorPressedInvert = keyTextColorPressedInvertCheckbox.Checked;
-
-            keyData_.keyOpacity = float.Parse(keyOpacityTextbox.Text);
-
-            switch (keyBorderCombobox.SelectedIndex)
-            {
-                case 0: keyData_.keyBorder = ButtonBorderStyle.Solid; break;
-                case 1: keyData_.keyBorder = ButtonBorderStyle.Inset; break;
-                case 2: keyData_.keyBorder = ButtonBorderStyle.Outset; break;
-                case 3: keyData_.keyBorder = ButtonBorderStyle.Dashed; break;
-                case 4: keyData_.keyBorder = ButtonBorderStyle.None; break;
-            }
-
-            keyData_.USE_KEY_COUNT = useKeyCountCheckbox.Checked;
-
-            keyData_.wiggleMode = wiggleModeCheckbox.Checked == true ? true : false;
-            keyData_.wiggleMode_wiggleAmount = Int32.Parse(wiggleAmountTextbox.Text);
-            keyData_.wiggleMode_biasUp = Int32.Parse(wiggleBiasUpTextbox.Text);
-            keyData_.wiggleMode_biasDown = Int32.Parse(wiggleBiasDownTextbox.Text);
-            keyData_.wiggleMode_biasRight = Int32.Parse(wiggleBiasRightTextbox.Text);
-            keyData_.wiggleMode_biasLeft = Int32.Parse(wiggleBiasLeftTextbox.Text);
-
-            Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
-
-            // display key with keyData_ settings
-            key newKey = new key(keyData_);
-            newKey.Show();
-            // add key to child list
-            keys.Add(newKey);
-
-            // lock create button
-            allowKeyCreation = false;
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -402,9 +429,10 @@ namespace Keystrokes
                 r = Convert.ToInt32(colorDialog.Color.R);
                 g = Convert.ToInt32(colorDialog.Color.G);
                 b = Convert.ToInt32(colorDialog.Color.B);
+                return Tuple.Create(r, g, b);
             }
 
-            return Tuple.Create(r, g, b);
+            return null;
         }
 
         private string prepareImageDialog()
@@ -486,6 +514,13 @@ namespace Keystrokes
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
+        }
+
+        private void keyTextTextbox_TextChanged(object sender, EventArgs e)
+        {
+            keyPreviewTextLabel.Text = keyTextTextbox.Text;
+            if (keyTextTextbox.Text == "") keyPreviewTextLabel.Text = "A";
+            formatKeyPreview();
         }
     }
 }

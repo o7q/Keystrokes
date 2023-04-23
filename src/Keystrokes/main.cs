@@ -126,28 +126,31 @@ namespace Keystrokes
 
                     keyData_.sound = keySetting[25];
                     keyData_.soundPressed = keySetting[26];
+                    //
+                    keyData_.soundVolume = float.Parse(keySetting[27]);
+                    keyData_.soundPressedVolume = float.Parse(keySetting[28]);
 
-                    keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[27]);
+                    keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[29]);
 
                     // dynamic
-                    keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[28]);
-                    keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[29]);
+                    keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[30]);
+                    keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[31]);
 
-                    keyData_.KEY_SNAP_X = Int32.Parse(keySetting[30]);
-                    keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[31]);
+                    keyData_.KEY_SNAP_X = Int32.Parse(keySetting[32]);
+                    keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[33]);
 
-                    keyData_.KEY_LOCKED = bool.Parse(keySetting[32]);
+                    keyData_.KEY_LOCKED = bool.Parse(keySetting[34]);
 
-                    keyData_.USE_KEY_COUNT = bool.Parse(keySetting[33]);
-                    keyData_.KEY_COUNT = Int32.Parse(keySetting[34]);
+                    keyData_.USE_KEY_COUNT = bool.Parse(keySetting[35]);
+                    keyData_.KEY_COUNT = Int32.Parse(keySetting[36]);
 
                     // secret
-                    keyData_.wiggleMode = bool.Parse(keySetting[35]);
-                    keyData_.wiggleMode_wiggleAmount = Int32.Parse(keySetting[36]);
-                    keyData_.wiggleMode_biasUp = Int32.Parse(keySetting[37]);
-                    keyData_.wiggleMode_biasDown = Int32.Parse(keySetting[38]);
-                    keyData_.wiggleMode_biasRight = Int32.Parse(keySetting[39]);
-                    keyData_.wiggleMode_biasLeft = Int32.Parse(keySetting[40]);
+                    keyData_.wiggleMode = bool.Parse(keySetting[37]);
+                    keyData_.wiggleMode_wiggleAmount = Int32.Parse(keySetting[38]);
+                    keyData_.wiggleMode_biasUp = Int32.Parse(keySetting[39]);
+                    keyData_.wiggleMode_biasDown = Int32.Parse(keySetting[40]);
+                    keyData_.wiggleMode_biasRight = Int32.Parse(keySetting[41]);
+                    keyData_.wiggleMode_biasLeft = Int32.Parse(keySetting[42]);
                 }
                 catch (Exception ex)
                 {

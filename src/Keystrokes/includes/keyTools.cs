@@ -7,7 +7,7 @@ namespace Keystrokes.Tools
 {
     public static class keyTools
     {
-        public static string VERSION = "v1.2.0";
+        public static string VERSION = "v1.3.0";
 
         public static List<Form> keys = new List<Form>();
 
@@ -52,58 +52,5 @@ namespace Keystrokes.Tools
 
             return finalString;
         }
-
-        public static string[] keyTextFixes =
-        {
-            "Esc", "Escape",
-            "ScrLk", "Scroll",
-            "`", "Oemtilde",
-            "1", "D1",
-            "2", "D2",
-            "3", "D3",
-            "4", "D4",
-            "5", "D5",
-            "6", "D6",
-            "7", "D7",
-            "8", "D8",
-            "9", "D9",
-            "0", "D0",
-            "-", "OemMinus",
-            "=", "Oemplus",
-            "⬅", "Back",
-            "[", "OemOpenBrackets",
-            "]", "Oem6",
-            "\\", "Oem5",
-            "Caps", "Capital",
-            ";", "Oem1",
-            "'", "Oem7",
-            "Shift", "ShiftKey",
-            ",", "Oemcomma",
-            ".", "OemPeriod",
-            "/", "OemQuestion",
-            "Ctrl", "ControlKey",
-            "Win", "LWin",
-            "Alt", "Menu",
-            "Ins", "Insert",
-            "PgUp", "PageUp",
-            "Del", "Delete",
-            "PgDn", "Next",
-            "Num0", "NumPad0",
-            "Num1", "NumPad1",
-            "Num2", "NumPad2",
-            "Num3", "NumPad3",
-            "Num4", "NumPad4",
-            "Num5", "NumPad5",
-            "Num6", "NumPad6",
-            "Num7", "NumPad7",
-            "Num8", "NumPad8",
-            "Num9", "NumPad9",
-            "Num.", "Decimal",
-            "Num+", "Add",
-            "Num-", "Subtract",
-            "Num*", "Multiply",
-            "Num/", "Divide",
-            "NumLk", "NumLock"
-        };
     }
 }

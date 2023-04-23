@@ -41,7 +41,10 @@ namespace Keystrokes.Structure
         public string keyBackgroundImagePressed;
 
         public string sound;
+        public float soundVolume;
+        //
         public string soundPressed;
+        public float soundPressedVolume;
 
         public ButtonBorderStyle keyBorder;
 
