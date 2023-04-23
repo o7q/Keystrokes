@@ -208,6 +208,7 @@ namespace Keystrokes
             lockButton.Location = new Point(lockButton.Left, closeButton.Height);
 
             countLabel.Location = new Point(countLabel.Location.X, Height - 16);
+            countLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
             if (keyData.USE_KEY_COUNT == true)
             {
                 countLabel.Visible = true;

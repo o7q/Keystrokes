@@ -79,7 +79,6 @@ namespace Keystrokes
             counterLabel.Text = "";
 
             formatKeyPreview();
-
             resizeForm();
 
             #region tooltipDictionary
@@ -90,6 +89,7 @@ namespace Keystrokes
                 "presetNameCombobox", "Name of preset to edit/create",
                 "keyWidthTextbox", "Key width in pixels",
                 "keyHeightTextbox", "Key height in pixels",
+                "keyTextTextbox", "Custom key text",
                 "fontSizeTextbox", "Text font size",
                 "showTextCheckbox", "Display key text",
 
@@ -98,6 +98,7 @@ namespace Keystrokes
                 "imageButton", "Display an image as the key background",
                 "imageDisposeButton", "Remove image",
                 "soundButton", "Play a sound effect",
+                "soundVolumeTextbox", "Volume for sound effect",
                 "soundDisposeButton", "Remove sound effect",
 
                 "keyColorPressedButton", "Key background color when pressed",
@@ -105,6 +106,7 @@ namespace Keystrokes
                 "imagePressedButton", "Display an image as the key background when pressed",
                 "imagePressedDisposeButton", "Remove image",
                 "soundPressedButton", "Play a sound effect when pressed",
+                "soundPressedVolumeTextbox", "Volume for sound effect",
                 "soundPressedDisposeButton", "Remove sound effect",
 
                 "keyColorPressedInvertCheckbox", "Invert key color when pressed",

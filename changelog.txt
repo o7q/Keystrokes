@@ -1,3 +1,7 @@
+~
+- Fix count label text being uncolored
+- Update tooltips
+
 ~ v1.3.0.0
 - Added support for special keys (tab, arrow keys)
 - Added an option to change the text of the key
