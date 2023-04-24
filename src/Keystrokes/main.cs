@@ -90,69 +90,72 @@ namespace Keystrokes
 
                     try
                     {
-                        if (keySettingPair[0] == "presetName") keyData_.presetName = keySettingPair[1];
+                        switch (keySettingPair[0])
+                        {
+                            case "presetName": keyData_.presetName = keySettingPair[1]; break;
 
-                        if (keySettingPair[0] == "keyId") keyData_.keyId = keySettingPair[1];
+                            case "keyId": keyData_.keyId = keySettingPair[1]; break;
 
-                        if (keySettingPair[0] == "keyText") keyData_.keyText = keySettingPair[1];
-                        if (keySettingPair[0] == "keyCode") keyData_.keyCode = int.Parse(keySettingPair[1]);
+                            case "keyText": keyData_.keyText = keySettingPair[1]; break;
+                            case "keyCode": keyData_.keyCode = int.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "keySizeX") keyData_.keySizeX = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keySizeY") keyData_.keySizeY = int.Parse(keySettingPair[1]);
+                            case "keySizeX": keyData_.keySizeX = int.Parse(keySettingPair[1]); break;
+                            case "keySizeY": keyData_.keySizeY = int.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "fontSize") keyData_.fontSize = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "showText") keyData_.showText = bool.Parse(keySettingPair[1]);
+                            case "fontSize": keyData_.fontSize = int.Parse(keySettingPair[1]); break;
+                            case "showText": keyData_.showText = bool.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "keyColorR") keyData_.keyColorR = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyColorG") keyData_.keyColorG = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyColorB") keyData_.keyColorB = int.Parse(keySettingPair[1]);
-                        //
-                        if (keySettingPair[0] == "keyTextColorR") keyData_.keyTextColorR = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyTextColorG") keyData_.keyTextColorG = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyTextColorB") keyData_.keyTextColorB = int.Parse(keySettingPair[1]);
-                        //
-                        if (keySettingPair[0] == "keyColorPressedR") keyData_.keyColorPressedR = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyColorPressedG") keyData_.keyColorPressedG = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyColorPressedB") keyData_.keyColorPressedB = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyColorPressedInvert") keyData_.keyColorPressedInvert = bool.Parse(keySettingPair[1]);
-                        //
-                        if (keySettingPair[0] == "keyTextColorPressedR") keyData_.keyTextColorPressedR = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyTextColorPressedG") keyData_.keyTextColorPressedG = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyTextColorPressedB") keyData_.keyTextColorPressedB = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "keyTextColorPressedInvert") keyData_.keyTextColorPressedInvert = bool.Parse(keySettingPair[1]);
+                            case "keyColorR": keyData_.keyColorR = int.Parse(keySettingPair[1]); break;
+                            case "keyColorG": keyData_.keyColorG = int.Parse(keySettingPair[1]); break;
+                            case "keyColorB": keyData_.keyColorB = int.Parse(keySettingPair[1]); break;
+                            //
+                            case "keyTextColorR": keyData_.keyTextColorR = int.Parse(keySettingPair[1]); break;
+                            case "keyTextColorG": keyData_.keyTextColorG = int.Parse(keySettingPair[1]); break;
+                            case "keyTextColorB": keyData_.keyTextColorB = int.Parse(keySettingPair[1]); break;
+                            //
+                            case "keyColorPressedR": keyData_.keyColorPressedR = int.Parse(keySettingPair[1]); break;
+                            case "keyColorPressedG": keyData_.keyColorPressedG = int.Parse(keySettingPair[1]); break;
+                            case "keyColorPressedB": keyData_.keyColorPressedB = int.Parse(keySettingPair[1]); break;
+                            case "keyColorPressedInvert": keyData_.keyColorPressedInvert = bool.Parse(keySettingPair[1]); break;
+                            //
+                            case "keyTextColorPressedR": keyData_.keyTextColorPressedR = int.Parse(keySettingPair[1]); break;
+                            case "keyTextColorPressedG": keyData_.keyTextColorPressedG = int.Parse(keySettingPair[1]); break;
+                            case "keyTextColorPressedB": keyData_.keyTextColorPressedB = int.Parse(keySettingPair[1]); break;
+                            case "keyTextColorPressedInvert": keyData_.keyTextColorPressedInvert = bool.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "keyOpacity") keyData_.keyOpacity = float.Parse(keySettingPair[1]);
+                            case "keyOpacity": keyData_.keyOpacity = float.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "keyBackgroundImage") keyData_.keyBackgroundImage = keySettingPair[1];
-                        if (keySettingPair[0] == "keyBackgroundImagePressed") keyData_.keyBackgroundImagePressed = keySettingPair[1];
+                            case "keyBackgroundImage": keyData_.keyBackgroundImage = keySettingPair[1]; break;
+                            case "keyBackgroundImagePressed": keyData_.keyBackgroundImagePressed = keySettingPair[1]; break;
 
-                        if (keySettingPair[0] == "sound") keyData_.sound = keySettingPair[1];
-                        if (keySettingPair[0] == "soundVolume") keyData_.soundVolume = float.Parse(keySettingPair[1]);
-                        //
-                        if (keySettingPair[0] == "soundPressed") keyData_.soundPressed = keySettingPair[1];
-                        if (keySettingPair[0] == "soundPressedVolume") keyData_.soundPressedVolume = float.Parse(keySettingPair[1]);
+                            case "sound": keyData_.sound = keySettingPair[1]; break;
+                            case "soundVolume": keyData_.soundVolume = float.Parse(keySettingPair[1]); break;
+                            //
+                            case "soundPressed": keyData_.soundPressed = keySettingPair[1]; break;
+                            case "soundPressedVolume": keyData_.soundPressedVolume = float.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "keyBorder") keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySettingPair[1]);
+                            case "keyBorder": keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySettingPair[1]); break;
 
-                        // dynamic
-                        if (keySettingPair[0] == "KEY_LOCATION_X") keyData_.KEY_LOCATION_X = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "KEY_LOCATION_Y") keyData_.KEY_LOCATION_Y = int.Parse(keySettingPair[1]);
+                            // dynamic
+                            case "KEY_LOCATION_X": keyData_.KEY_LOCATION_X = int.Parse(keySettingPair[1]); break;
+                            case "KEY_LOCATION_Y": keyData_.KEY_LOCATION_Y = int.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "KEY_SNAP_X") keyData_.KEY_SNAP_X = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "KEY_SNAP_Y") keyData_.KEY_SNAP_Y = int.Parse(keySettingPair[1]);
+                            case "KEY_SNAP_X": keyData_.KEY_SNAP_X = int.Parse(keySettingPair[1]); break;
+                            case "KEY_SNAP_Y": keyData_.KEY_SNAP_Y = int.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "KEY_LOCKED") keyData_.KEY_LOCKED = bool.Parse(keySettingPair[1]);
+                            case "KEY_LOCKED": keyData_.KEY_LOCKED = bool.Parse(keySettingPair[1]); break;
 
-                        if (keySettingPair[0] == "USE_KEY_COUNT") keyData_.USE_KEY_COUNT = bool.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "KEY_COUNT") keyData_.KEY_COUNT = int.Parse(keySettingPair[1]);
+                            case "USE_KEY_COUNT": keyData_.USE_KEY_COUNT = bool.Parse(keySettingPair[1]); break;
+                            case "KEY_COUNT": keyData_.KEY_COUNT = int.Parse(keySettingPair[1]); break;
 
-                        // secret
-                        if (keySettingPair[0] == "wiggleMode") keyData_.wiggleMode = bool.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "wiggleMode_wiggleAmount") keyData_.wiggleMode_wiggleAmount = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "wiggleMode_biasUp") keyData_.wiggleMode_biasUp = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "wiggleMode_biasDown") keyData_.wiggleMode_biasDown = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "wiggleMode_biasRight") keyData_.wiggleMode_biasRight = int.Parse(keySettingPair[1]);
-                        if (keySettingPair[0] == "wiggleMode_biasLeft") keyData_.wiggleMode_biasLeft = int.Parse(keySettingPair[1]);
+                            // secret
+                            case "wiggleMode": keyData_.wiggleMode = bool.Parse(keySettingPair[1]); break;
+                            case "wiggleMode_wiggleAmount": keyData_.wiggleMode_wiggleAmount = int.Parse(keySettingPair[1]); break;
+                            case "wiggleMode_biasUp": keyData_.wiggleMode_biasUp = int.Parse(keySettingPair[1]); break;
+                            case "wiggleMode_biasDown": keyData_.wiggleMode_biasDown = int.Parse(keySettingPair[1]); break;
+                            case "wiggleMode_biasRight": keyData_.wiggleMode_biasRight = int.Parse(keySettingPair[1]); break;
+                            case "wiggleMode_biasLeft": keyData_.wiggleMode_biasLeft = int.Parse(keySettingPair[1]); break;
+                        }
                     }
                     catch (Exception ex)
                     {
