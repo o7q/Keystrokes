@@ -75,6 +75,7 @@
             this.snapXTextbox.Name = "snapXTextbox";
             this.snapXTextbox.Size = new System.Drawing.Size(52, 13);
             this.snapXTextbox.TabIndex = 2;
+            this.snapXTextbox.TextChanged += new System.EventHandler(this.snapXTextbox_TextChanged);
             // 
             // snapYTextbox
             // 
@@ -85,6 +86,7 @@
             this.snapYTextbox.Name = "snapYTextbox";
             this.snapYTextbox.Size = new System.Drawing.Size(52, 13);
             this.snapYTextbox.TabIndex = 3;
+            this.snapYTextbox.TextChanged += new System.EventHandler(this.snapYTextbox_TextChanged);
             // 
             // keyTooltip
             // 

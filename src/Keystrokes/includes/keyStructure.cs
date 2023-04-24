@@ -2,7 +2,7 @@
 
 namespace Keystrokes.Structure
 {
-    public struct keyInfo
+    public struct KeyInfo
     {
         public string presetName;
 
@@ -20,16 +20,16 @@ namespace Keystrokes.Structure
         public int keyColorR;
         public int keyColorG;
         public int keyColorB;
-
+        //
         public int keyTextColorR;
         public int keyTextColorG;
         public int keyTextColorB;
-
+        //
         public int keyColorPressedR;
         public int keyColorPressedG;
         public int keyColorPressedB;
         public bool keyColorPressedInvert;
-
+        //
         public int keyTextColorPressedR;
         public int keyTextColorPressedG;
         public int keyTextColorPressedB;

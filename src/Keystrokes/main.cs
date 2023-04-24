@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using Keystrokes.Structure;
 using static Keystrokes.Tools.keyTools;
 
-
 namespace Keystrokes
 {
     public partial class main : Form
@@ -73,6 +72,8 @@ namespace Keystrokes
 
         private void loadPresetButton_Click(object sender, EventArgs e)
         {
+            KeyInfo keyData_ = new KeyInfo();
+
             // load keys into array
             string[] files = Directory.GetFiles("Keystrokes\\presets\\" + presetListbox.SelectedItem, "*.key");
             foreach (string file in files)
@@ -80,83 +81,85 @@ namespace Keystrokes
                 var name = new FileInfo(file).Name;
 
                 // load data from file
-                string keyFilePath = "Keystrokes\\presets\\" + presetListbox.SelectedItem + "\\" + name;
-                string keyFile = File.ReadAllText(keyFilePath);
+                string keyFile = File.ReadAllText("Keystrokes\\presets\\" + presetListbox.SelectedItem + "\\" + name);
+                string[] keySetting = keyFile.Split('\n');
 
-                string[] keySetting = keyFile.Split('|');
-                keyInfo keyData_;
-
-                try
+                for (int i = 0; i < keySetting.Length; i++)
                 {
-                    // load all settings into keyData_
-                    keyData_.presetName = keySetting[0];
+                    string[] keySettingPair = keySetting[i].Split('=');
 
-                    keyData_.keyId = keySetting[1];
+                    try
+                    {
+                        if (keySettingPair[0] == "presetName") keyData_.presetName = keySettingPair[1];
 
-                    keyData_.keyText = keySetting[2];
-                    keyData_.keyCode = Int32.Parse(keySetting[3]);
+                        if (keySettingPair[0] == "keyId") keyData_.keyId = keySettingPair[1];
 
-                    keyData_.keySizeX = Int32.Parse(keySetting[4]);
-                    keyData_.keySizeY = Int32.Parse(keySetting[5]);
+                        if (keySettingPair[0] == "keyText") keyData_.keyText = keySettingPair[1];
+                        if (keySettingPair[0] == "keyCode") keyData_.keyCode = int.Parse(keySettingPair[1]);
 
-                    keyData_.fontSize = Int32.Parse(keySetting[6]);
-                    keyData_.showText = bool.Parse(keySetting[7]);
+                        if (keySettingPair[0] == "keySizeX") keyData_.keySizeX = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keySizeY") keyData_.keySizeY = int.Parse(keySettingPair[1]);
 
-                    keyData_.keyColorR = Int32.Parse(keySetting[8]);
-                    keyData_.keyColorG = Int32.Parse(keySetting[9]);
-                    keyData_.keyColorB = Int32.Parse(keySetting[10]);
+                        if (keySettingPair[0] == "fontSize") keyData_.fontSize = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "showText") keyData_.showText = bool.Parse(keySettingPair[1]);
 
-                    keyData_.keyTextColorR = Int32.Parse(keySetting[11]);
-                    keyData_.keyTextColorG = Int32.Parse(keySetting[12]);
-                    keyData_.keyTextColorB = Int32.Parse(keySetting[13]);
+                        if (keySettingPair[0] == "keyColorR") keyData_.keyColorR = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyColorG") keyData_.keyColorG = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyColorB") keyData_.keyColorB = int.Parse(keySettingPair[1]);
+                        //
+                        if (keySettingPair[0] == "keyTextColorR") keyData_.keyTextColorR = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyTextColorG") keyData_.keyTextColorG = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyTextColorB") keyData_.keyTextColorB = int.Parse(keySettingPair[1]);
+                        //
+                        if (keySettingPair[0] == "keyColorPressedR") keyData_.keyColorPressedR = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyColorPressedG") keyData_.keyColorPressedG = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyColorPressedB") keyData_.keyColorPressedB = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyColorPressedInvert") keyData_.keyColorPressedInvert = bool.Parse(keySettingPair[1]);
+                        //
+                        if (keySettingPair[0] == "keyTextColorPressedR") keyData_.keyTextColorPressedR = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyTextColorPressedG") keyData_.keyTextColorPressedG = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyTextColorPressedB") keyData_.keyTextColorPressedB = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "keyTextColorPressedInvert") keyData_.keyTextColorPressedInvert = bool.Parse(keySettingPair[1]);
 
-                    keyData_.keyColorPressedR = Int32.Parse(keySetting[14]);
-                    keyData_.keyColorPressedG = Int32.Parse(keySetting[15]);
-                    keyData_.keyColorPressedB = Int32.Parse(keySetting[16]);
-                    keyData_.keyColorPressedInvert = bool.Parse(keySetting[17]);
+                        if (keySettingPair[0] == "keyOpacity") keyData_.keyOpacity = float.Parse(keySettingPair[1]);
 
-                    keyData_.keyTextColorPressedR = Int32.Parse(keySetting[18]);
-                    keyData_.keyTextColorPressedG = Int32.Parse(keySetting[19]);
-                    keyData_.keyTextColorPressedB = Int32.Parse(keySetting[20]);
-                    keyData_.keyTextColorPressedInvert = bool.Parse(keySetting[21]);
-                    keyData_.keyOpacity = float.Parse(keySetting[22]);
+                        if (keySettingPair[0] == "keyBackgroundImage") keyData_.keyBackgroundImage = keySettingPair[1];
+                        if (keySettingPair[0] == "keyBackgroundImagePressed") keyData_.keyBackgroundImagePressed = keySettingPair[1];
 
-                    keyData_.keyBackgroundImage = keySetting[23];
-                    keyData_.keyBackgroundImagePressed = keySetting[24];
+                        if (keySettingPair[0] == "sound") keyData_.sound = keySettingPair[1];
+                        if (keySettingPair[0] == "soundVolume") keyData_.soundVolume = float.Parse(keySettingPair[1]);
+                        //
+                        if (keySettingPair[0] == "soundPressed") keyData_.soundPressed = keySettingPair[1];
+                        if (keySettingPair[0] == "soundPressedVolume") keyData_.soundPressedVolume = float.Parse(keySettingPair[1]);
 
-                    keyData_.sound = keySetting[25];
-                    keyData_.soundPressed = keySetting[26];
-                    //
-                    keyData_.soundVolume = float.Parse(keySetting[27]);
-                    keyData_.soundPressedVolume = float.Parse(keySetting[28]);
+                        if (keySettingPair[0] == "keyBorder") keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySettingPair[1]);
 
-                    keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySetting[29]);
+                        // dynamic
+                        if (keySettingPair[0] == "KEY_LOCATION_X") keyData_.KEY_LOCATION_X = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "KEY_LOCATION_Y") keyData_.KEY_LOCATION_Y = int.Parse(keySettingPair[1]);
 
-                    // dynamic
-                    keyData_.KEY_LOCATION_X = Int32.Parse(keySetting[30]);
-                    keyData_.KEY_LOCATION_Y = Int32.Parse(keySetting[31]);
+                        if (keySettingPair[0] == "KEY_SNAP_X") keyData_.KEY_SNAP_X = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "KEY_SNAP_Y") keyData_.KEY_SNAP_Y = int.Parse(keySettingPair[1]);
 
-                    keyData_.KEY_SNAP_X = Int32.Parse(keySetting[32]);
-                    keyData_.KEY_SNAP_Y = Int32.Parse(keySetting[33]);
+                        if (keySettingPair[0] == "KEY_LOCKED") keyData_.KEY_LOCKED = bool.Parse(keySettingPair[1]);
 
-                    keyData_.KEY_LOCKED = bool.Parse(keySetting[34]);
+                        if (keySettingPair[0] == "USE_KEY_COUNT") keyData_.USE_KEY_COUNT = bool.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "KEY_COUNT") keyData_.KEY_COUNT = int.Parse(keySettingPair[1]);
 
-                    keyData_.USE_KEY_COUNT = bool.Parse(keySetting[35]);
-                    keyData_.KEY_COUNT = Int32.Parse(keySetting[36]);
-
-                    // secret
-                    keyData_.wiggleMode = bool.Parse(keySetting[37]);
-                    keyData_.wiggleMode_wiggleAmount = Int32.Parse(keySetting[38]);
-                    keyData_.wiggleMode_biasUp = Int32.Parse(keySetting[39]);
-                    keyData_.wiggleMode_biasDown = Int32.Parse(keySetting[40]);
-                    keyData_.wiggleMode_biasRight = Int32.Parse(keySetting[41]);
-                    keyData_.wiggleMode_biasLeft = Int32.Parse(keySetting[42]);
-                }
-                catch (Exception ex)
-                {
-                    DialogResult prompt = MessageBox.Show("Unable to load key: " + (keySetting[1] == null ? "NULL" : keySetting[1]) + "\nWas it created in an older version?\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
-                    if (prompt == DialogResult.Cancel) return;
-                    continue;
+                        // secret
+                        if (keySettingPair[0] == "wiggleMode") keyData_.wiggleMode = bool.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "wiggleMode_wiggleAmount") keyData_.wiggleMode_wiggleAmount = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "wiggleMode_biasUp") keyData_.wiggleMode_biasUp = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "wiggleMode_biasDown") keyData_.wiggleMode_biasDown = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "wiggleMode_biasRight") keyData_.wiggleMode_biasRight = int.Parse(keySettingPair[1]);
+                        if (keySettingPair[0] == "wiggleMode_biasLeft") keyData_.wiggleMode_biasLeft = int.Parse(keySettingPair[1]);
+                    }
+                    catch (Exception ex)
+                    {
+                        DialogResult prompt = MessageBox.Show("Unable to load key: " + name + "\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
+                        if (prompt == DialogResult.Cancel) return;
+                        continue;
+                    }
                 }
 
                 // display key with keyData_ settings

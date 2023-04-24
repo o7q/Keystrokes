@@ -7,7 +7,7 @@ namespace Keystrokes.Tools
 {
     public static class keyTools
     {
-        public static string VERSION = "v1.3.0";
+        public static string VERSION = "v1.4.0";
 
         public static List<Form> keys = new List<Form>();
 
@@ -51,6 +51,11 @@ namespace Keystrokes.Tools
             var finalString = new String(stringChars);
 
             return finalString;
+        }
+
+        public static T ChangeType<T>(this object obj)
+        {
+            return (T)Convert.ChangeType(obj, typeof(T));
         }
     }
 }

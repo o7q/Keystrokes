@@ -23,7 +23,7 @@ namespace Keystrokes
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        keyInfo keyData_;
+        KeyInfo keyData_ = new KeyInfo();
 
         // form settings
         const int form_SizeX = 236;

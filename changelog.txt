@@ -1,6 +1,7 @@
-~
-- Fix count label text being uncolored
-- Update tooltips
+~ v1.4.0.0
+- Improved the save/load system
+- Fixed the count label text being uncolored
+- Updated the tooltips
 
 ~ v1.3.0.0
 - Added support for special keys (tab, arrow keys)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Timers;
 using System.Drawing;
 using System.Diagnostics;
@@ -26,7 +27,7 @@ namespace Keystrokes
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        keyInfo keyData;
+        KeyInfo keyData = new KeyInfo();
 
         System.Timers.Timer keyPing = new System.Timers.Timer();
 
@@ -38,74 +39,12 @@ namespace Keystrokes
         bool useSound = false;
         bool useSoundPressed = false;
 
-        public key(keyInfo keyData_)
+        public key(KeyInfo keyData_)
         {
             InitializeComponent();
 
             // load keyData_ into keyData
-            keyData.presetName = keyData_.presetName;
-
-            keyData.keyId = keyData_.keyId;
-
-            keyData.keyText = keyData_.keyText;
-            keyData.keyCode = keyData_.keyCode;
-
-            keyData.keySizeX = keyData_.keySizeX;
-            keyData.keySizeY = keyData_.keySizeY;
-
-            keyData.fontSize = keyData_.fontSize;
-            keyData.showText = keyData_.showText;
-
-            keyData.keyColorR = keyData_.keyColorR;
-            keyData.keyColorG = keyData_.keyColorG;
-            keyData.keyColorB = keyData_.keyColorB;
-
-            keyData.keyTextColorR = keyData_.keyTextColorR;
-            keyData.keyTextColorG = keyData_.keyTextColorG;
-            keyData.keyTextColorB = keyData_.keyTextColorB;
-
-            keyData.keyColorPressedR = keyData_.keyColorPressedR;
-            keyData.keyColorPressedG = keyData_.keyColorPressedG;
-            keyData.keyColorPressedB = keyData_.keyColorPressedB;
-            keyData.keyColorPressedInvert = keyData_.keyColorPressedInvert;
-
-            keyData.keyTextColorPressedR = keyData_.keyTextColorPressedR;
-            keyData.keyTextColorPressedG = keyData_.keyTextColorPressedG;
-            keyData.keyTextColorPressedB = keyData_.keyTextColorPressedB;
-            keyData.keyTextColorPressedInvert = keyData_.keyTextColorPressedInvert;
-
-            keyData.keyOpacity = keyData_.keyOpacity;
-
-            keyData.keyBackgroundImage = keyData_.keyBackgroundImage;
-            keyData.keyBackgroundImagePressed = keyData_.keyBackgroundImagePressed;
-
-            keyData.sound = keyData_.sound;
-            keyData.soundPressed = keyData_.soundPressed;
-            //
-            keyData.soundVolume = keyData_.soundVolume;
-            keyData.soundPressedVolume = keyData_.soundPressedVolume;
-
-            keyData.keyBorder = keyData_.keyBorder;
-
-            // dynamic
-            keyData.KEY_LOCATION_X = keyData_.KEY_LOCATION_X;
-            keyData.KEY_LOCATION_Y = keyData_.KEY_LOCATION_Y;
-
-            keyData.KEY_SNAP_X = keyData_.KEY_SNAP_X;
-            keyData.KEY_SNAP_Y = keyData_.KEY_SNAP_Y;
-
-            keyData.KEY_LOCKED = keyData_.KEY_LOCKED;
-
-            keyData.USE_KEY_COUNT = keyData_.USE_KEY_COUNT;
-            keyData.KEY_COUNT = keyData_.KEY_COUNT;
-
-            // secret
-            keyData.wiggleMode = keyData_.wiggleMode;
-            keyData.wiggleMode_wiggleAmount = keyData_.wiggleMode_wiggleAmount;
-            keyData.wiggleMode_biasUp = keyData_.wiggleMode_biasUp;
-            keyData.wiggleMode_biasDown = keyData_.wiggleMode_biasDown;
-            keyData.wiggleMode_biasRight = keyData_.wiggleMode_biasRight;
-            keyData.wiggleMode_biasLeft = keyData_.wiggleMode_biasLeft;
+            keyData = keyData_;
         }
 
         private void key_Load(object sender, EventArgs e)
@@ -236,6 +175,15 @@ namespace Keystrokes
             e.DrawBackground();
             e.DrawBorder();
             e.DrawText();
+        }
+
+        private void key_Paint(object sender, PaintEventArgs e)
+        {
+            // draw custom key border
+            int r = keyData.keyColorR - 50 < 0 ? 0 : keyData.keyColorR - 50;
+            int g = keyData.keyColorG - 50 < 0 ? 0 : keyData.keyColorG - 50;
+            int b = keyData.keyColorB - 50 < 0 ? 0 : keyData.keyColorB - 50;
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(255, r, g, b), keyData.keyBorder);
         }
 
         // do tick
@@ -377,13 +325,14 @@ namespace Keystrokes
             writeConfig();
         }
 
-        private void key_Paint(object sender, PaintEventArgs e)
+        private void snapXTextbox_TextChanged(object sender, EventArgs e)
         {
-            // draw custom key border
-            int r = keyData.keyColorR - 50 < 0 ? 0 : keyData.keyColorR - 50;
-            int g = keyData.keyColorG - 50 < 0 ? 0 : keyData.keyColorG - 50;
-            int b = keyData.keyColorB - 50 < 0 ? 0 : keyData.keyColorB - 50;
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(255, r, g, b), keyData.keyBorder);
+            keyData.KEY_SNAP_X = Int32.Parse(snapXTextbox.Text);
+        }
+
+        private void snapYTextbox_TextChanged(object sender, EventArgs e)
+        {
+            keyData.KEY_SNAP_Y = Int32.Parse(snapYTextbox.Text);
         }
 
         private void writeConfig()
@@ -395,73 +344,27 @@ namespace Keystrokes
 
             // does the preset exist? if not, return
             if (Directory.Exists("Keystrokes\\presets\\" + keyData.presetName) == false) return;
-
+            
             // write keyData to a designated key file
-            string config = keyData.presetName + "|" +
+            var sb = new StringBuilder();
+            foreach (var field in typeof(KeyInfo).GetFields())
+            {
+                object value = field.GetValue(keyData);
+                if (value != null)
+                {
+                    sb.Append(field.Name + "=" + value.ToString());
+                }
+                else
+                {
+                    sb.Append("");
+                }
+                sb.Append("\n");
+            }
+            sb.Length--; // remove the last "="
 
-                          keyData.keyId + "|" +
+            string myString = sb.ToString();
 
-                          keyData.keyText + "|" +
-                          keyData.keyCode + "|" +
-
-                          keyData.keySizeX + "|" +
-                          keyData.keySizeY + "|" +
-
-                          keyData.fontSize + "|" +
-                          keyData.showText + "|" +
-
-                          keyData.keyColorR + "|" +
-                          keyData.keyColorG + "|" +
-                          keyData.keyColorB + "|" +
-
-                          keyData.keyTextColorR + "|" +
-                          keyData.keyTextColorG + "|" +
-                          keyData.keyTextColorB + "|" +
-
-                          keyData.keyColorPressedR + "|" +
-                          keyData.keyColorPressedG + "|" +
-                          keyData.keyColorPressedB + "|" +
-                          keyData.keyColorPressedInvert + "|" +
-
-                          keyData.keyTextColorPressedR + "|" +
-                          keyData.keyTextColorPressedG + "|" +
-                          keyData.keyTextColorPressedB + "|" +
-                          keyData.keyTextColorPressedInvert + "|" +
-
-                          keyData.keyOpacity + "|" +
-
-                          keyData.keyBackgroundImage + "|" +
-                          keyData.keyBackgroundImagePressed + "|" +
-
-                          keyData.sound + "|" +
-                          keyData.soundPressed + "|" +
-                          //
-                          keyData.soundVolume + "|" +
-                          keyData.soundPressedVolume + "|" +
-
-                          keyData.keyBorder + "|" +
-
-                          // dynamic
-                          Location.X + "|" +
-                          Location.Y + "|" +
-
-                          snapXTextbox.Text + "|" +
-                          snapYTextbox.Text + "|" +
-
-                          keyData.KEY_LOCKED + "|" +
-
-                          keyData.USE_KEY_COUNT + "|" +
-                          keyData.KEY_COUNT + "|" +
-
-                          // secret
-                          keyData.wiggleMode + "|" +
-                          keyData.wiggleMode_wiggleAmount + "|" +
-                          keyData.wiggleMode_biasUp + "|" +
-                          keyData.wiggleMode_biasDown + "|" +
-                          keyData.wiggleMode_biasRight + "|" +
-                          keyData.wiggleMode_biasLeft;
-
-            File.WriteAllText("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key", config);
+            File.WriteAllText("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key", myString);
         }
 
         private void moveKey(MouseEventArgs e)
@@ -505,6 +408,9 @@ namespace Keystrokes
 
             tempLocX = Left;
             tempLocY = Top;
+
+            keyData.KEY_LOCATION_X = Location.X;
+            keyData.KEY_LOCATION_Y = Location.Y;
 
             // write changes to config
             writeConfig();
