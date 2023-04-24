@@ -352,8 +352,6 @@ namespace Keystrokes
                 object value = field.GetValue(keyData);
                 if (value != null)
                     sb.Append(field.Name + "=" + value.ToString());
-                else
-                    sb.Append("");
                 sb.Append("\n");
             }
             sb.Length--;
