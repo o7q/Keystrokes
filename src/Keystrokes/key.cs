@@ -351,20 +351,15 @@ namespace Keystrokes
             {
                 object value = field.GetValue(keyData);
                 if (value != null)
-                {
                     sb.Append(field.Name + "=" + value.ToString());
-                }
                 else
-                {
                     sb.Append("");
-                }
                 sb.Append("\n");
             }
-            sb.Length--; // remove the last "="
+            sb.Length--;
+            string config = sb.ToString();
 
-            string myString = sb.ToString();
-
-            File.WriteAllText("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key", myString);
+            File.WriteAllText("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key", config);
         }
 
         private void moveKey(MouseEventArgs e)

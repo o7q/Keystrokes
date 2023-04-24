@@ -52,10 +52,5 @@ namespace Keystrokes.Tools
 
             return finalString;
         }
-
-        public static T ChangeType<T>(this object obj)
-        {
-            return (T)Convert.ChangeType(obj, typeof(T));
-        }
     }
 }
