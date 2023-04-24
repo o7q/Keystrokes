@@ -136,7 +136,7 @@
             this.Name = "key";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "key";
+            this.Text = "Key";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.key_FormClosing);
             this.Load += new System.EventHandler(this.key_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.key_Paint);
