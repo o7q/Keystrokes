@@ -822,7 +822,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "keymaker";
-            this.Text = "Keystrokes Editor";
+            this.Text = "Key Editor";
             this.Load += new System.EventHandler(this.keymaker_Load);
             this.titlebarPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bannerPicture)).EndInit();
