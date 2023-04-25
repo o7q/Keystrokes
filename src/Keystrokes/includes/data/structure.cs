@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Keystrokes.Structure
+namespace Keystrokes.Data
 {
     public struct KeyInfo
     {
@@ -9,7 +9,8 @@ namespace Keystrokes.Structure
         public string keyId;
 
         public string keyText;
-        public int keyCode;
+        public string keyCode;
+        public bool isControllerKey;
 
         public int keySizeX;
         public int keySizeY;
@@ -65,7 +66,7 @@ namespace Keystrokes.Structure
         public int wiggleMode_wiggleAmount;
         public int wiggleMode_biasUp;
         public int wiggleMode_biasDown;
-        public int wiggleMode_biasRight;
         public int wiggleMode_biasLeft;
+        public int wiggleMode_biasRight;
     }
 }

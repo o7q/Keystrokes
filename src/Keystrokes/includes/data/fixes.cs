@@ -1,6 +1,6 @@
-﻿namespace Keystrokes.Fixes
+﻿namespace Keystrokes.Data
 {
-    public static class keyFixes
+    public static class Fixes
     {
         public static string[] keyTextFixes =
         {
@@ -41,8 +41,8 @@
             "PgDn", "Next",
             "🠉", "Up",
             "🠋", "Down",
-            "🠊", "Right",
             "🠈", "Left",
+            "🠊", "Right",
             "Num0", "NumPad0",
             "Num1", "NumPad1",
             "Num2", "NumPad2",

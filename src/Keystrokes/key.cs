@@ -7,8 +7,9 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Media = System.Windows.Media;
-using Keystrokes.Structure;
-using static Keystrokes.Tools.keyTools;
+using Keystrokes.Data;
+using static Keystrokes.Tools.Input;
+using static Keystrokes.Tools.Numbers;
 
 namespace Keystrokes
 {
@@ -191,7 +192,7 @@ namespace Keystrokes
         private void keyRefresh(object source, ElapsedEventArgs e)
         {
             // check for user key input
-            if (keyDetect(keyData.keyCode) == true)
+            if (keyDetect(keyData.keyCode, keyData.isControllerKey) == true)
             {
                 try
                 {

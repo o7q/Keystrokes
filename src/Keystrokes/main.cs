@@ -3,8 +3,8 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using Keystrokes.Structure;
-using static Keystrokes.Tools.keyTools;
+using Keystrokes.Data;
+using static Keystrokes.Tools.Numbers;
 
 namespace Keystrokes
 {
@@ -97,7 +97,8 @@ namespace Keystrokes
                             case "keyId": keyData_.keyId = keySettingPair[1]; break;
 
                             case "keyText": keyData_.keyText = keySettingPair[1]; break;
-                            case "keyCode": keyData_.keyCode = int.Parse(keySettingPair[1]); break;
+                            case "keyCode": keyData_.keyCode = keySettingPair[1]; break;
+                            case "isControllerKey": keyData_.isControllerKey = bool.Parse(keySettingPair[1]); break;
 
                             case "keySizeX": keyData_.keySizeX = int.Parse(keySettingPair[1]); break;
                             case "keySizeY": keyData_.keySizeY = int.Parse(keySettingPair[1]); break;

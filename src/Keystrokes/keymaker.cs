@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Timers;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using Keystrokes.Structure;
-using static Keystrokes.Tools.keyTools;
-using static Keystrokes.Fixes.keyFixes;
+using Keystrokes.Data;
+using static Keystrokes.Data.Fixes;
+using static Keystrokes.Tools.Input;
+using static Keystrokes.Tools.Numbers;
 
 namespace Keystrokes
 {
@@ -37,6 +39,8 @@ namespace Keystrokes
         {
             InitializeComponent();
         }
+
+        System.Timers.Timer controllerPing = new System.Timers.Timer();
 
         private void keymaker_Load(object sender, EventArgs e)
         {
@@ -145,6 +149,36 @@ namespace Keystrokes
             createKeyButton.Text = "Press a key...";
 
             allowKeyCreation = true;
+
+            // configure and start keyPing
+            controllerPing.Elapsed += new ElapsedEventHandler(controllerRefresh);
+            controllerPing.Interval = 1;
+            controllerPing.Enabled = true;
+        }
+
+        private void controllerRefresh(object source, ElapsedEventArgs e)
+        {
+            if (allowKeyCreation == false) return;
+
+            keyData_.keyCode = xinputDetect();
+
+            if (keyData_.keyCode == "") return;
+
+            keyData_.keyText = "";
+            keyData_.isControllerKey = true;
+            controllerPing.Enabled = false;
+            allowKeyCreation = false;
+
+            Invoke((MethodInvoker)delegate
+            {
+                finalizeKeyFields();
+                Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
+
+                key newKey = new key(keyData_);
+                newKey.Show();
+                // add key to child list
+                keys.Add(newKey);
+            });
         }
 
         private void createKeyButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -157,6 +191,30 @@ namespace Keystrokes
             Keys key = (Keys)converter.ConvertFrom(keyCode.ToString());
             string hexValue = ((int)key).ToString("X2");
 
+            keyData_.keyText = keyTextTextbox.Text == "" ? keyCode.ToString() : keyTextTextbox.Text;
+
+            // fix keytext with proper keys
+            for (int i = 0; i < keyTextFixes.Length; i += 2)
+                if (keyData_.keyText == keyTextFixes[i + 1]) keyData_.keyText = keyTextFixes[i];
+
+            keyData_.keyCode = hexValue;
+
+            finalizeKeyFields();
+
+            Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
+
+            // display key with keyData_ settings
+            key newKey = new key(keyData_);
+            newKey.Show();
+            // add key to child list
+            keys.Add(newKey);
+
+            // lock create button
+            allowKeyCreation = false;
+        }
+
+        private void finalizeKeyFields()
+        {
             // restore create button text
             createKeyButton.Text = "Create Key";
             createKeyButton.Font = new Font(createKeyButton.Font.Name, 16, FontStyle.Bold);
@@ -174,14 +232,6 @@ namespace Keystrokes
 
             // send user data to keyData_
             keyData_.presetName = presetNameCombobox.Text;
-
-            keyData_.keyText = keyTextTextbox.Text == "" ? keyCode.ToString() : keyTextTextbox.Text;
-
-            // fix keytext with proper keys
-            for (int i = 0; i < keyTextFixes.Length; i += 2)
-                if (keyData_.keyText == keyTextFixes[i + 1]) keyData_.keyText = keyTextFixes[i];
-
-            keyData_.keyCode = Convert.ToInt32(hexValue, 16);
 
             keyData_.keySizeX = Int32.Parse(keyWidthTextbox.Text);
             keyData_.keySizeY = Int32.Parse(keyHeightTextbox.Text);
@@ -214,17 +264,6 @@ namespace Keystrokes
             keyData_.wiggleMode_biasDown = Int32.Parse(wiggleBiasDownTextbox.Text);
             keyData_.wiggleMode_biasRight = Int32.Parse(wiggleBiasRightTextbox.Text);
             keyData_.wiggleMode_biasLeft = Int32.Parse(wiggleBiasLeftTextbox.Text);
-
-            Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
-
-            // display key with keyData_ settings
-            key newKey = new key(keyData_);
-            newKey.Show();
-            // add key to child list
-            keys.Add(newKey);
-
-            // lock create button
-            allowKeyCreation = false;
         }
 
         private void keyWidthTextbox_TextChanged(object sender, EventArgs e)
@@ -422,9 +461,9 @@ namespace Keystrokes
             ColorDialog colorDialog = new ColorDialog();
             colorDialog.AnyColor = true;
 
-            int r = 0;
-            int g = 0;
-            int b = 0;
+            int r;
+            int g;
+            int b;
 
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
