@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
 
 namespace Keystrokes.Tools
 {
     public static class Numbers
     {
-        public static string VERSION = "v1.4.0";
-
-        public static List<Form> keys = new List<Form>();
-
         public static bool isNumber(string input, string type)
         {
             if (type == "int")

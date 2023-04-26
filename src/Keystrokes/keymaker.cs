@@ -8,8 +8,9 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Keystrokes.Data;
 using static Keystrokes.Data.Fixes;
-using static Keystrokes.Tools.Input;
+using static Keystrokes.Data.Store;
 using static Keystrokes.Tools.Numbers;
+using static Keystrokes.Tools.Input.ControllerInput;
 
 namespace Keystrokes
 {
@@ -160,7 +161,11 @@ namespace Keystrokes
         {
             if (allowKeyCreation == false) return;
 
-            keyData_.keyCode = xinputDetect();
+            keyData_.keyCode = controllerDetect();
+            var joystick_detect = joystickDetect();
+            
+            if (joystick_detect.Item1 == true)
+                keyData_.keyCode = joystick_detect.Item2;
 
             if (keyData_.keyCode == "") return;
 
@@ -198,6 +203,7 @@ namespace Keystrokes
                 if (keyData_.keyText == keyTextFixes[i + 1]) keyData_.keyText = keyTextFixes[i];
 
             keyData_.keyCode = hexValue;
+            keyData_.isControllerKey = false;
 
             finalizeKeyFields();
 

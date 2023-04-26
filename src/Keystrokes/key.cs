@@ -3,13 +3,15 @@ using System.IO;
 using System.Text;
 using System.Timers;
 using System.Drawing;
+using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Media = System.Windows.Media;
 using Keystrokes.Data;
-using static Keystrokes.Tools.Input;
 using static Keystrokes.Tools.Numbers;
+using static Keystrokes.Tools.Input.KeyInput;
+using static Keystrokes.Tools.Input.ControllerInput;
 
 namespace Keystrokes
 {
@@ -100,6 +102,8 @@ namespace Keystrokes
             lockButton.Visible = false;
             snapXTextbox.Visible = false;
             snapYTextbox.Visible = false;
+            controllerVelocityLabel.Visible = false;
+            controllerVelocityPanel.Visible = keyData.isControllerKey == true ? true : false;
 
             // draw over everything
             TopMost = true;
@@ -145,6 +149,12 @@ namespace Keystrokes
             lockButton.Width = 26 * Width / 60;
             lockButton.Height = 26 * Height / 60;
 
+            controllerVelocityPanel.Width = Width;
+            controllerVelocityPanel.Height = Height;
+            controllerVelocityPanel.Location = new Point((Width / 2) - (controllerVelocityPanel.Width / 2), (Height / 2) - (controllerVelocityPanel.Height / 2));
+            controllerVelocityPanel.SendToBack();
+            controllerVelocityPanel.BackColor = Color.Transparent;
+
             lockButton.Location = new Point(lockButton.Left, closeButton.Height);
 
             countLabel.Location = new Point(countLabel.Location.X, Height - 16);
@@ -159,6 +169,9 @@ namespace Keystrokes
 
             snapXTextbox.Location = new Point(closeButton.Width, snapXTextbox.Top);
             snapYTextbox.Location = new Point(closeButton.Width, snapYTextbox.Top);
+
+            // fix flickering issue
+            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, controllerVelocityPanel, new object[] { true });
         }
         // hide in task manager
         protected override CreateParams CreateParams
@@ -166,7 +179,7 @@ namespace Keystrokes
             get
             {
                 var cp = base.CreateParams;
-                cp.ExStyle |= 0x80;  // turn on WS_EX_TOOLWINDOW
+                cp.ExStyle |= 0x80; // turn on WS_EX_TOOLWINDOW
                 return cp;
             }
         }
@@ -181,9 +194,9 @@ namespace Keystrokes
         private void key_Paint(object sender, PaintEventArgs e)
         {
             // draw custom key border
-            int r = keyData.keyColorR - 50 < 0 ? 0 : keyData.keyColorR - 50;
-            int g = keyData.keyColorG - 50 < 0 ? 0 : keyData.keyColorG - 50;
-            int b = keyData.keyColorB - 50 < 0 ? 0 : keyData.keyColorB - 50;
+            int r = keyData.keyColorR / 5;
+            int g = keyData.keyColorG / 5;
+            int b = keyData.keyColorB / 5;
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(255, r, g, b), keyData.keyBorder);
         }
 
@@ -191,6 +204,54 @@ namespace Keystrokes
         bool keyPressed = false;
         private void keyRefresh(object source, ElapsedEventArgs e)
         {
+            if (keyData.keyCode == "CONTROLLER_LEFT_JOYSTICK" || keyData.keyCode == "CONTROLLER_RIGHT_JOYSTICK")
+            {
+                var joystick_state = calculateJoystick(keyData.keyCode);
+                int x = (int)(controllerVelocityPanel.Width / 10 * joystick_state.Item1);
+                int y = (int)(controllerVelocityPanel.Height / 10 * joystick_state.Item2);
+                float rotate = joystick_state.Item3;
+
+                try
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        controllerVelocityLabel.Text = rotate.ToString();
+                        controllerVelocityLabel.Location = new Point(Width - controllerVelocityLabel.Width, Height - controllerVelocityLabel.Height);
+                    });
+                }
+                catch { }
+
+                Bitmap bmp = new Bitmap(controllerVelocityPanel.Width, controllerVelocityPanel.Height);
+
+                float size = 1.0f;
+                float size2 = 0.5f;
+
+                size = 1.25f / size;
+                size2 = 2.5f / (size2 * 2);
+
+                using (Graphics graphics = Graphics.FromImage(bmp))
+                {
+                    SolidBrush brush = new SolidBrush(Color.FromArgb(100, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB));
+                    int x_loc = (controllerVelocityPanel.Width / 2) - (int)(controllerVelocityPanel.Width / (size * 2));
+                    int y_loc = (controllerVelocityPanel.Height / 2) - (int)(controllerVelocityPanel.Height / (size * 2));
+                    graphics.FillEllipse(brush, new Rectangle(x_loc, y_loc, (int)(controllerVelocityPanel.Width / size), (int)(controllerVelocityPanel.Height / size)));
+
+                    x_loc = x + controllerVelocityPanel.Width / 2 - (int)(controllerVelocityPanel.Width / (size2 * 2));
+                    y_loc = y + controllerVelocityPanel.Height / 2 - (int)(controllerVelocityPanel.Height / (size2 * 2));
+
+                    SolidBrush brush2 = new SolidBrush(Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB));
+                    graphics.FillEllipse(brush2, new Rectangle(x_loc, y_loc, (int)(controllerVelocityPanel.Width / size2), (int)(controllerVelocityPanel.Height / size2)));
+                }
+
+                try
+                {
+                    controllerVelocityPanel.BackgroundImage = bmp;
+                }
+                catch { }
+                controllerVelocityPanel.BackgroundImageLayout = ImageLayout.None;
+
+                return;
+            }
             // check for user key input
             if (keyDetect(keyData.keyCode, keyData.isControllerKey) == true)
             {
@@ -431,6 +492,11 @@ namespace Keystrokes
                 snapYTextbox.Visible = true;
             else
                 snapYTextbox.Visible = false;
+
+            if (controllerVelocityLabel.Visible == false)
+                controllerVelocityLabel.Visible = true;
+            else
+                controllerVelocityLabel.Visible = false;
         }
 
         private void key_FormClosing(object sender, FormClosingEventArgs e)
@@ -461,6 +527,16 @@ namespace Keystrokes
         }
 
         private void countLabel_MouseDown(object sender, MouseEventArgs e)
+        {
+            moveKey(e);
+        }
+
+        private void controllerVelocityPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            moveKey(e);
+        }
+
+        private void controllerVelocityLabel_MouseDown(object sender, MouseEventArgs e)
         {
             moveKey(e);
         }

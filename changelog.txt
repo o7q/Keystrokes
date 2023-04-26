@@ -1,3 +1,6 @@
+~ v1.5.0.0
+- Added controller support
+
 ~ v1.4.0.0
 - Improved the save/load system
 - Fixed the count label text being uncolored

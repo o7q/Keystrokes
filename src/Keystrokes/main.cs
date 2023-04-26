@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Keystrokes.Data;
-using static Keystrokes.Tools.Numbers;
+using static Keystrokes.Data.Store;
 
 namespace Keystrokes
 {
@@ -61,6 +61,12 @@ namespace Keystrokes
             mainTooltip.OwnerDraw = true;
             mainTooltip.BackColor = Color.FromArgb(20, 20, 20);
             mainTooltip.ForeColor = Color.FromArgb(150, 150, 150);
+
+
+
+
+ 
+            
         }
 
         private void mainTooltip_Draw(object sender, DrawToolTipEventArgs e)

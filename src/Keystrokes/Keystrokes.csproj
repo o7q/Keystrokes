@@ -52,8 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="includes\data\fixes.cs" />
+    <Compile Include="includes\data\store.cs" />
+    <Compile Include="includes\tools\input\controllerinput\controllerinput.cs" />
+    <Compile Include="includes\tools\input\controllerinput\xinput.cs" />
     <Compile Include="includes\tools\numbers.cs" />
-    <Compile Include="includes\tools\input.cs" />
+    <Compile Include="includes\tools\input\keyinput.cs" />
     <Compile Include="key.cs">
       <SubType>Form</SubType>
     </Compile>
