@@ -37,9 +37,9 @@
             this.keyTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.lockButton = new System.Windows.Forms.Button();
             this.countLabel = new System.Windows.Forms.Label();
-            this.controllerVelocityPanel = new System.Windows.Forms.Panel();
-            this.controllerVelocityLabel = new System.Windows.Forms.Label();
-            this.controllerVelocityPanel.SuspendLayout();
+            this.controllerPanel = new System.Windows.Forms.Panel();
+            this.controllerDebugLabel = new System.Windows.Forms.Label();
+            this.controllerPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // keyLabel
@@ -120,28 +120,28 @@
             this.countLabel.Text = "0";
             this.countLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.countLabel_MouseDown);
             // 
-            // controllerVelocityPanel
+            // controllerPanel
             // 
-            this.controllerVelocityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.controllerVelocityPanel.Controls.Add(this.controllerVelocityLabel);
-            this.controllerVelocityPanel.Location = new System.Drawing.Point(63, -4);
-            this.controllerVelocityPanel.Name = "controllerVelocityPanel";
-            this.controllerVelocityPanel.Size = new System.Drawing.Size(43, 44);
-            this.controllerVelocityPanel.TabIndex = 4;
-            this.controllerVelocityPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.controllerVelocityPanel_MouseDown);
+            this.controllerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.controllerPanel.Controls.Add(this.controllerDebugLabel);
+            this.controllerPanel.Location = new System.Drawing.Point(63, -4);
+            this.controllerPanel.Name = "controllerPanel";
+            this.controllerPanel.Size = new System.Drawing.Size(43, 44);
+            this.controllerPanel.TabIndex = 4;
+            this.controllerPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.controllerPanel_MouseDown);
             // 
-            // controllerVelocityLabel
+            // controllerDebugLabel
             // 
-            this.controllerVelocityLabel.AutoSize = true;
-            this.controllerVelocityLabel.BackColor = System.Drawing.Color.Transparent;
-            this.controllerVelocityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.controllerVelocityLabel.ForeColor = System.Drawing.Color.White;
-            this.controllerVelocityLabel.Location = new System.Drawing.Point(1, 27);
-            this.controllerVelocityLabel.Name = "controllerVelocityLabel";
-            this.controllerVelocityLabel.Size = new System.Drawing.Size(14, 16);
-            this.controllerVelocityLabel.TabIndex = 0;
-            this.controllerVelocityLabel.Text = "θ";
-            this.controllerVelocityLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.controllerVelocityLabel_MouseDown);
+            this.controllerDebugLabel.AutoSize = true;
+            this.controllerDebugLabel.BackColor = System.Drawing.Color.Transparent;
+            this.controllerDebugLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.controllerDebugLabel.ForeColor = System.Drawing.Color.White;
+            this.controllerDebugLabel.Location = new System.Drawing.Point(1, 27);
+            this.controllerDebugLabel.Name = "controllerDebugLabel";
+            this.controllerDebugLabel.Size = new System.Drawing.Size(14, 16);
+            this.controllerDebugLabel.TabIndex = 0;
+            this.controllerDebugLabel.Text = "θ";
+            this.controllerDebugLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.controllerDebugLabel_MouseDown);
             // 
             // key
             // 
@@ -149,7 +149,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(100, 100);
-            this.Controls.Add(this.controllerVelocityPanel);
+            this.Controls.Add(this.controllerPanel);
             this.Controls.Add(this.countLabel);
             this.Controls.Add(this.lockButton);
             this.Controls.Add(this.snapYTextbox);
@@ -168,8 +168,8 @@
             this.Load += new System.EventHandler(this.key_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.key_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.key_MouseDown);
-            this.controllerVelocityPanel.ResumeLayout(false);
-            this.controllerVelocityPanel.PerformLayout();
+            this.controllerPanel.ResumeLayout(false);
+            this.controllerPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -184,7 +184,7 @@
         private System.Windows.Forms.ToolTip keyTooltip;
         private System.Windows.Forms.Button lockButton;
         private System.Windows.Forms.Label countLabel;
-        private System.Windows.Forms.Panel controllerVelocityPanel;
-        private System.Windows.Forms.Label controllerVelocityLabel;
+        private System.Windows.Forms.Panel controllerPanel;
+        private System.Windows.Forms.Label controllerDebugLabel;
     }
 }

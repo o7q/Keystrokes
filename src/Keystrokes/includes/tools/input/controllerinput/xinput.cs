@@ -4,14 +4,14 @@ namespace Keystrokes.Tools.Input
 {
     public static class XInput
     {
-        // Define XInput constants and structures
+        // define xinput constants
         public static class XInputConstants
         {
             public const int ERROR_SUCCESS = 0;
             public const int ERROR_DEVICE_NOT_CONNECTED = 1167;
         }
 
-        // Define XInput functions
+        // define xinput get state function signature
         [DllImport("xinput1_4.dll", EntryPoint = "XInputGetState")]
         public static extern int XInputGetState(int dwUserIndex, ref XInputState pState);
 
@@ -26,33 +26,31 @@ namespace Keystrokes.Tools.Input
         public struct XInputGamepad
         {
             public ushort Buttons;
-/*            public byte LeftTrigger;
-            public byte RightTrigger;*/
+            public byte LeftTrigger;
+            public byte RightTrigger;
             public short ThumbLX;
             public short ThumbLY;
             public short ThumbRX;
             public short ThumbRY;
         }
 
-
-        // Define XInputGetState function signature
+        #region XINPUT_ANALOG
+        // define xinput get analog state analog function signature
         [DllImport("xinput1_4.dll", EntryPoint = "XInputGetState")]
-        public static extern uint XInputGetState_PRESSURE(int dwUserIndex, ref XInputState_PRESSURE pState);
+        public static extern uint XInputGetAnalogState(int dwUserIndex, ref XInputAnalogState pState);
 
-        // Define XINPUT_STATE structure
+        // define structure
         [StructLayout(LayoutKind.Sequential)]
-        public struct XInputState_PRESSURE
+        public struct XInputAnalogState
         {
             public uint dwPacketNumber;
-            public XInputGamepad_PRESSURE Gamepad;
+            public XInputAnalogGamepad Gamepad;
         }
 
-        // Define XINPUT_GAMEPAD structure
+        // define xinput gamepad analog structure
         [StructLayout(LayoutKind.Explicit)]
-        public struct XInputGamepad_PRESSURE
+        public struct XInputAnalogGamepad
         {
-/*            [FieldOffset(0)]
-            public ushort wButtons;*/
             [FieldOffset(2)]
             public byte XINPUT_GAMEPAD_LEFT_TRIGGER;
             [FieldOffset(3)]
@@ -66,10 +64,11 @@ namespace Keystrokes.Tools.Input
             [FieldOffset(10)]
             public short XINPUT_GAMEPAD_RIGHT_THUMB_Y;
         }
+        #endregion
 
-        // Initialize XInput variables
-        public static int playerIndex = 0;
-        public static XInputState state = new XInputState();
+        // initialize xinput variables
+        public static int controllerIndex = 0;
+        public static XInputState controllerState = new XInputState();
 
         public const ushort XINPUT_GAMEPAD_DPAD_UP = 0x0001;
         public const ushort XINPUT_GAMEPAD_DPAD_DOWN = 0x0002;
@@ -79,10 +78,10 @@ namespace Keystrokes.Tools.Input
         public const ushort XINPUT_GAMEPAD_B = 0x2000;
         public const ushort XINPUT_GAMEPAD_X = 0x4000;
         public const ushort XINPUT_GAMEPAD_Y = 0x8000;
-        public const ushort XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
-        public const ushort XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
         public const ushort XINPUT_GAMEPAD_LEFT_SHOULDER = 0x0100;
         public const ushort XINPUT_GAMEPAD_LEFT_THUMB = 0x0040;
+        public const ushort XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
+        public const ushort XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
         public const ushort XINPUT_GAMEPAD_START = 0x0010;
         public const ushort XINPUT_GAMEPAD_BACK = 0x0020;
     }

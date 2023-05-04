@@ -86,6 +86,7 @@
             this.keyTextLabel = new System.Windows.Forms.Label();
             this.soundVolumeTextbox = new System.Windows.Forms.TextBox();
             this.soundPressedVolumeTextbox = new System.Windows.Forms.TextBox();
+            this.useTransparentBackgroundCheckbox = new System.Windows.Forms.CheckBox();
             this.titlebarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bannerPicture)).BeginInit();
             this.keyPreviewPanel.SuspendLayout();
@@ -762,12 +763,24 @@
             this.soundPressedVolumeTextbox.TabIndex = 20;
             this.soundPressedVolumeTextbox.Text = "50";
             // 
+            // useTransparentBackgroundCheckbox
+            // 
+            this.useTransparentBackgroundCheckbox.AutoSize = true;
+            this.useTransparentBackgroundCheckbox.Location = new System.Drawing.Point(56, 242);
+            this.useTransparentBackgroundCheckbox.Name = "useTransparentBackgroundCheckbox";
+            this.useTransparentBackgroundCheckbox.Size = new System.Drawing.Size(80, 17);
+            this.useTransparentBackgroundCheckbox.TabIndex = 27;
+            this.useTransparentBackgroundCheckbox.Text = "checkBox1";
+            this.useTransparentBackgroundCheckbox.UseVisualStyleBackColor = true;
+            this.useTransparentBackgroundCheckbox.CheckedChanged += new System.EventHandler(this.useTransparentBackgroundCheckbox_CheckedChanged);
+            // 
             // keymaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(32)))), ((int)(((byte)(30)))));
             this.ClientSize = new System.Drawing.Size(236, 351);
+            this.Controls.Add(this.useTransparentBackgroundCheckbox);
             this.Controls.Add(this.soundPressedVolumeTextbox);
             this.Controls.Add(this.soundVolumeTextbox);
             this.Controls.Add(this.keyTextLabel);
@@ -891,5 +904,6 @@
         private System.Windows.Forms.Label keyTextLabel;
         private System.Windows.Forms.TextBox soundVolumeTextbox;
         private System.Windows.Forms.TextBox soundPressedVolumeTextbox;
+        private System.Windows.Forms.CheckBox useTransparentBackgroundCheckbox;
     }
 }

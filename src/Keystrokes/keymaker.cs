@@ -159,17 +159,20 @@ namespace Keystrokes
 
         private void controllerRefresh(object source, ElapsedEventArgs e)
         {
-            if (allowKeyCreation == false) return;
+            if (allowKeyCreation == false)
+                return;
 
-            keyData_.keyCode = controllerDetect();
-            var joystick_detect = joystickDetect();
-            
-            if (joystick_detect.Item1 == true)
-                keyData_.keyCode = joystick_detect.Item2;
+            var controller_detect = controllerDetect();
+            keyData_.keyCode = controller_detect.Item1;
+            keyData_.keyText = controller_detect.Item2;
 
-            if (keyData_.keyCode == "") return;
+            var trigger_detect = triggerDetect();
+            if (trigger_detect.Item1 == true)
+                keyData_.keyCode = trigger_detect.Item2;
 
-            keyData_.keyText = "";
+            if (keyData_.keyCode == "")
+                return;
+
             keyData_.isControllerKey = true;
             controllerPing.Enabled = false;
             allowKeyCreation = false;
@@ -189,7 +192,8 @@ namespace Keystrokes
         private void createKeyButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             // prevent user from making a new key if the create button was not pressed
-            if (allowKeyCreation == false) return;
+            if (allowKeyCreation == false)
+                return;
 
             Keys keyCode = e.KeyCode;
             KeysConverter converter = new KeysConverter();
@@ -200,7 +204,8 @@ namespace Keystrokes
 
             // fix keytext with proper keys
             for (int i = 0; i < keyTextFixes.Length; i += 2)
-                if (keyData_.keyText == keyTextFixes[i + 1]) keyData_.keyText = keyTextFixes[i];
+                if (keyData_.keyText == keyTextFixes[i + 1])
+                    keyData_.keyText = keyTextFixes[i];
 
             keyData_.keyCode = hexValue;
             keyData_.isControllerKey = false;
@@ -233,16 +238,16 @@ namespace Keystrokes
             if (isNumber(wiggleAmountTextbox.Text, "int") == false) keyWidthTextbox.Text = "2";
             if (isNumber(wiggleBiasUpTextbox.Text, "int") == false) wiggleBiasUpTextbox.Text = "0";
             if (isNumber(wiggleBiasDownTextbox.Text, "int") == false) wiggleBiasDownTextbox.Text = "0";
-            if (isNumber(wiggleBiasRightTextbox.Text, "int") == false) wiggleBiasRightTextbox.Text = "0";
             if (isNumber(wiggleBiasLeftTextbox.Text, "int") == false) wiggleBiasLeftTextbox.Text = "0";
+            if (isNumber(wiggleBiasRightTextbox.Text, "int") == false) wiggleBiasRightTextbox.Text = "0";
 
             // send user data to keyData_
             keyData_.presetName = presetNameCombobox.Text;
 
-            keyData_.keySizeX = Int32.Parse(keyWidthTextbox.Text);
-            keyData_.keySizeY = Int32.Parse(keyHeightTextbox.Text);
+            keyData_.keySizeX = int.Parse(keyWidthTextbox.Text);
+            keyData_.keySizeY = int.Parse(keyHeightTextbox.Text);
 
-            keyData_.fontSize = Int32.Parse(fontSizeTextbox.Text);
+            keyData_.fontSize = keyData_.isControllerKey == true ? int.Parse(fontSizeTextbox.Text) + 10 : int.Parse(fontSizeTextbox.Text);
             keyData_.showText = showTextCheckbox.Checked;
 
             keyData_.keyColorPressedInvert = keyColorPressedInvertCheckbox.Checked;
@@ -253,32 +258,36 @@ namespace Keystrokes
             keyData_.soundVolume = float.Parse(soundVolumeTextbox.Text) / 100;
             keyData_.soundPressedVolume = float.Parse(soundPressedVolumeTextbox.Text) / 100;
 
-            switch (keyBorderCombobox.SelectedIndex)
+            switch (keyBorderCombobox.Text)
             {
-                case 0: keyData_.keyBorder = ButtonBorderStyle.Solid; break;
-                case 1: keyData_.keyBorder = ButtonBorderStyle.Inset; break;
-                case 2: keyData_.keyBorder = ButtonBorderStyle.Outset; break;
-                case 3: keyData_.keyBorder = ButtonBorderStyle.Dashed; break;
-                case 4: keyData_.keyBorder = ButtonBorderStyle.None; break;
+                case "Solid": keyData_.keyBorder = ButtonBorderStyle.Solid; break;
+                case "Inset": keyData_.keyBorder = ButtonBorderStyle.Inset; break;
+                case "Outset": keyData_.keyBorder = ButtonBorderStyle.Outset; break;
+                case "Dashed": keyData_.keyBorder = ButtonBorderStyle.Dashed; break;
+                case "None": keyData_.keyBorder = ButtonBorderStyle.None; break;
             }
+
+            if (keyData_.useTransparentBackground == true)
+                keyData_.keyBorder = ButtonBorderStyle.None;
 
             keyData_.USE_KEY_COUNT = useKeyCountCheckbox.Checked;
 
             keyData_.wiggleMode = wiggleModeCheckbox.Checked == true ? true : false;
-            keyData_.wiggleMode_wiggleAmount = Int32.Parse(wiggleAmountTextbox.Text);
-            keyData_.wiggleMode_biasUp = Int32.Parse(wiggleBiasUpTextbox.Text);
-            keyData_.wiggleMode_biasDown = Int32.Parse(wiggleBiasDownTextbox.Text);
-            keyData_.wiggleMode_biasRight = Int32.Parse(wiggleBiasRightTextbox.Text);
-            keyData_.wiggleMode_biasLeft = Int32.Parse(wiggleBiasLeftTextbox.Text);
+            keyData_.wiggleMode_wiggleAmount = int.Parse(wiggleAmountTextbox.Text);
+            keyData_.wiggleMode_biasUp = int.Parse(wiggleBiasUpTextbox.Text);
+            keyData_.wiggleMode_biasDown = int.Parse(wiggleBiasDownTextbox.Text);
+            keyData_.wiggleMode_biasLeft = int.Parse(wiggleBiasLeftTextbox.Text);
+            keyData_.wiggleMode_biasRight = int.Parse(wiggleBiasRightTextbox.Text);
         }
 
         private void keyWidthTextbox_TextChanged(object sender, EventArgs e)
         {
             // is data a number? if not, return
-            if (isNumber(keyWidthTextbox.Text, "int") == false) return;
+            if (isNumber(keyWidthTextbox.Text, "int") == false)
+                return;
 
             // update key preview
-            keyPreviewPanel.Width = Int32.Parse(keyWidthTextbox.Text);
+            keyPreviewPanel.Width = int.Parse(keyWidthTextbox.Text);
             formatKeyPreview();
 
             // resize form to fit key preview
@@ -288,10 +297,11 @@ namespace Keystrokes
         private void keyHeightTextbox_TextChanged(object sender, EventArgs e)
         {
             // is data a number? if not, return
-            if (isNumber(keyHeightTextbox.Text, "int") == false) return;
+            if (isNumber(keyHeightTextbox.Text, "int") == false)
+                return;
 
             // update key preview
-            keyPreviewPanel.Height = Int32.Parse(keyHeightTextbox.Text);
+            keyPreviewPanel.Height = int.Parse(keyHeightTextbox.Text);
             formatKeyPreview();
 
             // resize form to fit key preview
@@ -301,10 +311,11 @@ namespace Keystrokes
         private void fontSizeTextbox_TextChanged(object sender, EventArgs e)
         {
             // is data a number? if not, return
-            if (isNumber(fontSizeTextbox.Text, "int") == false) return;
+            if (isNumber(fontSizeTextbox.Text, "int") == false)
+                return;
 
             // update key preview
-            keyPreviewTextLabel.Font = new Font(keyPreviewTextLabel.Font.Name, Int32.Parse(fontSizeTextbox.Text));
+            keyPreviewTextLabel.Font = new Font(keyPreviewTextLabel.Font.Name, int.Parse(fontSizeTextbox.Text));
             formatKeyPreview();
         }
 
@@ -317,7 +328,8 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
-            if (rgb == null) return;
+            if (rgb == null)
+                return;
 
             // split r, g, b values
             keyData_.keyColorR = rgb.Item1;
@@ -333,7 +345,8 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
-            if (rgb == null) return;
+            if (rgb == null)
+                return;
 
             // split r, g, b values
             keyData_.keyTextColorR = rgb.Item1;
@@ -350,7 +363,8 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
-            if (rgb == null) return;
+            if (rgb == null)
+                return;
 
             // split r, g, b values
             keyData_.keyColorPressedR = rgb.Item1;
@@ -365,7 +379,8 @@ namespace Keystrokes
         {
             // open new color dialog
             var rgb = openColorDialog();
-            if (rgb == null) return;
+            if (rgb == null)
+                return;
 
             // split r, g, b values
             keyData_.keyTextColorPressedR = rgb.Item1;
@@ -380,7 +395,8 @@ namespace Keystrokes
         {
             keyData_.keyBackgroundImage = prepareImageDialog();
 
-            if (keyData_.keyBackgroundImage == "" || presetNameCombobox.Text == "") return;
+            if (keyData_.keyBackgroundImage == "" || presetNameCombobox.Text == "")
+                return;
 
             Image backgroundImage = Image.FromFile(keyData_.keyBackgroundImage);
             keyPreviewPanel.BackgroundImage = backgroundImage;
@@ -402,7 +418,8 @@ namespace Keystrokes
         {
             keyData_.keyBackgroundImagePressed = prepareImageDialog();
 
-            if (keyData_.keyBackgroundImagePressed == "") return;
+            if (keyData_.keyBackgroundImagePressed == "")
+                return;
             imagePressedDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
@@ -417,7 +434,8 @@ namespace Keystrokes
         {
             keyData_.sound = prepareAudioDialog();
 
-            if (keyData_.sound == "") return;
+            if (keyData_.sound == "")
+                return;
             soundDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
@@ -432,7 +450,8 @@ namespace Keystrokes
         {
             keyData_.soundPressed = prepareAudioDialog();
 
-            if (keyData_.soundPressed == "") return;
+            if (keyData_.soundPressed == "")
+                return;
             soundPressedDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
@@ -537,8 +556,10 @@ namespace Keystrokes
 
         private void resizeForm()
         {
-            if (form_SizeX + keyPreviewPanel.Width - 60 < form_SizeX) return;
-            if (form_SizeY + keyPreviewPanel.Height - 60 < form_SizeY) return;
+            if (form_SizeX + keyPreviewPanel.Width - 60 < form_SizeX)
+                return;
+            if (form_SizeY + keyPreviewPanel.Height - 60 < form_SizeY)
+                return;
 
             Size = new Size(form_SizeX + keyPreviewPanel.Width - 60, form_SizeY + keyPreviewPanel.Height - 60);
             titlebarPanel.Size = new Size(titlebarPanel_SizeX + keyPreviewPanel.Width - 60, titlebarPanel_SizeY);
@@ -566,8 +587,14 @@ namespace Keystrokes
         private void keyTextTextbox_TextChanged(object sender, EventArgs e)
         {
             keyPreviewTextLabel.Text = keyTextTextbox.Text;
-            if (keyTextTextbox.Text == "") keyPreviewTextLabel.Text = "A";
+            if (keyTextTextbox.Text == "")
+                keyPreviewTextLabel.Text = "A";
             formatKeyPreview();
+        }
+
+        private void useTransparentBackgroundCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            keyData_.useTransparentBackground = useTransparentBackgroundCheckbox.Checked;
         }
     }
 }

@@ -22,20 +22,22 @@ namespace Keystrokes.Tools.Input
                 case "CONTROLLER_B": key = XINPUT_GAMEPAD_B; break;
                 case "CONTROLLER_X": key = XINPUT_GAMEPAD_X; break;
                 case "CONTROLLER_Y": key = XINPUT_GAMEPAD_Y; break;
-                case "CONTROLLER_RIGHT_SHOULDER": key = XINPUT_GAMEPAD_RIGHT_SHOULDER; break;
-                case "CONTROLLER_RIGHT_THUMB": key = XINPUT_GAMEPAD_RIGHT_THUMB; break;
                 case "CONTROLLER_LEFT_SHOULDER": key = XINPUT_GAMEPAD_LEFT_SHOULDER; break;
-                case "CONTROLLER_LEFT_THUMB": key = XINPUT_GAMEPAD_LEFT_THUMB; break;
+                case "CONTROLLER_RIGHT_SHOULDER": key = XINPUT_GAMEPAD_RIGHT_SHOULDER; break;
                 case "CONTROLLER_START": key = XINPUT_GAMEPAD_START; break;
                 case "CONTROLLER_BACK": key = XINPUT_GAMEPAD_BACK; break;
+
+                case "CONTROLLER_LEFT_JOYSTICK": key = XINPUT_GAMEPAD_LEFT_THUMB; break;
+                case "CONTROLLER_RIGHT_JOYSTICK": key = XINPUT_GAMEPAD_RIGHT_THUMB; break;
             }
 
             // Check for button press
-            if (XInputGetState(playerIndex, ref state) == XInputConstants.ERROR_SUCCESS)
-                if ((state.Gamepad.Buttons & key) != 0)
+            if (XInputGetState(controllerIndex, ref controllerState) == XInputConstants.ERROR_SUCCESS)
+                if ((controllerState.Gamepad.Buttons & key) != 0)
                     return true;
 
-            if (isController == true) return false;
+            if (isController == true)
+                return false;
 
             short keyState = GetAsyncKeyState(Convert.ToInt32(key_string, 16));
             bool keyPressed = ((keyState >> 15) & 0x0001) == 0x0001;

@@ -61,12 +61,6 @@ namespace Keystrokes
             mainTooltip.OwnerDraw = true;
             mainTooltip.BackColor = Color.FromArgb(20, 20, 20);
             mainTooltip.ForeColor = Color.FromArgb(150, 150, 150);
-
-
-
-
- 
-            
         }
 
         private void mainTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -92,7 +86,7 @@ namespace Keystrokes
 
                 for (int i = 0; i < keySetting.Length; i++)
                 {
-                    string[] keySettingPair = keySetting[i].Split('=');
+                    string[] keySettingPair = keySetting[i].Split('¶');
 
                     try
                     {
@@ -132,6 +126,11 @@ namespace Keystrokes
 
                             case "keyOpacity": keyData_.keyOpacity = float.Parse(keySettingPair[1]); break;
 
+                            case "useTransparentBackground": keyData_.useTransparentBackground = bool.Parse(keySettingPair[1]); break;
+                            case "transparencyKeyR": keyData_.transparencyKeyR = int.Parse(keySettingPair[1]); break;
+                            case "transparencyKeyG": keyData_.transparencyKeyG = int.Parse(keySettingPair[1]); break;
+                            case "transparencyKeyB": keyData_.transparencyKeyB = int.Parse(keySettingPair[1]); break;
+
                             case "keyBackgroundImage": keyData_.keyBackgroundImage = keySettingPair[1]; break;
                             case "keyBackgroundImagePressed": keyData_.keyBackgroundImagePressed = keySettingPair[1]; break;
 
@@ -160,14 +159,15 @@ namespace Keystrokes
                             case "wiggleMode_wiggleAmount": keyData_.wiggleMode_wiggleAmount = int.Parse(keySettingPair[1]); break;
                             case "wiggleMode_biasUp": keyData_.wiggleMode_biasUp = int.Parse(keySettingPair[1]); break;
                             case "wiggleMode_biasDown": keyData_.wiggleMode_biasDown = int.Parse(keySettingPair[1]); break;
-                            case "wiggleMode_biasRight": keyData_.wiggleMode_biasRight = int.Parse(keySettingPair[1]); break;
                             case "wiggleMode_biasLeft": keyData_.wiggleMode_biasLeft = int.Parse(keySettingPair[1]); break;
+                            case "wiggleMode_biasRight": keyData_.wiggleMode_biasRight = int.Parse(keySettingPair[1]); break;
                         }
                     }
                     catch (Exception ex)
                     {
                         DialogResult prompt = MessageBox.Show("Unable to load key: " + name + "\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
-                        if (prompt == DialogResult.Cancel) return;
+                        if (prompt == DialogResult.Cancel)
+                            return;
                         continue;
                     }
                 }
@@ -190,7 +190,8 @@ namespace Keystrokes
         private void deletePresetButton_Click(object sender, EventArgs e)
         {
             // do any presets exist? if not, return
-            if (Directory.GetDirectories("Keystrokes\\presets").Length == 0) return;
+            if (Directory.GetDirectories("Keystrokes\\presets").Length == 0)
+                return;
 
             // delete selected preset
             try { Directory.Delete("Keystrokes\\presets\\" + presetListbox.SelectedItem, true); } catch { }
@@ -202,7 +203,8 @@ namespace Keystrokes
             // prevent multiple editors from being opened
             FormCollection allForms = Application.OpenForms;
             foreach (Form form in allForms)
-                if (form.Name == "keymaker") return;
+                if (form.Name == "keymaker")
+                    return;
 
             // open key editor
             keymaker keyEditor = new keymaker();
@@ -233,7 +235,8 @@ namespace Keystrokes
                 presetListbox.Items.Add(Path.GetFileName(file));
 
             // set selectedindex to 0 if there is at least 1 preset
-            if (presetListbox.Items.Count >= 1 == true) presetListbox.SelectedIndex = 0;
+            if (presetListbox.Items.Count >= 1 == true)
+                presetListbox.SelectedIndex = 0;
         }
 
         private void keymakerFormClosed(object sender, FormClosedEventArgs e)

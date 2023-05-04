@@ -5,15 +5,54 @@ namespace Keystrokes.Tools.Input
 {
     public static class ControllerInput
     {
-        public static Tuple<float, float, float> calculateJoystick(string joystick)
+        public static Tuple<string, string> controllerDetect()
         {
-            XInputState_PRESSURE state = new XInputState_PRESSURE();
-            XInputGetState_PRESSURE(playerIndex, ref state);
+            if (XInputGetState(controllerIndex, ref controllerState) == XInputConstants.ERROR_SUCCESS)
+            {
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_UP) != 0) return Tuple.Create("CONTROLLER_UP", "┴");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_DOWN) != 0) return Tuple.Create("CONTROLLER_DOWN", "┬");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_LEFT) != 0) return Tuple.Create("CONTROLLER_LEFT", "┤");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0) return Tuple.Create("CONTROLLER_RIGHT", "├");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_A) != 0) return Tuple.Create("CONTROLLER_A", "Ⓐ");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_B) != 0) return Tuple.Create("CONTROLLER_B", "Ⓑ");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_X) != 0) return Tuple.Create("CONTROLLER_X", "ⓧ");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_Y) != 0) return Tuple.Create("CONTROLLER_Y", "Ⓨ");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_START) != 0) return Tuple.Create("CONTROLLER_START", "≡");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_BACK) != 0) return Tuple.Create("CONTROLLER_BACK", "◰");
+
+                // joystick
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_LEFT_THUMB) != 0) return Tuple.Create("CONTROLLER_LEFT_JOYSTICK", "");
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_RIGHT_THUMB) != 0) return Tuple.Create("CONTROLLER_RIGHT_JOYSTICK", "");
+            }
+
+            return Tuple.Create("", "");
+        }
+
+        public static Tuple<bool, string> triggerDetect()
+        {
+            XInputAnalogState state = new XInputAnalogState();
+            XInputGetAnalogState(controllerIndex, ref state);
+
+            int trigger_left = state.Gamepad.XINPUT_GAMEPAD_LEFT_TRIGGER;
+            int trigger_right = state.Gamepad.XINPUT_GAMEPAD_RIGHT_TRIGGER;
+
+            if (trigger_left > 150)
+                return Tuple.Create(true, "CONTROLLER_LEFT_TRIGGER");
+            if (trigger_right > 150)
+                return Tuple.Create(true, "CONTROLLER_RIGHT_TRIGGER");
+
+            return Tuple.Create(false, "");
+        }
+
+        public static Tuple<float, float, float> calculateJoystick(string joystickKey)
+        {
+            XInputAnalogState state = new XInputAnalogState();
+            XInputGetAnalogState(controllerIndex, ref state);
 
             float joystickX = 0;
             float joystickY = 0;
 
-            switch (joystick)
+            switch (joystickKey)
             {
                 case "CONTROLLER_LEFT_JOYSTICK":
                     joystickX = state.Gamepad.XINPUT_GAMEPAD_LEFT_THUMB_X;
@@ -35,49 +74,24 @@ namespace Keystrokes.Tools.Input
             return Tuple.Create((float)joystickX_normal, (float)-joystickY_normal, (float)degrees);
         }
 
-        public static Tuple<bool, string> joystickDetect()
+        public static float calculateTrigger(string triggerKey)
         {
-            XInputState_PRESSURE state = new XInputState_PRESSURE();
-            XInputGetState_PRESSURE(playerIndex, ref state);
+            XInputAnalogState state = new XInputAnalogState();
+            XInputGetAnalogState(controllerIndex, ref state);
 
-            float joystick_leftX = state.Gamepad.XINPUT_GAMEPAD_LEFT_THUMB_X;
-            float joystick_leftY = state.Gamepad.XINPUT_GAMEPAD_LEFT_THUMB_Y;
-            double joystick_leftX_normal = joystick_leftX / 32768;
-            double joystick_leftY_normal = joystick_leftY / 32768;
+            float trigger = 0;
 
-            float joystick_rightX = state.Gamepad.XINPUT_GAMEPAD_RIGHT_THUMB_X;
-            float joystick_rightY = state.Gamepad.XINPUT_GAMEPAD_RIGHT_THUMB_Y;
-            double joystick_rightX_normal = joystick_rightX / 32768;
-            double joystick_rightY_normal = joystick_rightY / 32768;
-
-            if (joystick_leftX_normal > 0.75 || joystick_leftY_normal > 0.75 || joystick_leftX_normal < -0.75 || joystick_leftY_normal < -0.75)
-                return Tuple.Create(true, "CONTROLLER_LEFT_JOYSTICK");
-            if (joystick_rightX_normal > 0.75 || joystick_rightY_normal > 0.75 || joystick_rightX_normal < -0.75 || joystick_rightY_normal < -0.75)
-                return Tuple.Create(true, "CONTROLLER_RIGHT_JOYSTICK");
-            return Tuple.Create(false, "");
-        }
-
-        public static string controllerDetect()
-        {
-            if (XInputGetState(playerIndex, ref state) == XInputConstants.ERROR_SUCCESS)
+            switch (triggerKey)
             {
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_UP) != 0) return "CONTROLLER_UP";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_DOWN) != 0) return "CONTROLLER_DOWN";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_LEFT) != 0) return "CONTROLLER_LEFT";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0) return "CONTROLLER_RIGHT";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_A) != 0) return "CONTROLLER_A";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_B) != 0) return "CONTROLLER_B";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_X) != 0) return "CONTROLLER_X";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_Y) != 0) return "CONTROLLER_Y";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_RIGHT_SHOULDER) != 0) return "CONTROLLER_RIGHT_SHOULDER";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_RIGHT_THUMB) != 0) return "CONTROLLER_RIGHT_THUMB";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_LEFT_SHOULDER) != 0) return "CONTROLLER_LEFT_SHOULDER";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_LEFT_THUMB) != 0) return "CONTROLLER_LEFT_THUMB";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_START) != 0) return "CONTROLLER_START";
-                if ((state.Gamepad.Buttons & XINPUT_GAMEPAD_BACK) != 0) return "CONTROLLER_BACK";
+                case "CONTROLLER_LEFT_TRIGGER":
+                    trigger = state.Gamepad.XINPUT_GAMEPAD_LEFT_TRIGGER;
+                    break;
+                case "CONTROLLER_RIGHT_TRIGGER":
+                    trigger = state.Gamepad.XINPUT_GAMEPAD_RIGHT_TRIGGER;
+                    break;
             }
 
-            return "";
+            return trigger / 255;
         }
     }
 }

@@ -1,5 +1,6 @@
 ~ v1.5.0.0
 - Added controller support
+- Added an option to make the background transparent
 
 ~ v1.4.0.0
 - Improved the save/load system

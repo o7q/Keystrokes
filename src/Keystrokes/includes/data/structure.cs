@@ -38,6 +38,11 @@ namespace Keystrokes.Data
 
         public float keyOpacity;
 
+        public bool useTransparentBackground;
+        public int transparencyKeyR;
+        public int transparencyKeyG;
+        public int transparencyKeyB;
+
         public string keyBackgroundImage;
         public string keyBackgroundImagePressed;
 
