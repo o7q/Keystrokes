@@ -30,7 +30,7 @@ namespace Keystrokes
 
         // form settings
         const int form_SizeX = 236;
-        const int form_SizeY = 351;
+        const int form_SizeY = 367;
         const int titlebarPanel_SizeX = 303;
         const int titlebarPanel_SizeY = 31;
         const int closeButton_LocationX = 216;
@@ -118,6 +118,8 @@ namespace Keystrokes
                 "keyTextColorPressedInvertCheckbox", "Invert text color when pressed",
 
                 "keyOpacityTextbox", "Opacity of key",
+                "useTransparentBackgroundCheckbox", "Make the background completely transparent",
+
                 "useKeyCountCheckbox", "Display counter that counts up when the key is pressed",
                 "keyBorderCombobox", "Border style of key",
                 "createKeyButton", "Create a new key with specified settings"

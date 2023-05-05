@@ -9,10 +9,6 @@ namespace Keystrokes.Tools.Input
         {
             if (XInputGetState(controllerIndex, ref controllerState) == XInputConstants.ERROR_SUCCESS)
             {
-                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_UP) != 0) return Tuple.Create("CONTROLLER_UP", "┴", 10);
-                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_DOWN) != 0) return Tuple.Create("CONTROLLER_DOWN", "┬", 10);
-                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_LEFT) != 0) return Tuple.Create("CONTROLLER_LEFT", "┤", 10);
-                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0) return Tuple.Create("CONTROLLER_RIGHT", "├", 10);
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_A) != 0) return Tuple.Create("CONTROLLER_A", "Ⓐ", 15);
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_B) != 0) return Tuple.Create("CONTROLLER_B", "Ⓑ", 15);
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_X) != 0) return Tuple.Create("CONTROLLER_X", "ⓧ", 15);
@@ -25,6 +21,12 @@ namespace Keystrokes.Tools.Input
                 // joystick
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_LEFT_THUMB) != 0) return Tuple.Create("CONTROLLER_LEFT_JOYSTICK", "", 0);
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_RIGHT_THUMB) != 0) return Tuple.Create("CONTROLLER_RIGHT_JOYSTICK", "", 0);
+
+                // dpad
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_UP) != 0) return Tuple.Create("CONTROLLER_DPAD", "", 0);
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_DOWN) != 0) return Tuple.Create("CONTROLLER_DPAD", "", 0);
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_LEFT) != 0) return Tuple.Create("CONTROLLER_DPAD", "", 0);
+                if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0) return Tuple.Create("CONTROLLER_DPAD", "", 0);
             }
 
             return Tuple.Create("", "", 0);
@@ -91,6 +93,19 @@ namespace Keystrokes.Tools.Input
             }
 
             return trigger / 255;
+        }
+
+        public static string CalculateDpad()
+        {
+            XInputAnalogState state = new XInputAnalogState();
+            XInputGetAnalogState(controllerIndex, ref state);
+
+            if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_UP) != 0) return "up";
+            if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_DOWN) != 0) return "down";
+            if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_LEFT) != 0) return "left";
+            if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0) return "right";
+
+            return "";
         }
     }
 }

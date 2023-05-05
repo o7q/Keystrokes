@@ -351,19 +351,18 @@ namespace Keystrokes
             {
                 float trigger_state = CalculateTrigger(keyData.keyCode);
 
-                float size = 0.5f;
+                int sizeX = controllerPanel.Width;
+                int sizeY = controllerPanel.Height;
 
-                size = 2.5f / (size * 2);
-
-                int r = keyData.keyTextColorPressedR;
-                int g = keyData.keyTextColorPressedG;
-                int b = keyData.keyTextColorPressedB;
+                int r = keyData.keyTextColorR;
+                int g = keyData.keyTextColorG;
+                int b = keyData.keyTextColorB;
 
                 if (keyData.keyTextColorPressedInvert == true)
                 {
-                    r = (byte)~keyData.keyTextColorPressedR;
-                    g = (byte)~keyData.keyTextColorPressedG;
-                    b = (byte)~keyData.keyTextColorPressedB;
+                    r = (byte)~keyData.keyTextColorR;
+                    g = (byte)~keyData.keyTextColorG;
+                    b = (byte)~keyData.keyTextColorB;
                 }
                 else
                 {
@@ -375,15 +374,15 @@ namespace Keystrokes
                 Bitmap trigger_image = new Bitmap(controllerPanel.Width, controllerPanel.Height);
                 using (Graphics graphics = Graphics.FromImage(trigger_image))
                 {
-                    SolidBrush trigger_bottom = new SolidBrush(Color.FromArgb(255, (int)(r * trigger_state), (int)(g * trigger_state), (int)(b * trigger_state)));
-                    int x_loc = (controllerPanel.Width / 2) - (int)(controllerPanel.Width / (size * 2));
-                    int y_loc = (controllerPanel.Height / 2) - (int)(controllerPanel.Height / (size * 2) - (int)(controllerPanel.Height / size / 2.75));
-                    graphics.FillRectangle(trigger_bottom, new Rectangle(x_loc, y_loc, (int)(controllerPanel.Width / size), (int)(controllerPanel.Height / size)));
-
                     SolidBrush trigger_top = new SolidBrush(Color.FromArgb(255, (int)(r * trigger_state), (int)(g * trigger_state), (int)(b * trigger_state)));
-                    x_loc = (controllerPanel.Width / 2) - (int)(controllerPanel.Width / (size * 2));
-                    y_loc = (controllerPanel.Height / 2) - (int)(controllerPanel.Height / (size * 2) + (controllerPanel.Height / size / 2.75));
-                    graphics.FillEllipse(trigger_top, new Rectangle(x_loc, y_loc, (int)(controllerPanel.Width / size), (int)(controllerPanel.Height / size)));
+                    int x_loc = sizeX / 2 - sizeX / 4;
+                    int y_loc = sizeY / 2 - sizeY / 4 - sizeY / 8;
+                    graphics.FillEllipse(trigger_top, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+
+                    SolidBrush trigger_bottom = new SolidBrush(Color.FromArgb(255, (int)(r * trigger_state), (int)(g * trigger_state), (int)(b * trigger_state)));
+                    x_loc = sizeX / 2 - sizeX / 4;
+                    y_loc = sizeY / 2 - sizeY / 4 + sizeY / 8;
+                    graphics.FillRectangle(trigger_bottom, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
                 }
 
                 try
@@ -395,6 +394,120 @@ namespace Keystrokes
                 }
                 catch { }
 
+            }
+            #endregion
+
+            #region CONTROLLER_DPAD
+            if (keyData.keyCode == "CONTROLLER_DPAD")
+            {
+                string dpad_state = CalculateDpad();
+
+                int r_up = keyData.keyTextColorR;
+                int g_up = keyData.keyTextColorG;
+                int b_up = keyData.keyTextColorB;
+                int r_down = keyData.keyTextColorR;
+                int g_down = keyData.keyTextColorG;
+                int b_down = keyData.keyTextColorB;
+                int r_left = keyData.keyTextColorR;
+                int g_left = keyData.keyTextColorG;
+                int b_left = keyData.keyTextColorB;
+                int r_right = keyData.keyTextColorR;
+                int g_right = keyData.keyTextColorG;
+                int b_right = keyData.keyTextColorB;
+
+                if (keyData.keyTextColorPressedInvert == true)
+                {
+                    switch (dpad_state)
+                    {
+                        case "up":
+                            r_up = (byte)~keyData.keyTextColorR;
+                            g_up = (byte)~keyData.keyTextColorG;
+                            b_up = (byte)~keyData.keyTextColorB;
+                            break;
+                        case "down":
+                            r_down = (byte)~keyData.keyTextColorR;
+                            g_down = (byte)~keyData.keyTextColorG;
+                            b_down = (byte)~keyData.keyTextColorB;
+                            break;
+                        case "left":
+                            r_left = (byte)~keyData.keyTextColorR;
+                            g_left = (byte)~keyData.keyTextColorG;
+                            b_left = (byte)~keyData.keyTextColorB;
+                            break;
+                        case "right":
+                            r_right = (byte)~keyData.keyTextColorR;
+                            g_right = (byte)~keyData.keyTextColorG;
+                            b_right = (byte)~keyData.keyTextColorB;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (dpad_state)
+                    {
+                        case "up":
+                            r_up = keyData.keyTextColorPressedR;
+                            g_up = keyData.keyTextColorPressedG;
+                            b_up = keyData.keyTextColorPressedB;
+                            break;
+                        case "down":
+                            r_down = keyData.keyTextColorPressedR;
+                            g_down = keyData.keyTextColorPressedG;
+                            b_down = keyData.keyTextColorPressedB;
+                            break;
+                        case "left":
+                            r_left = keyData.keyTextColorPressedR;
+                            g_left = keyData.keyTextColorPressedG;
+                            b_left = keyData.keyTextColorPressedB;
+                            break;
+                        case "right":
+                            r_right = keyData.keyTextColorPressedR;
+                            g_right = keyData.keyTextColorPressedG;
+                            b_right = keyData.keyTextColorPressedB;
+                            break;
+                    }
+                }
+
+                int sizeX = controllerPanel.Width / 2;
+                int sizeY = controllerPanel.Height / 2;
+
+                Bitmap dpad_image = new Bitmap(controllerPanel.Width, controllerPanel.Height);
+                using (Graphics graphics = Graphics.FromImage(dpad_image))
+                {
+                    SolidBrush dpad_up = new SolidBrush(Color.FromArgb(255, r_up, g_up, b_up));
+                    int x_loc = sizeX / 2 + sizeX / 4;
+                    int y_loc = sizeY / 2 + sizeY / 4 - sizeY / 2;
+                    graphics.FillRectangle(dpad_up, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+
+                    SolidBrush dpad_down = new SolidBrush(Color.FromArgb(255, r_down, g_down, b_down));
+                    x_loc = sizeX / 2 + sizeX / 4;
+                    y_loc = sizeY / 2 + sizeY / 4 + sizeY / 2;
+                    graphics.FillRectangle(dpad_down, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+
+                    SolidBrush dpad_left = new SolidBrush(Color.FromArgb(255, r_left, g_left, b_left));
+                    x_loc = sizeX / 2 + sizeX / 4 - sizeX / 2;
+                    y_loc = sizeY / 2 + sizeY / 4;
+                    graphics.FillRectangle(dpad_left, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+
+                    SolidBrush dpad_right = new SolidBrush(Color.FromArgb(255, r_right, g_right, b_right));
+                    x_loc = sizeX / 2 + sizeX / 4 + sizeX / 2;
+                    y_loc = sizeY / 2 + sizeY / 4;
+                    graphics.FillRectangle(dpad_right, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+
+                    SolidBrush dpad_center = new SolidBrush(Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB));
+                    x_loc = sizeX / 2 + sizeX / 4;
+                    y_loc = sizeY / 2 + sizeY / 4;
+                    graphics.FillRectangle(dpad_center, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                }
+
+                try
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        controllerPanel.BackgroundImage = dpad_image;
+                    });
+                }
+                catch { }
             }
             #endregion
 

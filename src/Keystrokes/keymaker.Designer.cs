@@ -112,7 +112,7 @@
             this.createKeyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.createKeyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.createKeyButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.createKeyButton.Location = new System.Drawing.Point(7, 308);
+            this.createKeyButton.Location = new System.Drawing.Point(7, 325);
             this.createKeyButton.Name = "createKeyButton";
             this.createKeyButton.Size = new System.Drawing.Size(121, 35);
             this.createKeyButton.TabIndex = 26;
@@ -227,7 +227,7 @@
             this.keyPreviewPanel.BackColor = System.Drawing.Color.Silver;
             this.keyPreviewPanel.Controls.Add(this.counterLabel);
             this.keyPreviewPanel.Controls.Add(this.keyPreviewTextLabel);
-            this.keyPreviewPanel.Location = new System.Drawing.Point(132, 283);
+            this.keyPreviewPanel.Location = new System.Drawing.Point(132, 300);
             this.keyPreviewPanel.Name = "keyPreviewPanel";
             this.keyPreviewPanel.Size = new System.Drawing.Size(60, 60);
             this.keyPreviewPanel.TabIndex = 0;
@@ -304,7 +304,7 @@
             this.keyPreviewLabel.AutoSize = true;
             this.keyPreviewLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyPreviewLabel.ForeColor = System.Drawing.Color.White;
-            this.keyPreviewLabel.Location = new System.Drawing.Point(128, 265);
+            this.keyPreviewLabel.Location = new System.Drawing.Point(128, 282);
             this.keyPreviewLabel.Name = "keyPreviewLabel";
             this.keyPreviewLabel.Size = new System.Drawing.Size(81, 16);
             this.keyPreviewLabel.TabIndex = 0;
@@ -345,7 +345,7 @@
             "Outset",
             "Dashed",
             "None"});
-            this.keyBorderCombobox.Location = new System.Drawing.Point(7, 283);
+            this.keyBorderCombobox.Location = new System.Drawing.Point(7, 300);
             this.keyBorderCombobox.Name = "keyBorderCombobox";
             this.keyBorderCombobox.Size = new System.Drawing.Size(121, 21);
             this.keyBorderCombobox.TabIndex = 25;
@@ -368,7 +368,7 @@
             this.borderStyleLabel.BackColor = System.Drawing.Color.Transparent;
             this.borderStyleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.borderStyleLabel.ForeColor = System.Drawing.Color.White;
-            this.borderStyleLabel.Location = new System.Drawing.Point(3, 266);
+            this.borderStyleLabel.Location = new System.Drawing.Point(3, 283);
             this.borderStyleLabel.Name = "borderStyleLabel";
             this.borderStyleLabel.Size = new System.Drawing.Size(107, 16);
             this.borderStyleLabel.TabIndex = 0;
@@ -766,11 +766,12 @@
             // useTransparentBackgroundCheckbox
             // 
             this.useTransparentBackgroundCheckbox.AutoSize = true;
-            this.useTransparentBackgroundCheckbox.Location = new System.Drawing.Point(56, 242);
+            this.useTransparentBackgroundCheckbox.ForeColor = System.Drawing.Color.White;
+            this.useTransparentBackgroundCheckbox.Location = new System.Drawing.Point(6, 266);
             this.useTransparentBackgroundCheckbox.Name = "useTransparentBackgroundCheckbox";
-            this.useTransparentBackgroundCheckbox.Size = new System.Drawing.Size(80, 17);
+            this.useTransparentBackgroundCheckbox.Size = new System.Drawing.Size(144, 17);
             this.useTransparentBackgroundCheckbox.TabIndex = 27;
-            this.useTransparentBackgroundCheckbox.Text = "checkBox1";
+            this.useTransparentBackgroundCheckbox.Text = "Transparent Background";
             this.useTransparentBackgroundCheckbox.UseVisualStyleBackColor = true;
             this.useTransparentBackgroundCheckbox.CheckedChanged += new System.EventHandler(this.useTransparentBackgroundCheckbox_CheckedChanged);
             // 
@@ -779,7 +780,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(32)))), ((int)(((byte)(30)))));
-            this.ClientSize = new System.Drawing.Size(236, 351);
+            this.ClientSize = new System.Drawing.Size(236, 367);
             this.Controls.Add(this.useTransparentBackgroundCheckbox);
             this.Controls.Add(this.soundPressedVolumeTextbox);
             this.Controls.Add(this.soundVolumeTextbox);
