@@ -1,0 +1,34 @@
+~ v1.5.0.0
+- Added controller support
+- Added an option to make the background transparent
+
+~ v1.4.0.0
+- Improved the save/load system
+- Fixed the count label text being uncolored
+- Updated the tooltips
+
+~ v1.3.0.0
+- Added support for special keys (tab, arrow keys)
+- Added an option to change the text of the key
+- Improved the key symbols
+- Improved the sound player
+- Optimized the key form
+
+~ v1.2.0.0
+- Added an option to set custom background images and sounds
+- Added a new feature to display a counter that shows how many times you pressed a key
+- Added a feature to lock the key in place
+- Added a new feature to hide key text
+- Fixed a bug with null strings trying to be parsed as numbers
+- Added an awesome feature ;)
+
+~ v1.1.2.0
+- Added tooltips
+- Improved the error system
+
+~ v1.1.1.0
+- Fixed "+" key to display "=" instead
+
+~ v1.1.0.0
+- Added an option to customize the snap settings by double-clicking on the key
+- Made the key editor less intrusive

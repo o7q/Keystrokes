@@ -1,0 +1,2 @@
+- Fix bug within the key editor with the key preview form scaling
+- Add controller support
