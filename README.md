@@ -1,6 +1,6 @@
 <img src="assets/images/banner.png">
 
-# [<b>>> Download Latest</b>](https://github.com/o7q/Keystrokes/releases/download/v1.4.0.0/Keystrokes.exe)
+# [<b>>> Download Latest</b>](https://github.com/o7q/Keystrokes/releases/download/v1.5.0.0/Keystrokes.exe)
 ### Welcome! Keystrokes is a simple, highly customizable keystrokes visualizer. It allows the user to easily create and load multiple presets for different games, programs, and more.
 
 ---
@@ -51,7 +51,7 @@ You can double-click on a key to edit its snapping settings.
 - Key Editor
     - **Preset Name Dropdown** The selected preset, any changes will be applied to this preset
     - **Key Size Textboxes** The width and height of the key
-    - **Font Size Textbox** The font size of the key
+    - **Edit Font Button** Opens the font settings for the key
     - **Show Text** Choose to show text on the key or not
     - **Key Unpressed**
         - **Color 1 Button** Opens the color picker for the background of the key
