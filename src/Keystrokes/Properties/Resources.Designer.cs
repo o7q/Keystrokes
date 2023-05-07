@@ -83,6 +83,16 @@ namespace Keystrokes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap open_icon {
+            get {
+                object obj = ResourceManager.GetObject("open_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap program_banner {
             get {
                 object obj = ResourceManager.GetObject("program_banner", resourceCulture);

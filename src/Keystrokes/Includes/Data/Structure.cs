@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace Keystrokes.Data
 {
@@ -15,7 +16,9 @@ namespace Keystrokes.Data
         public int keySizeX;
         public int keySizeY;
 
-        public int fontSize;
+        public string keyFont;
+        public float fontSize;
+        public FontStyle fontStyle;
         public bool showText;
 
         public int keyColorR;

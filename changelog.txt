@@ -1,6 +1,9 @@
-~ v2.0.0.0
+~ v1.5.0.0
 - Added controller support
+- Added an option to modify font settings
 - Added an option to make the background transparent
+- Added a button to open the folder location of the selected preset (helpful for debugging)
+- Improved the key preview
 - Fixed bug with the save/load system
 
 ~ v1.4.0.0

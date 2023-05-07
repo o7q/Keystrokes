@@ -124,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon_256x.ico" />
+    <None Include="Resources\open_icon.png" />
     <None Include="Resources\program_banner_editor.png" />
     <None Include="Resources\program_banner.png" />
   </ItemGroup>

@@ -127,7 +127,7 @@
             this.controllerPanel.Location = new System.Drawing.Point(63, -4);
             this.controllerPanel.Name = "controllerPanel";
             this.controllerPanel.Size = new System.Drawing.Size(43, 44);
-            this.controllerPanel.TabIndex = 4;
+            this.controllerPanel.TabIndex = 0;
             this.controllerPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.controllerPanel_MouseDown);
             // 
             // controllerDebugLabel

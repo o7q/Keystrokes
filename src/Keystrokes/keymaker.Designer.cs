@@ -34,7 +34,6 @@
             this.createKeyButton = new System.Windows.Forms.Button();
             this.keyWidthTextbox = new System.Windows.Forms.TextBox();
             this.keyHeightTextbox = new System.Windows.Forms.TextBox();
-            this.fontSizeTextbox = new System.Windows.Forms.TextBox();
             this.keyColorButton = new System.Windows.Forms.Button();
             this.keyTextColorButton = new System.Windows.Forms.Button();
             this.keyOpacityTextbox = new System.Windows.Forms.TextBox();
@@ -45,7 +44,6 @@
             this.keyPreviewTextLabel = new System.Windows.Forms.Label();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.size2Label = new System.Windows.Forms.Label();
-            this.fontSizeLabel = new System.Windows.Forms.Label();
             this.keyOpacityLabel = new System.Windows.Forms.Label();
             this.keyPreviewLabel = new System.Windows.Forms.Label();
             this.configureKeyLabel = new System.Windows.Forms.Label();
@@ -87,9 +85,16 @@
             this.soundVolumeTextbox = new System.Windows.Forms.TextBox();
             this.soundPressedVolumeTextbox = new System.Windows.Forms.TextBox();
             this.useTransparentBackgroundCheckbox = new System.Windows.Forms.CheckBox();
+            this.fontButton = new System.Windows.Forms.Button();
+            this.keyPreview2Panel = new System.Windows.Forms.Panel();
+            this.counter2Label = new System.Windows.Forms.Label();
+            this.keyPreview2TextLabel = new System.Windows.Forms.Label();
+            this.keyPreviewUnpressedLabel = new System.Windows.Forms.Label();
+            this.keyPreviewPressedLabel = new System.Windows.Forms.Label();
             this.titlebarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bannerPicture)).BeginInit();
             this.keyPreviewPanel.SuspendLayout();
+            this.keyPreview2Panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -112,10 +117,10 @@
             this.createKeyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.createKeyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.createKeyButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.createKeyButton.Location = new System.Drawing.Point(7, 325);
+            this.createKeyButton.Location = new System.Drawing.Point(7, 281);
             this.createKeyButton.Name = "createKeyButton";
             this.createKeyButton.Size = new System.Drawing.Size(121, 35);
-            this.createKeyButton.TabIndex = 26;
+            this.createKeyButton.TabIndex = 27;
             this.createKeyButton.Text = "Create";
             this.createKeyButton.UseVisualStyleBackColor = false;
             this.createKeyButton.Click += new System.EventHandler(this.createKeyButton_Click);
@@ -146,19 +151,6 @@
             this.keyHeightTextbox.TabIndex = 3;
             this.keyHeightTextbox.Text = "60";
             this.keyHeightTextbox.TextChanged += new System.EventHandler(this.keyHeightTextbox_TextChanged);
-            // 
-            // fontSizeTextbox
-            // 
-            this.fontSizeTextbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.fontSizeTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fontSizeTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fontSizeTextbox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(250)))), ((int)(((byte)(220)))));
-            this.fontSizeTextbox.Location = new System.Drawing.Point(174, 82);
-            this.fontSizeTextbox.Name = "fontSizeTextbox";
-            this.fontSizeTextbox.Size = new System.Drawing.Size(45, 26);
-            this.fontSizeTextbox.TabIndex = 6;
-            this.fontSizeTextbox.Text = "20";
-            this.fontSizeTextbox.TextChanged += new System.EventHandler(this.fontSizeTextbox_TextChanged);
             // 
             // keyColorButton
             // 
@@ -194,10 +186,10 @@
             this.keyOpacityTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.keyOpacityTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyOpacityTextbox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(250)))), ((int)(((byte)(220)))));
-            this.keyOpacityTextbox.Location = new System.Drawing.Point(6, 238);
+            this.keyOpacityTextbox.Location = new System.Drawing.Point(135, 270);
             this.keyOpacityTextbox.Name = "keyOpacityTextbox";
             this.keyOpacityTextbox.Size = new System.Drawing.Size(45, 26);
-            this.keyOpacityTextbox.TabIndex = 24;
+            this.keyOpacityTextbox.TabIndex = 25;
             this.keyOpacityTextbox.Text = "80";
             // 
             // titlebarPanel
@@ -227,11 +219,10 @@
             this.keyPreviewPanel.BackColor = System.Drawing.Color.Silver;
             this.keyPreviewPanel.Controls.Add(this.counterLabel);
             this.keyPreviewPanel.Controls.Add(this.keyPreviewTextLabel);
-            this.keyPreviewPanel.Location = new System.Drawing.Point(132, 300);
+            this.keyPreviewPanel.Location = new System.Drawing.Point(7, 350);
             this.keyPreviewPanel.Name = "keyPreviewPanel";
             this.keyPreviewPanel.Size = new System.Drawing.Size(60, 60);
             this.keyPreviewPanel.TabIndex = 0;
-            this.keyPreviewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.keyPreviewPanel_Paint);
             // 
             // counterLabel
             // 
@@ -277,23 +268,12 @@
             this.size2Label.TabIndex = 0;
             this.size2Label.Text = "X";
             // 
-            // fontSizeLabel
-            // 
-            this.fontSizeLabel.AutoSize = true;
-            this.fontSizeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fontSizeLabel.ForeColor = System.Drawing.Color.White;
-            this.fontSizeLabel.Location = new System.Drawing.Point(170, 65);
-            this.fontSizeLabel.Name = "fontSizeLabel";
-            this.fontSizeLabel.Size = new System.Drawing.Size(62, 16);
-            this.fontSizeLabel.TabIndex = 0;
-            this.fontSizeLabel.Text = "Font Size";
-            // 
             // keyOpacityLabel
             // 
             this.keyOpacityLabel.AutoSize = true;
             this.keyOpacityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyOpacityLabel.ForeColor = System.Drawing.Color.White;
-            this.keyOpacityLabel.Location = new System.Drawing.Point(2, 221);
+            this.keyOpacityLabel.Location = new System.Drawing.Point(131, 253);
             this.keyOpacityLabel.Name = "keyOpacityLabel";
             this.keyOpacityLabel.Size = new System.Drawing.Size(79, 16);
             this.keyOpacityLabel.TabIndex = 0;
@@ -304,7 +284,7 @@
             this.keyPreviewLabel.AutoSize = true;
             this.keyPreviewLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyPreviewLabel.ForeColor = System.Drawing.Color.White;
-            this.keyPreviewLabel.Location = new System.Drawing.Point(128, 282);
+            this.keyPreviewLabel.Location = new System.Drawing.Point(3, 320);
             this.keyPreviewLabel.Name = "keyPreviewLabel";
             this.keyPreviewLabel.Size = new System.Drawing.Size(81, 16);
             this.keyPreviewLabel.TabIndex = 0;
@@ -345,10 +325,10 @@
             "Outset",
             "Dashed",
             "None"});
-            this.keyBorderCombobox.Location = new System.Drawing.Point(7, 300);
+            this.keyBorderCombobox.Location = new System.Drawing.Point(7, 256);
             this.keyBorderCombobox.Name = "keyBorderCombobox";
             this.keyBorderCombobox.Size = new System.Drawing.Size(121, 21);
-            this.keyBorderCombobox.TabIndex = 25;
+            this.keyBorderCombobox.TabIndex = 24;
             // 
             // presetNameLabel
             // 
@@ -368,7 +348,7 @@
             this.borderStyleLabel.BackColor = System.Drawing.Color.Transparent;
             this.borderStyleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.borderStyleLabel.ForeColor = System.Drawing.Color.White;
-            this.borderStyleLabel.Location = new System.Drawing.Point(3, 283);
+            this.borderStyleLabel.Location = new System.Drawing.Point(3, 239);
             this.borderStyleLabel.Name = "borderStyleLabel";
             this.borderStyleLabel.Size = new System.Drawing.Size(107, 16);
             this.borderStyleLabel.TabIndex = 0;
@@ -426,6 +406,7 @@
             this.keyColorPressedInvertCheckbox.TabIndex = 22;
             this.keyColorPressedInvertCheckbox.Text = "Invert Key Color";
             this.keyColorPressedInvertCheckbox.UseVisualStyleBackColor = true;
+            this.keyColorPressedInvertCheckbox.CheckedChanged += new System.EventHandler(this.keyColorPressedInvertCheckbox_CheckedChanged);
             // 
             // keyTextColorPressedInvertCheckbox
             // 
@@ -439,6 +420,7 @@
             this.keyTextColorPressedInvertCheckbox.TabIndex = 23;
             this.keyTextColorPressedInvertCheckbox.Text = "Invert Text Color";
             this.keyTextColorPressedInvertCheckbox.UseVisualStyleBackColor = true;
+            this.keyTextColorPressedInvertCheckbox.CheckedChanged += new System.EventHandler(this.keyTextColorPressedInvertCheckbox_CheckedChanged);
             // 
             // presetNameCombobox
             // 
@@ -687,7 +669,7 @@
             this.useKeyCountCheckbox.Location = new System.Drawing.Point(6, 109);
             this.useKeyCountCheckbox.Name = "useKeyCountCheckbox";
             this.useKeyCountCheckbox.Size = new System.Drawing.Size(100, 17);
-            this.useKeyCountCheckbox.TabIndex = 4;
+            this.useKeyCountCheckbox.TabIndex = 6;
             this.useKeyCountCheckbox.Text = "Display Counter";
             this.useKeyCountCheckbox.UseVisualStyleBackColor = true;
             this.useKeyCountCheckbox.CheckedChanged += new System.EventHandler(this.useKeyCountCheckbox_CheckedChanged);
@@ -724,8 +706,8 @@
             this.keyTextTextbox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(250)))), ((int)(((byte)(220)))));
             this.keyTextTextbox.Location = new System.Drawing.Point(114, 82);
             this.keyTextTextbox.Name = "keyTextTextbox";
-            this.keyTextTextbox.Size = new System.Drawing.Size(57, 26);
-            this.keyTextTextbox.TabIndex = 5;
+            this.keyTextTextbox.Size = new System.Drawing.Size(54, 26);
+            this.keyTextTextbox.TabIndex = 4;
             this.keyTextTextbox.TextChanged += new System.EventHandler(this.keyTextTextbox_TextChanged);
             // 
             // keyTextLabel
@@ -767,20 +749,91 @@
             // 
             this.useTransparentBackgroundCheckbox.AutoSize = true;
             this.useTransparentBackgroundCheckbox.ForeColor = System.Drawing.Color.White;
-            this.useTransparentBackgroundCheckbox.Location = new System.Drawing.Point(6, 266);
+            this.useTransparentBackgroundCheckbox.Location = new System.Drawing.Point(135, 297);
             this.useTransparentBackgroundCheckbox.Name = "useTransparentBackgroundCheckbox";
-            this.useTransparentBackgroundCheckbox.Size = new System.Drawing.Size(144, 17);
-            this.useTransparentBackgroundCheckbox.TabIndex = 27;
-            this.useTransparentBackgroundCheckbox.Text = "Transparent Background";
+            this.useTransparentBackgroundCheckbox.Size = new System.Drawing.Size(83, 17);
+            this.useTransparentBackgroundCheckbox.TabIndex = 26;
+            this.useTransparentBackgroundCheckbox.Text = "Transparent";
             this.useTransparentBackgroundCheckbox.UseVisualStyleBackColor = true;
             this.useTransparentBackgroundCheckbox.CheckedChanged += new System.EventHandler(this.useTransparentBackgroundCheckbox_CheckedChanged);
+            // 
+            // fontButton
+            // 
+            this.fontButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.fontButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.fontButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fontButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(250)))), ((int)(((byte)(220)))));
+            this.fontButton.Location = new System.Drawing.Point(170, 82);
+            this.fontButton.Name = "fontButton";
+            this.fontButton.Size = new System.Drawing.Size(52, 26);
+            this.fontButton.TabIndex = 5;
+            this.fontButton.Text = "Edit Font";
+            this.fontButton.UseVisualStyleBackColor = false;
+            this.fontButton.Click += new System.EventHandler(this.fontButton_Click);
+            // 
+            // keyPreview2Panel
+            // 
+            this.keyPreview2Panel.BackColor = System.Drawing.Color.Silver;
+            this.keyPreview2Panel.Controls.Add(this.counter2Label);
+            this.keyPreview2Panel.Controls.Add(this.keyPreview2TextLabel);
+            this.keyPreview2Panel.Location = new System.Drawing.Point(70, 350);
+            this.keyPreview2Panel.Name = "keyPreview2Panel";
+            this.keyPreview2Panel.Size = new System.Drawing.Size(60, 60);
+            this.keyPreview2Panel.TabIndex = 0;
+            // 
+            // counter2Label
+            // 
+            this.counter2Label.AutoSize = true;
+            this.counter2Label.BackColor = System.Drawing.Color.Transparent;
+            this.counter2Label.Location = new System.Drawing.Point(1, 45);
+            this.counter2Label.Name = "counter2Label";
+            this.counter2Label.Size = new System.Drawing.Size(13, 13);
+            this.counter2Label.TabIndex = 0;
+            this.counter2Label.Text = "0";
+            // 
+            // keyPreview2TextLabel
+            // 
+            this.keyPreview2TextLabel.AutoSize = true;
+            this.keyPreview2TextLabel.BackColor = System.Drawing.Color.Transparent;
+            this.keyPreview2TextLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.keyPreview2TextLabel.Location = new System.Drawing.Point(0, 1);
+            this.keyPreview2TextLabel.Name = "keyPreview2TextLabel";
+            this.keyPreview2TextLabel.Size = new System.Drawing.Size(15, 13);
+            this.keyPreview2TextLabel.TabIndex = 0;
+            this.keyPreview2TextLabel.Text = "A";
+            // 
+            // keyPreviewUnpressedLabel
+            // 
+            this.keyPreviewUnpressedLabel.AutoSize = true;
+            this.keyPreviewUnpressedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.keyPreviewUnpressedLabel.ForeColor = System.Drawing.Color.White;
+            this.keyPreviewUnpressedLabel.Location = new System.Drawing.Point(3, 337);
+            this.keyPreviewUnpressedLabel.Name = "keyPreviewUnpressedLabel";
+            this.keyPreviewUnpressedLabel.Size = new System.Drawing.Size(58, 13);
+            this.keyPreviewUnpressedLabel.TabIndex = 0;
+            this.keyPreviewUnpressedLabel.Text = "Unpressed";
+            // 
+            // keyPreviewPressedLabel
+            // 
+            this.keyPreviewPressedLabel.AutoSize = true;
+            this.keyPreviewPressedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.keyPreviewPressedLabel.ForeColor = System.Drawing.Color.White;
+            this.keyPreviewPressedLabel.Location = new System.Drawing.Point(66, 337);
+            this.keyPreviewPressedLabel.Name = "keyPreviewPressedLabel";
+            this.keyPreviewPressedLabel.Size = new System.Drawing.Size(45, 13);
+            this.keyPreviewPressedLabel.TabIndex = 0;
+            this.keyPreviewPressedLabel.Text = "Pressed";
             // 
             // keymaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(32)))), ((int)(((byte)(30)))));
-            this.ClientSize = new System.Drawing.Size(236, 367);
+            this.ClientSize = new System.Drawing.Size(236, 418);
+            this.Controls.Add(this.keyPreviewPressedLabel);
+            this.Controls.Add(this.keyPreviewUnpressedLabel);
+            this.Controls.Add(this.keyPreview2Panel);
+            this.Controls.Add(this.fontButton);
             this.Controls.Add(this.useTransparentBackgroundCheckbox);
             this.Controls.Add(this.soundPressedVolumeTextbox);
             this.Controls.Add(this.soundVolumeTextbox);
@@ -821,7 +874,6 @@
             this.Controls.Add(this.configureKeyLabel);
             this.Controls.Add(this.keyPreviewLabel);
             this.Controls.Add(this.keyOpacityLabel);
-            this.Controls.Add(this.fontSizeLabel);
             this.Controls.Add(this.size2Label);
             this.Controls.Add(this.sizeLabel);
             this.Controls.Add(this.keyPreviewPanel);
@@ -829,7 +881,6 @@
             this.Controls.Add(this.keyOpacityTextbox);
             this.Controls.Add(this.keyTextColorButton);
             this.Controls.Add(this.keyColorButton);
-            this.Controls.Add(this.fontSizeTextbox);
             this.Controls.Add(this.keyHeightTextbox);
             this.Controls.Add(this.keyWidthTextbox);
             this.Controls.Add(this.createKeyButton);
@@ -842,6 +893,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.bannerPicture)).EndInit();
             this.keyPreviewPanel.ResumeLayout(false);
             this.keyPreviewPanel.PerformLayout();
+            this.keyPreview2Panel.ResumeLayout(false);
+            this.keyPreview2Panel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -853,7 +906,6 @@
         private System.Windows.Forms.Button createKeyButton;
         private System.Windows.Forms.TextBox keyWidthTextbox;
         private System.Windows.Forms.TextBox keyHeightTextbox;
-        private System.Windows.Forms.TextBox fontSizeTextbox;
         private System.Windows.Forms.Button keyColorButton;
         private System.Windows.Forms.Button keyTextColorButton;
         private System.Windows.Forms.TextBox keyOpacityTextbox;
@@ -862,7 +914,6 @@
         private System.Windows.Forms.Label keyPreviewTextLabel;
         private System.Windows.Forms.Label sizeLabel;
         private System.Windows.Forms.Label size2Label;
-        private System.Windows.Forms.Label fontSizeLabel;
         private System.Windows.Forms.Label keyOpacityLabel;
         private System.Windows.Forms.Label keyPreviewLabel;
         private System.Windows.Forms.Label configureKeyLabel;
@@ -906,5 +957,11 @@
         private System.Windows.Forms.TextBox soundVolumeTextbox;
         private System.Windows.Forms.TextBox soundPressedVolumeTextbox;
         private System.Windows.Forms.CheckBox useTransparentBackgroundCheckbox;
+        private System.Windows.Forms.Button fontButton;
+        private System.Windows.Forms.Panel keyPreview2Panel;
+        private System.Windows.Forms.Label counter2Label;
+        private System.Windows.Forms.Label keyPreview2TextLabel;
+        private System.Windows.Forms.Label keyPreviewUnpressedLabel;
+        private System.Windows.Forms.Label keyPreviewPressedLabel;
     }
 }

@@ -30,11 +30,13 @@ namespace Keystrokes
 
         // form settings
         const int form_SizeX = 236;
-        const int form_SizeY = 367;
+        const int form_SizeY = 418;
         const int titlebarPanel_SizeX = 303;
         const int titlebarPanel_SizeY = 31;
         const int closeButton_LocationX = 216;
         const int closeButton_LocationY = 6;
+
+        float fontSize = 20.25f;
 
         public keymaker()
         {
@@ -72,7 +74,9 @@ namespace Keystrokes
 
             keyBorderCombobox.SelectedIndex = 0;
 
-            // configure key preview window
+            // configure key preview windows
+
+            // preview 1
             keyPreviewTextLabel.Font = new Font(keyPreviewTextLabel.Font.Name, 20);
 
             keyPreviewPanel.Width = 60;
@@ -82,6 +86,17 @@ namespace Keystrokes
             keyPreviewTextLabel.ForeColor = Color.FromArgb(255, 255, 255, 255);
             counterLabel.ForeColor = Color.FromArgb(255, 255, 255, 255);
             counterLabel.Text = "";
+
+            // preview 2
+            keyPreview2TextLabel.Font = new Font(keyPreview2TextLabel.Font.Name, 20);
+
+            keyPreview2Panel.Width = 60;
+            keyPreview2Panel.Height = 60;
+
+            keyPreview2Panel.BackColor = Color.FromArgb(255, 0, 0, 0);
+            keyPreview2TextLabel.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            counter2Label.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            counter2Label.Text = "";
 
             FormatKeyPreview();
             ResizeForm();
@@ -95,7 +110,7 @@ namespace Keystrokes
                 "keyWidthTextbox", "Key width in pixels",
                 "keyHeightTextbox", "Key height in pixels",
                 "keyTextTextbox", "Custom key text",
-                "fontSizeTextbox", "Text font size",
+                "fontButton", "Change the font settings",
                 "showTextCheckbox", "Display key text",
 
                 "keyColorButton", "Key background color",
@@ -189,7 +204,7 @@ namespace Keystrokes
             {
                 // create key
                 FinalizeKeyFields();
-                keyData_.fontSize = int.Parse(fontSizeTextbox.Text) + controller_detect.Item3;
+                keyData_.fontSize = fontSize + controller_detect.Item3;
                 Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
 
                 // display key with keyData_ settings
@@ -250,7 +265,6 @@ namespace Keystrokes
             // are user options valid? if not, assign them the default values
             if (IsNumber(keyWidthTextbox.Text, "int") == false) keyWidthTextbox.Text = "60";
             if (IsNumber(keyHeightTextbox.Text, "int") == false) keyHeightTextbox.Text = "60";
-            if (IsNumber(fontSizeTextbox.Text, "int") == false) fontSizeTextbox.Text = "20";
             if (IsNumber(keyOpacityTextbox.Text, "float") == false) keyOpacityTextbox.Text = "0.8";
             if (IsNumber(wiggleAmountTextbox.Text, "int") == false) keyWidthTextbox.Text = "2";
             if (IsNumber(wiggleBiasUpTextbox.Text, "int") == false) wiggleBiasUpTextbox.Text = "0";
@@ -265,7 +279,9 @@ namespace Keystrokes
             keyData_.keySizeY = int.Parse(keyHeightTextbox.Text);
 
             // configure controller font size
-            keyData_.fontSize = keyData_.isControllerKey == true ? keyData_.fontSize : int.Parse(fontSizeTextbox.Text);
+            keyData_.keyFont = keyData_.keyFont == null ? "Microsoft Sans Serif" : keyData_.keyFont;
+            keyData_.fontSize = keyData_.isControllerKey == true ? keyData_.fontSize : fontSize;
+            keyData_.fontStyle = keyData_.fontStyle == FontStyle.Regular ? FontStyle.Regular : keyData_.fontStyle;
             keyData_.showText = showTextCheckbox.Checked;
 
             keyData_.keyColorPressedInvert = keyColorPressedInvertCheckbox.Checked;
@@ -307,6 +323,7 @@ namespace Keystrokes
 
             // update key preview
             keyPreviewPanel.Width = int.Parse(keyWidthTextbox.Text);
+            keyPreview2Panel.Width = int.Parse(keyWidthTextbox.Text);
             FormatKeyPreview();
 
             // resize form to fit key preview
@@ -321,26 +338,62 @@ namespace Keystrokes
 
             // update key preview
             keyPreviewPanel.Height = int.Parse(keyHeightTextbox.Text);
+            keyPreview2Panel.Height = int.Parse(keyHeightTextbox.Text);
             FormatKeyPreview();
 
             // resize form to fit key preview
             ResizeForm();
         }
 
-        private void fontSizeTextbox_TextChanged(object sender, EventArgs e)
+        private void keyTextTextbox_TextChanged(object sender, EventArgs e)
         {
-            // is data a number? if not, return
-            if (IsNumber(fontSizeTextbox.Text, "int") == false)
-                return;
+            keyPreviewTextLabel.Text = keyTextTextbox.Text;
+            if (keyTextTextbox.Text == "")
+                keyPreviewTextLabel.Text = "A";
 
-            // update key preview
-            keyPreviewTextLabel.Font = new Font(keyPreviewTextLabel.Font.Name, int.Parse(fontSizeTextbox.Text));
+            keyPreview2TextLabel.Text = keyTextTextbox.Text;
+            if (keyTextTextbox.Text == "")
+                keyPreview2TextLabel.Text = "A";
+
             FormatKeyPreview();
+        }
+
+        private void fontButton_Click(object sender, EventArgs e)
+        {
+            FontDialog fontDialog = new FontDialog();
+            fontDialog.ShowEffects = false;
+            fontDialog.Font = new Font("Microsoft Sans Serif", 20f);
+            if (fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                Font selectedFont = fontDialog.Font;
+                keyData_.keyFont = selectedFont.Name;
+                fontSize = selectedFont.Size;
+
+                FontStyle fontStyle = new FontStyle();
+                if (selectedFont.Bold == true) fontStyle = FontStyle.Bold;
+                if (selectedFont.Italic == true) fontStyle = FontStyle.Italic;
+                if (selectedFont.Strikeout == true) fontStyle = FontStyle.Strikeout;
+                if (selectedFont.Underline == true) fontStyle = FontStyle.Underline;
+                keyData_.fontStyle = fontStyle;
+
+                // update key previews
+                keyPreviewTextLabel.Font = new Font(selectedFont.Name, selectedFont.Size, fontStyle);
+                keyPreview2TextLabel.Font = new Font(selectedFont.Name, selectedFont.Size, fontStyle);
+
+                FormatKeyPreview();
+            }
+        }
+
+        private void useKeyCountCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            counterLabel.Text = useKeyCountCheckbox.Checked == true ? "0" : "";
+            counter2Label.Text = useKeyCountCheckbox.Checked == true ? "0" : "";
         }
 
         private void showTextCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             keyPreviewTextLabel.Text = showTextCheckbox.Checked == true ? (keyTextTextbox.Text == "" ? "A" : keyTextTextbox.Text) : "";
+            keyPreview2TextLabel.Text = showTextCheckbox.Checked == true ? (keyTextTextbox.Text == "" ? "A" : keyTextTextbox.Text) : "";
         }
 
         private void keyColorButton_Click(object sender, EventArgs e)
@@ -356,8 +409,9 @@ namespace Keystrokes
             keyData_.keyColorB = rgb.Item3;
 
             // update component visuals
-            keyPreviewPanel.BackColor = Color.FromArgb(255, keyData_.keyColorR, keyData_.keyColorG, keyData_.keyColorB);
             keyColorButton.FlatAppearance.BorderColor = Color.FromArgb(255, keyData_.keyColorR, keyData_.keyColorG, keyData_.keyColorB);
+
+            FormatKeyPreview();
         }
 
         private void keyTextColorButton_Click(object sender, EventArgs e)
@@ -373,9 +427,9 @@ namespace Keystrokes
             keyData_.keyTextColorB = rgb.Item3;
 
             // update component visuals
-            keyPreviewTextLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
-            counterLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
             keyTextColorButton.FlatAppearance.BorderColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
+
+            FormatKeyPreview();
         }
 
         private void keyColorPressedButton_Click(object sender, EventArgs e)
@@ -392,6 +446,8 @@ namespace Keystrokes
 
             // update component visuals
             keyColorPressedButton.FlatAppearance.BorderColor = Color.FromArgb(255, keyData_.keyColorPressedR, keyData_.keyColorPressedG, keyData_.keyColorPressedB);
+
+            FormatKeyPreview();
         }
 
         private void keyTextColorPressedButton_Click(object sender, EventArgs e)
@@ -408,6 +464,8 @@ namespace Keystrokes
 
             // update component visuals
             keyTextColorPressedButton.FlatAppearance.BorderColor = Color.FromArgb(255, keyData_.keyTextColorPressedR, keyData_.keyTextColorPressedG, keyData_.keyTextColorPressedB);
+
+            FormatKeyPreview();
         }
 
         private void imageButton_Click(object sender, EventArgs e)
@@ -439,12 +497,19 @@ namespace Keystrokes
 
             if (keyData_.keyBackgroundImagePressed == "")
                 return;
+
+            Image backgroundImage = Image.FromFile(keyData_.keyBackgroundImagePressed);
+            keyPreview2Panel.BackgroundImage = backgroundImage;
+            keyPreview2Panel.BackgroundImageLayout = ImageLayout.Stretch;
+
             imagePressedDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void imagePressedDisposeButton_Click(object sender, EventArgs e)
         {
             keyData_.keyBackgroundImage = "";
+
+            keyPreview2Panel.BackgroundImage = null;
 
             imagePressedDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
@@ -481,23 +546,19 @@ namespace Keystrokes
             soundPressedDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
 
-        private void useKeyCountCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void keyColorPressedInvertCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            counterLabel.Text = useKeyCountCheckbox.Checked == true ? "0" : "";
+            FormatKeyPreview();
+        }
+
+        private void keyTextColorPressedInvertCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            FormatKeyPreview();
         }
 
         private void closeButton_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void keyPreviewPanel_Paint(object sender, PaintEventArgs e)
-        {
-            // draw custom key preview border
-            int r = keyData_.keyColorR - 50 < 0 ? 0 : keyData_.keyColorR - 50;
-            int g = keyData_.keyColorG - 50 < 0 ? 0 : keyData_.keyColorG - 50;
-            int b = keyData_.keyColorB - 50 < 0 ? 0 : keyData_.keyColorB - 50;
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(255, r, g, b), ButtonBorderStyle.Solid);
         }
 
         private Tuple<int, int, int> OpenColorDialog()
@@ -571,6 +632,32 @@ namespace Keystrokes
         {
             keyPreviewTextLabel.Location = new Point((keyPreviewPanel.Width / 2) - (keyPreviewTextLabel.Width / 2), (keyPreviewPanel.Height / 2) - (keyPreviewTextLabel.Height / 2));
             counterLabel.Location = new Point(counterLabel.Location.X, keyPreviewPanel.Height - 16);
+
+            keyPreview2Panel.Location = new Point(keyPreviewPanel.Width + 12, keyPreviewPanel.Location.Y);
+            keyPreview2TextLabel.Location = new Point((keyPreview2Panel.Width / 2) - (keyPreview2TextLabel.Width / 2), (keyPreview2Panel.Height / 2) - (keyPreview2TextLabel.Height / 2));
+            counter2Label.Location = new Point(counter2Label.Location.X, keyPreview2Panel.Height - 16);
+
+            keyPreviewPressedLabel.Location = new Point(keyPreview2Panel.Location.X - 4, keyPreviewPressedLabel.Location.Y);
+
+            keyPreviewPanel.BackColor = Color.FromArgb(255, keyData_.keyColorR, keyData_.keyColorG, keyData_.keyColorB);
+            keyPreviewTextLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
+            counterLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorR, keyData_.keyTextColorG, keyData_.keyTextColorB);
+
+            if (keyColorPressedInvertCheckbox.Checked == true)
+                keyPreview2Panel.BackColor = Color.FromArgb(255, (byte)~keyData_.keyColorR, (byte)~keyData_.keyColorG, (byte)~keyData_.keyColorB);
+            else
+                keyPreview2Panel.BackColor = Color.FromArgb(255, keyData_.keyColorPressedR, keyData_.keyColorPressedG, keyData_.keyColorPressedB);
+
+            if (keyTextColorPressedInvertCheckbox.Checked == true)
+            {
+                keyPreview2TextLabel.ForeColor = Color.FromArgb(255, (byte)~keyData_.keyTextColorR, (byte)~keyData_.keyTextColorG, (byte)~keyData_.keyTextColorB);
+                counter2Label.ForeColor = Color.FromArgb(255, (byte)~keyData_.keyTextColorR, (byte)~keyData_.keyTextColorG, (byte)~keyData_.keyTextColorB);
+            }
+            else
+            {
+                keyPreview2TextLabel.ForeColor = Color.FromArgb(255, keyData_.keyTextColorPressedR, keyData_.keyTextColorPressedG, keyData_.keyTextColorPressedB);
+                counter2Label.ForeColor = Color.FromArgb(255, keyData_.keyTextColorPressedR, keyData_.keyTextColorPressedG, keyData_.keyTextColorPressedB);
+            }
         }
 
         private void ResizeForm()
@@ -581,9 +668,9 @@ namespace Keystrokes
                 return;
 
             // scale and move form and components
-            Size = new Size(form_SizeX + keyPreviewPanel.Width - 60, form_SizeY + keyPreviewPanel.Height - 60);
-            titlebarPanel.Size = new Size(titlebarPanel_SizeX + keyPreviewPanel.Width - 60, titlebarPanel_SizeY);
-            closeButton.Location = new Point(closeButton_LocationX + keyPreviewPanel.Width - 60, closeButton_LocationY);
+            Size = new Size(form_SizeX + keyPreviewPanel.Width * 2 - 120, form_SizeY + keyPreviewPanel.Height - 60);
+            titlebarPanel.Size = new Size(titlebarPanel_SizeX + keyPreviewPanel.Width * 2 - 120, titlebarPanel_SizeY);
+            closeButton.Location = new Point(closeButton_LocationX + keyPreviewPanel.Width * 2 - 120, closeButton_LocationY);
         }
 
         private void titlebarPanel_MouseDown(object sender, MouseEventArgs e)
@@ -602,14 +689,6 @@ namespace Keystrokes
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
-        }
-
-        private void keyTextTextbox_TextChanged(object sender, EventArgs e)
-        {
-            keyPreviewTextLabel.Text = keyTextTextbox.Text;
-            if (keyTextTextbox.Text == "")
-                keyPreviewTextLabel.Text = "A";
-            FormatKeyPreview();
         }
 
         private void useTransparentBackgroundCheckbox_CheckedChanged(object sender, EventArgs e)

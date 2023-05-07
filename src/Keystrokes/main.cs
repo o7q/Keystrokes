@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Drawing;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Keystrokes.Data;
@@ -103,7 +104,9 @@ namespace Keystrokes
                             case "keySizeX": keyData_.keySizeX = int.Parse(keySettingPair[1]); break;
                             case "keySizeY": keyData_.keySizeY = int.Parse(keySettingPair[1]); break;
 
-                            case "fontSize": keyData_.fontSize = int.Parse(keySettingPair[1]); break;
+                            case "keyFont": keyData_.keyFont = keySettingPair[1]; break;
+                            case "fontSize": keyData_.fontSize = float.Parse(keySettingPair[1]); break;
+                            case "fontStyle": keyData_.fontStyle = (FontStyle)Enum.Parse(typeof(FontStyle), keySettingPair[1]); break;
                             case "showText": keyData_.showText = bool.Parse(keySettingPair[1]); break;
 
                             case "keyColorR": keyData_.keyColorR = int.Parse(keySettingPair[1]); break;
@@ -210,6 +213,11 @@ namespace Keystrokes
             keymaker keyEditor = new keymaker();
             keyEditor.FormClosed += keymakerFormClosed;
             keyEditor.Show();
+        }
+
+        private void openPresetsButton_Click(object sender, EventArgs e)
+        {
+            Process.Start("explorer.exe", "Keystrokes\\presets\\" + presetListbox.SelectedItem);
         }
 
         private void refreshPresetsButton_Click(object sender, EventArgs e)

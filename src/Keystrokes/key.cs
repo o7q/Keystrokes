@@ -29,7 +29,7 @@ namespace Keystrokes
 
         KeyInfo keyData = new KeyInfo();
 
-        System.Timers.Timer keyPing = new System.Timers.Timer();
+        System.Timers.Timer inputPing = new System.Timers.Timer();
 
         Image backgroundImage;
         Image backgroundImagePressed;
@@ -59,10 +59,11 @@ namespace Keystrokes
             // set form and font size
             Size = new Size(keyData.keySizeX, keyData.keySizeY);
             keyLabel.Font = new Font(keyLabel.Font.Name, keyData.fontSize);
-
+            
             // update text
             Text = keyData.keyText;
             keyLabel.Text = keyData.showText == true ? keyData.keyText : "";
+            keyLabel.Font = new Font(keyData.keyFont, keyData.fontSize, keyData.fontStyle);
             keyLabel.Location = new Point((Width / 2) - (keyLabel.Width / 2), (Height / 2) - (keyLabel.Height / 2));
 
             // configure form color and opacity
@@ -91,7 +92,6 @@ namespace Keystrokes
                 useSound = true;
             if (keyData.soundPressed != null && keyData.soundPressed != "")
                 useSoundPressed = true;
-
 
             // update snap textboxes
             snapXTextbox.Text = keyData.KEY_SNAP_X.ToString();
@@ -135,10 +135,10 @@ namespace Keystrokes
 
             WriteConfig();
 
-            // configure and start keyPing
-            keyPing.Elapsed += new ElapsedEventHandler(KeyRefresh);
-            keyPing.Interval = 1;
-            keyPing.Enabled = true;
+            // configure and start inputPing
+            inputPing.Elapsed += new ElapsedEventHandler(InputRefresh);
+            inputPing.Interval = 1;
+            inputPing.Enabled = true;
 
             wiggleModeTempLocX = Left;
             wiggleModeTempLocY = Top;
@@ -213,9 +213,8 @@ namespace Keystrokes
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(255, r, g, b), keyData.keyBorder);
         }
 
-        // do tick
         bool keyPressed = false;
-        private void KeyRefresh(object source, ElapsedEventArgs e)
+        private void InputRefresh(object source, ElapsedEventArgs e)
         {
             #region CONTROLLER_JOYSTICK
             if (keyData.keyCode == "CONTROLLER_LEFT_JOYSTICK" || keyData.keyCode == "CONTROLLER_RIGHT_JOYSTICK")
@@ -232,13 +231,8 @@ namespace Keystrokes
                         controllerDebugLabel.Text = rotate.ToString();
                         controllerDebugLabel.Location = new Point(Width - controllerDebugLabel.Width, Height - controllerDebugLabel.Height);
                     });
-                } catch { }
-
-                float size = 1.0f;
-                float size2 = 0.5f;
-
-                size = 1.25f / size;
-                size2 = 2.5f / (size2 * 2);
+                }
+                catch { }
 
                 int r = keyData.keyTextColorR;
                 int g = keyData.keyTextColorG;
@@ -246,29 +240,29 @@ namespace Keystrokes
 
                 if (KeyDetect(keyData.keyCode, keyData.isControllerKey) == true)
                 {
-                    try
+                    if (keyData.USE_KEY_COUNT == true && keyPressed == false)
                     {
-                        Invoke((MethodInvoker)delegate
+                        keyData.KEY_COUNT++;
+                        try
                         {
-                            if (keyData.USE_KEY_COUNT == true && keyPressed == false)
+                            Invoke((MethodInvoker)delegate
                             {
-                                keyData.KEY_COUNT++;
                                 countLabel.Text = keyData.KEY_COUNT.ToString();
-                                WriteConfig();
-                            }
-                        });
-                    } catch { }
+                            });
+                        } catch { }
+                        WriteConfig();
+                    }
 
                     keyPressed = true;
 
                     // update key colors
                     if (keyData.useTransparentBackground == true)
                     {
+                        BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                         try
                         {
                             Invoke((MethodInvoker)delegate
                             {
-                                BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                                 TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                             });
                         } catch { }
@@ -301,11 +295,11 @@ namespace Keystrokes
                     // restore key colors
                     if (keyData.useTransparentBackground == true)
                     {
+                        BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                         try
                         {
                             Invoke((MethodInvoker)delegate
                             {
-                                BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                                 TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                             });
                         }
@@ -313,6 +307,7 @@ namespace Keystrokes
                     }
                     else
                         BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
+
                     r = keyData.keyTextColorR;
                     g = keyData.keyTextColorG;
                     b = keyData.keyTextColorB;
@@ -320,6 +315,9 @@ namespace Keystrokes
 
                     keyPressed = false;
                 }
+
+                float size = 1.25f;
+                float size_background = 2.5f;
 
                 Bitmap joystick_image = new Bitmap(controllerPanel.Width, controllerPanel.Height);
                 using (Graphics graphics = Graphics.FromImage(joystick_image))
@@ -329,16 +327,18 @@ namespace Keystrokes
                     int y_loc = (controllerPanel.Height / 2) - (int)(controllerPanel.Height / (size * 2));
                     graphics.FillEllipse(joystick_background, new Rectangle(x_loc, y_loc, (int)(controllerPanel.Width / size), (int)(controllerPanel.Height / size)));
 
-                    x_loc = x + controllerPanel.Width / 2 - (int)(controllerPanel.Width / (size2 * 2));
-                    y_loc = y + controllerPanel.Height / 2 - (int)(controllerPanel.Height / (size2 * 2));
-
                     SolidBrush joystick = new SolidBrush(Color.FromArgb(255, r, g, b));
-                    graphics.FillEllipse(joystick, new Rectangle(x_loc, y_loc, (int)(controllerPanel.Width / size2), (int)(controllerPanel.Height / size2)));
+                    x_loc = x + controllerPanel.Width / 2 - (int)(controllerPanel.Width / (size_background * 2));
+                    y_loc = y + controllerPanel.Height / 2 - (int)(controllerPanel.Height / (size_background * 2));
+                    graphics.FillEllipse(joystick, new Rectangle(x_loc, y_loc, (int)(controllerPanel.Width / size_background), (int)(controllerPanel.Height / size_background)));
                 }
 
                 try
                 {
-                    controllerPanel.BackgroundImage = joystick_image;
+                    Invoke((MethodInvoker)delegate
+                    {
+                        controllerPanel.BackgroundImage = joystick_image;
+                    });
                 }
                 catch { }
 
@@ -350,9 +350,6 @@ namespace Keystrokes
             if (keyData.keyCode == "CONTROLLER_LEFT_TRIGGER" || keyData.keyCode == "CONTROLLER_RIGHT_TRIGGER")
             {
                 float trigger_state = CalculateTrigger(keyData.keyCode);
-
-                int sizeX = controllerPanel.Width;
-                int sizeY = controllerPanel.Height;
 
                 int r = keyData.keyTextColorR;
                 int g = keyData.keyTextColorG;
@@ -371,29 +368,29 @@ namespace Keystrokes
                     b = keyData.keyTextColorPressedB;
                 }
 
+                int x_size = controllerPanel.Width;
+                int y_size = controllerPanel.Height;
+
                 Bitmap trigger_image = new Bitmap(controllerPanel.Width, controllerPanel.Height);
                 using (Graphics graphics = Graphics.FromImage(trigger_image))
                 {
                     SolidBrush trigger_top = new SolidBrush(Color.FromArgb(255, (int)(r * trigger_state), (int)(g * trigger_state), (int)(b * trigger_state)));
-                    int x_loc = sizeX / 2 - sizeX / 4;
-                    int y_loc = sizeY / 2 - sizeY / 4 - sizeY / 8;
-                    graphics.FillEllipse(trigger_top, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    int x_loc = x_size / 2 - x_size / 4;
+                    int y_loc = y_size / 2 - y_size / 4 - y_size / 8;
+                    graphics.FillEllipse(trigger_top, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
 
                     SolidBrush trigger_bottom = new SolidBrush(Color.FromArgb(255, (int)(r * trigger_state), (int)(g * trigger_state), (int)(b * trigger_state)));
-                    x_loc = sizeX / 2 - sizeX / 4;
-                    y_loc = sizeY / 2 - sizeY / 4 + sizeY / 8;
-                    graphics.FillRectangle(trigger_bottom, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    x_loc = x_size / 2 - x_size / 4;
+                    y_loc = y_size / 2 - y_size / 4 + y_size / 8;
+                    graphics.FillRectangle(trigger_bottom, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
                 }
-
                 try
                 {
                     Invoke((MethodInvoker)delegate
                     {
                         controllerPanel.BackgroundImage = trigger_image;
                     });
-                }
-                catch { }
-
+                } catch { }
             }
             #endregion
 
@@ -468,36 +465,36 @@ namespace Keystrokes
                     }
                 }
 
-                int sizeX = controllerPanel.Width / 2;
-                int sizeY = controllerPanel.Height / 2;
+                int x_size = controllerPanel.Width / 2;
+                int y_size = controllerPanel.Height / 2;
 
                 Bitmap dpad_image = new Bitmap(controllerPanel.Width, controllerPanel.Height);
                 using (Graphics graphics = Graphics.FromImage(dpad_image))
                 {
                     SolidBrush dpad_up = new SolidBrush(Color.FromArgb(255, r_up, g_up, b_up));
-                    int x_loc = sizeX / 2 + sizeX / 4;
-                    int y_loc = sizeY / 2 + sizeY / 4 - sizeY / 2;
-                    graphics.FillRectangle(dpad_up, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    int x_loc = x_size / 2 + x_size / 4;
+                    int y_loc = y_size / 2 + y_size / 4 - y_size / 2;
+                    graphics.FillRectangle(dpad_up, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
 
                     SolidBrush dpad_down = new SolidBrush(Color.FromArgb(255, r_down, g_down, b_down));
-                    x_loc = sizeX / 2 + sizeX / 4;
-                    y_loc = sizeY / 2 + sizeY / 4 + sizeY / 2;
-                    graphics.FillRectangle(dpad_down, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    x_loc = x_size / 2 + x_size / 4;
+                    y_loc = y_size / 2 + y_size / 4 + y_size / 2;
+                    graphics.FillRectangle(dpad_down, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
 
                     SolidBrush dpad_left = new SolidBrush(Color.FromArgb(255, r_left, g_left, b_left));
-                    x_loc = sizeX / 2 + sizeX / 4 - sizeX / 2;
-                    y_loc = sizeY / 2 + sizeY / 4;
-                    graphics.FillRectangle(dpad_left, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    x_loc = x_size / 2 + x_size / 4 - x_size / 2;
+                    y_loc = y_size / 2 + y_size / 4;
+                    graphics.FillRectangle(dpad_left, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
 
                     SolidBrush dpad_right = new SolidBrush(Color.FromArgb(255, r_right, g_right, b_right));
-                    x_loc = sizeX / 2 + sizeX / 4 + sizeX / 2;
-                    y_loc = sizeY / 2 + sizeY / 4;
-                    graphics.FillRectangle(dpad_right, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    x_loc = x_size / 2 + x_size / 4 + x_size / 2;
+                    y_loc = y_size / 2 + y_size / 4;
+                    graphics.FillRectangle(dpad_right, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
 
                     SolidBrush dpad_center = new SolidBrush(Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB));
-                    x_loc = sizeX / 2 + sizeX / 4;
-                    y_loc = sizeY / 2 + sizeY / 4;
-                    graphics.FillRectangle(dpad_center, new Rectangle(x_loc, y_loc, sizeX / 2, sizeY / 2));
+                    x_loc = x_size / 2 + x_size / 4;
+                    y_loc = y_size / 2 + y_size / 4;
+                    graphics.FillRectangle(dpad_center, new Rectangle(x_loc, y_loc, x_size / 2, y_size / 2));
                 }
 
                 try
@@ -511,23 +508,11 @@ namespace Keystrokes
             }
             #endregion
 
-            #region BOOLEAN_INPUT
+            #region SIMPLE_INPUT
             // check for user key input
             if (KeyDetect(keyData.keyCode, keyData.isControllerKey) == true)
             {
-                if (keyData.wiggleMode == true)
-                {
-                    Random random = new Random(Guid.NewGuid().GetHashCode());
-                    int direction = random.Next(0, 4);
-
-                    switch (direction)
-                    {
-                        case 0: Top -= 1 + keyData.wiggleMode_biasUp; break;
-                        case 1: Top += 1 + keyData.wiggleMode_biasDown; break;
-                        case 2: Left -= 1 + keyData.wiggleMode_biasLeft; break;
-                        case 3: Left += 1 + keyData.wiggleMode_biasRight; break;
-                    }
-                }
+                WiggleMode_wiggle();
 
                 if (keyPressed == true)
                     return;
@@ -536,7 +521,14 @@ namespace Keystrokes
                 if (keyData.USE_KEY_COUNT == true)
                 {
                     keyData.KEY_COUNT++;
-                    countLabel.Text = keyData.KEY_COUNT.ToString();
+                    try
+                    {
+                        Invoke((MethodInvoker)delegate
+                        {
+                            countLabel.Text = keyData.KEY_COUNT.ToString();
+                        });
+                    }
+                    catch { }
                     WriteConfig();
                 }
 
@@ -554,13 +546,13 @@ namespace Keystrokes
                 // update key colors
                 if (keyData.useTransparentBackground == true)
                 {
+                    BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                     try
                     {
                         Invoke((MethodInvoker)delegate
-                    {
-                        BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
-                        TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
-                    });
+                        {
+                            TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                        });
                     } catch { }
                 }
                 else
@@ -602,47 +594,78 @@ namespace Keystrokes
                 // restore key colors
                 if (keyData.useTransparentBackground == true)
                 {
+                    BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                     try
                     {
                         Invoke((MethodInvoker)delegate
                         {
-                            BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                             TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
                         });
                     } catch { }
                 }
                 else
-                {
                     BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
-                }
+
                 keyLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
                 countLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
 
-                if (keyData.wiggleMode == true && keyPressed == false)
-                {
-                    keyPressed = false;
-                    int startX = Location.X;
-                    int startY = Location.Y;
-                    int endX = wiggleModeTempLocX;
-                    int endY = wiggleModeTempLocY;
-                    int steps = 25;
-                    double delay = 0.0025;
-
-                    for (int i = 0; i < steps; i++)
-                    {
-                        int x = startX + (endX - startX) * i / steps;
-                        int y = startY + (endY - startY) * i / steps;
-                        Location = new Point(x, y);
-
-                        var sw = Stopwatch.StartNew();
-                        while (sw.ElapsedTicks < Math.Round(delay * Stopwatch.Frequency)) { }
-                    }
-
-                    Left = wiggleModeTempLocX;
-                    Top = wiggleModeTempLocY;
-                }
+                WiggleMode_return();
             }
             #endregion
+        }
+        private void WiggleMode_wiggle()
+        {
+            try
+            {
+                Invoke((MethodInvoker)delegate
+                {
+                    if (keyData.wiggleMode == true)
+                    {
+                        Random random = new Random(Guid.NewGuid().GetHashCode());
+                        int direction = random.Next(0, 4);
+
+                        switch (direction)
+                        {
+                            case 0: Top -= 1 + keyData.wiggleMode_biasUp; break;
+                            case 1: Top += 1 + keyData.wiggleMode_biasDown; break;
+                            case 2: Left -= 1 + keyData.wiggleMode_biasLeft; break;
+                            case 3: Left += 1 + keyData.wiggleMode_biasRight; break;
+                        }
+                    }
+                });
+            } catch { }
+        }
+        private void WiggleMode_return()
+        {
+            try
+            {
+                Invoke((MethodInvoker)delegate
+                {
+                    if (keyData.wiggleMode == true && keyPressed == false)
+                    {
+                        keyPressed = false;
+                        int startX = Location.X;
+                        int startY = Location.Y;
+                        int endX = wiggleModeTempLocX;
+                        int endY = wiggleModeTempLocY;
+                        int steps = 25;
+                        double delay = 0.0025;
+
+                        for (int i = 0; i < steps; i++)
+                        {
+                            int x = startX + (endX - startX) * i / steps;
+                            int y = startY + (endY - startY) * i / steps;
+                            Location = new Point(x, y);
+
+                            var sw = Stopwatch.StartNew();
+                            while (sw.ElapsedTicks < Math.Round(delay * Stopwatch.Frequency)) { }
+                        }
+
+                        Left = wiggleModeTempLocX;
+                        Top = wiggleModeTempLocY;
+                    }
+                });
+            } catch { }
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -788,7 +811,7 @@ namespace Keystrokes
 
         private void HandleClose()
         {
-            keyPing.Enabled = false;
+            inputPing.Enabled = false;
 
             if (useBackgroundImage == true)
                 backgroundImage.Dispose();

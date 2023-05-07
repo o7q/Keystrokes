@@ -66,6 +66,7 @@ You can double-click on a key to edit its snapping settings.
         - **Invert Key Color** Should the key invert its colors when pressed?
         - **Invert Text Color** Should the key text invert its colors when pressed?
     - **Key Opacity Textbox** The opacity of the key
+     - **Transparent Background Checkbox** Option to make the key background completely transparent
     - **Display Counter** Displays a counter that displays how many times you clicked the key
     - **Key Border Style Dropdown** The border style of the key
 - Key
