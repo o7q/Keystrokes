@@ -167,6 +167,7 @@ namespace Keystrokes
             createKeyButton.Text = "Press a key...";
 
             allowKeyCreation = true;
+            allowControllerCreation = true;
 
             // configure and start ControllerRefresh timer
             controllerPing.Elapsed += new ElapsedEventHandler(ControllerRefresh);
@@ -174,52 +175,10 @@ namespace Keystrokes
             controllerPing.Enabled = true;
         }
 
-        private void ControllerRefresh(object source, ElapsedEventArgs e)
-        {
-            // return if keys are not allowed to be created
-            if (allowKeyCreation == false)
-                return;
-
-            // get pressed controller button information
-            var controller_detect = ControllerDetect();
-            keyData_.keyCode = controller_detect.Item1;
-            keyData_.keyText = controller_detect.Item2;
-
-            // get pressed controller trigger information
-            var trigger_detect = TriggerDetect();
-            if (trigger_detect.Item1 == true)
-                keyData_.keyCode = trigger_detect.Item2;
-
-            // return if no controller button was pressed
-            if (keyData_.keyCode == "")
-                return;
-
-            // enable controller key
-            keyData_.isControllerKey = true;
-
-            // disable ControllerRefresh
-            controllerPing.Enabled = false;
-
-            Invoke((MethodInvoker)delegate
-            {
-                // create key
-                FinalizeKeyFields();
-                keyData_.fontSize = fontSize + controller_detect.Item3;
-                Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
-
-                // display key with keyData_ settings
-                key newKey = new key(keyData_);
-                newKey.Show();
-                // add key to child list
-                keys.Add(newKey);
-            });
-
-            // lock create button
-            allowKeyCreation = false;
-        }
-
         private void createKeyButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
+            allowControllerCreation = false;
+
             // prevent user from making a new key if the create button was not pressed
             if (allowKeyCreation == false)
                 return;
@@ -254,6 +213,49 @@ namespace Keystrokes
 
             // lock create button
             allowKeyCreation = false;
+        }
+
+        bool allowControllerCreation = false;
+        private void ControllerRefresh(object source, ElapsedEventArgs e)
+        {
+            // return if keys are not allowed to be created
+            if (allowKeyCreation == false || allowControllerCreation == false)
+                return;
+
+            // get pressed controller button information
+            var controller_detect = ControllerDetect();
+            keyData_.keyCode = controller_detect.Item1;
+            keyData_.keyText = controller_detect.Item2;
+
+            // get pressed controller trigger information
+            var trigger_detect = TriggerDetect();
+            if (trigger_detect.Item1 == true)
+                keyData_.keyCode = trigger_detect.Item2;
+
+            // return if no controller button was pressed
+            if (keyData_.keyCode == "")
+                return;
+
+            // enable controller key
+            keyData_.isControllerKey = true;
+
+            // disable ControllerRefresh
+            controllerPing.Enabled = false;
+            allowControllerCreation = false;
+
+            Invoke((MethodInvoker)delegate
+            {
+                // create key
+                FinalizeKeyFields();
+                keyData_.fontSize = fontSize + controller_detect.Item3;
+                Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
+
+                // display key with keyData_ settings
+                key newKey = new key(keyData_);
+                newKey.Show();
+                // add key to child list
+                keys.Add(newKey);
+            });
         }
 
         private void FinalizeKeyFields()

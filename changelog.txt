@@ -1,3 +1,6 @@
+~ v1.5.1.0
+- Fixed bug with keys not being created some of the time
+
 ~ v1.5.0.0
 - Added controller support
 - Added an option to modify font settings
