@@ -69,12 +69,6 @@
     <Compile Include="KeyEditor.Designer.cs">
       <DependentUpon>KeyEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="KeyStats.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="KeyStats.Designer.cs">
-      <DependentUpon>KeyStats.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,9 +83,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="KeyEditor.resx">
       <DependentUpon>KeyEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="KeyStats.resx">
-      <DependentUpon>KeyStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

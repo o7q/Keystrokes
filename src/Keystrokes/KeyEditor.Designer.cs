@@ -38,6 +38,7 @@
             this.KeyTextColorButton = new System.Windows.Forms.Button();
             this.KeyOpacityTextbox = new System.Windows.Forms.TextBox();
             this.TitlebarPanel = new System.Windows.Forms.Panel();
+            this.BannerPicture = new System.Windows.Forms.PictureBox();
             this.KeyPreviewPanel = new System.Windows.Forms.Panel();
             this.KeyPreviewTextLabel = new System.Windows.Forms.Label();
             this.KeySizeLabel = new System.Windows.Forms.Label();
@@ -55,7 +56,7 @@
             this.KeyColorPressedInvertCheckbox = new System.Windows.Forms.CheckBox();
             this.KeyTextColorPressedInvertCheckbox = new System.Windows.Forms.CheckBox();
             this.PresetNameCombobox = new System.Windows.Forms.ComboBox();
-            this.KeyEditorTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.KeyEditorToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.WiggleModeCheckbox = new System.Windows.Forms.CheckBox();
             this.WiggleAmountTextbox = new System.Windows.Forms.TextBox();
             this.SecretSettingsLabel = new System.Windows.Forms.Label();
@@ -87,11 +88,10 @@
             this.KeyPreview2TextLabel = new System.Windows.Forms.Label();
             this.KeyPreviewUnpressedLabel = new System.Windows.Forms.Label();
             this.KeyPreviewPressedLabel = new System.Windows.Forms.Label();
-            this.BannerPicture = new System.Windows.Forms.PictureBox();
             this.TitlebarPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).BeginInit();
             this.KeyPreviewPanel.SuspendLayout();
             this.KeyPreview2Panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).BeginInit();
             this.SuspendLayout();
             // 
             // CloseButton
@@ -199,6 +199,17 @@
             this.TitlebarPanel.Size = new System.Drawing.Size(246, 31);
             this.TitlebarPanel.TabIndex = 0;
             this.TitlebarPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TitlebarPanel_MouseDown);
+            // 
+            // BannerPicture
+            // 
+            this.BannerPicture.Image = global::Keystrokes.Properties.Resources.program_banner_editor;
+            this.BannerPicture.Location = new System.Drawing.Point(4, 19);
+            this.BannerPicture.Name = "BannerPicture";
+            this.BannerPicture.Size = new System.Drawing.Size(155, 17);
+            this.BannerPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BannerPicture.TabIndex = 0;
+            this.BannerPicture.TabStop = false;
+            this.BannerPicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BannerPicture_MouseDown);
             // 
             // KeyPreviewPanel
             // 
@@ -409,9 +420,9 @@
             this.PresetNameCombobox.TabIndex = 1;
             this.PresetNameCombobox.Text = "Default";
             // 
-            // KeyEditorTooltip
+            // KeyEditorToolTip
             // 
-            this.KeyEditorTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.KeyEditorTooltip_Draw);
+            this.KeyEditorToolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.KeyEditorTooltip_Draw);
             // 
             // WiggleModeCheckbox
             // 
@@ -776,17 +787,6 @@
             this.KeyPreviewPressedLabel.TabIndex = 0;
             this.KeyPreviewPressedLabel.Text = "Pressed";
             // 
-            // BannerPicture
-            // 
-            this.BannerPicture.Image = global::Keystrokes.Properties.Resources.program_banner_editor;
-            this.BannerPicture.Location = new System.Drawing.Point(4, 19);
-            this.BannerPicture.Name = "BannerPicture";
-            this.BannerPicture.Size = new System.Drawing.Size(155, 17);
-            this.BannerPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.BannerPicture.TabIndex = 0;
-            this.BannerPicture.TabStop = false;
-            this.BannerPicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BannerPicture_MouseDown);
-            // 
             // KeyEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -852,11 +852,11 @@
             this.Text = "Keystrokes Editor";
             this.Load += new System.EventHandler(this.KeyEditor_Load);
             this.TitlebarPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).EndInit();
             this.KeyPreviewPanel.ResumeLayout(false);
             this.KeyPreviewPanel.PerformLayout();
             this.KeyPreview2Panel.ResumeLayout(false);
             this.KeyPreview2Panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -890,7 +890,7 @@
         private System.Windows.Forms.CheckBox KeyTextColorPressedInvertCheckbox;
         private System.Windows.Forms.ComboBox PresetNameCombobox;
         private System.Windows.Forms.PictureBox BannerPicture;
-        private System.Windows.Forms.ToolTip KeyEditorTooltip;
+        private System.Windows.Forms.ToolTip KeyEditorToolTip;
         private System.Windows.Forms.CheckBox WiggleModeCheckbox;
         private System.Windows.Forms.TextBox WiggleAmountTextbox;
         private System.Windows.Forms.Label SecretSettingsLabel;

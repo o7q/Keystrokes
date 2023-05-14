@@ -39,12 +39,13 @@
             this.CreditLabel = new System.Windows.Forms.Label();
             this.presetsLabel = new System.Windows.Forms.Label();
             this.Credit2Label = new System.Windows.Forms.Label();
-            this.MainTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.MainToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.OpenPresetsButton = new System.Windows.Forms.Button();
             this.RefreshPresetsButton = new System.Windows.Forms.Button();
             this.ClearKeysButton = new System.Windows.Forms.Button();
             this.DeletePresetButton = new System.Windows.Forms.Button();
             this.LoadPresetButton = new System.Windows.Forms.Button();
+            this.MainNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.TitlebarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).BeginInit();
             this.SuspendLayout();
@@ -159,9 +160,9 @@
             this.Credit2Label.TabIndex = 0;
             this.Credit2Label.Text = "by o7q";
             // 
-            // MainTooltip
+            // MainToolTip
             // 
-            this.MainTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.MainTooltip_Draw);
+            this.MainToolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.MainTooltip_Draw);
             // 
             // OpenPresetsButton
             // 
@@ -230,6 +231,14 @@
             this.LoadPresetButton.UseVisualStyleBackColor = true;
             this.LoadPresetButton.Click += new System.EventHandler(this.LoadPresetButton_Click);
             // 
+            // MainNotifyIcon
+            // 
+            this.MainNotifyIcon.BalloonTipText = "Keystrokes";
+            this.MainNotifyIcon.BalloonTipTitle = "Keystrokes";
+            this.MainNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("MainNotifyIcon.Icon")));
+            this.MainNotifyIcon.Text = "Keystrokes";
+            this.MainNotifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainNotifyIcon_MouseClick);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -274,8 +283,9 @@
         private System.Windows.Forms.Button MinimizeButton;
         private System.Windows.Forms.Label Credit2Label;
         private System.Windows.Forms.PictureBox BannerPicture;
-        private System.Windows.Forms.ToolTip MainTooltip;
+        private System.Windows.Forms.ToolTip MainToolTip;
         private System.Windows.Forms.Button OpenPresetsButton;
+        private System.Windows.Forms.NotifyIcon MainNotifyIcon;
     }
 }
 

@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Media = System.Windows.Media;
 using Keystrokes.Data;
-using static Keystrokes.Data.Storage;
 using static Keystrokes.Tools.Numbers;
 using static Keystrokes.Tools.Input.KeyInput;
 using static Keystrokes.Tools.Input.ControllerInput;
@@ -37,6 +36,9 @@ namespace Keystrokes
         bool useBackgroundImage = false;
         bool useBackgroundImagePressed = false;
 
+        Media.MediaPlayer sound = new Media.MediaPlayer();
+        Media.MediaPlayer soundPressed = new Media.MediaPlayer();
+
         bool useSound = false;
         bool useSoundPressed = false;
 
@@ -61,12 +63,15 @@ namespace Keystrokes
 
             // set form and font size
             Size = new Size(keyData.keySizeX, keyData.keySizeY);
-            KeyLabel.Font = new Font(KeyLabel.Font.Name, keyData.fontSize);
+            try
+            {
+                KeyLabel.Font = new Font(KeyLabel.Font.Name, keyData.keyFontSize);
+            } catch { }
 
             // update text
             Text = keyData.keyText;
             KeyLabel.Text = keyData.showText == true ? keyData.keyText : "";
-            KeyLabel.Font = new Font(keyData.keyFont, keyData.fontSize, keyData.fontStyle);
+            KeyLabel.Font = new Font(keyData.keyFont, keyData.keyFontSize, keyData.keyFontStyle);
             KeyLabel.Location = new Point((Width / 2) - (KeyLabel.Width / 2), (Height / 2) - (KeyLabel.Height / 2));
 
             // configure form color and opacity
@@ -91,9 +96,9 @@ namespace Keystrokes
                 useBackgroundImagePressed = true;
             }
 
-            if (keyData.sound != null && keyData.sound != "")
+            if (keyData.keySound != null && keyData.keySound != "")
                 useSound = true;
-            if (keyData.soundPressed != null && keyData.soundPressed != "")
+            if (keyData.keySoundPressed != null && keyData.keySoundPressed != "")
                 useSoundPressed = true;
 
             // update snap textboxes
@@ -120,22 +125,23 @@ namespace Keystrokes
             // bind tooltips
             string[] tooltipMap =
             {
-                "closeButton", "Close",
-                "lockButton", "Lock the key and prevent mouse interaction",
-                "snapXTextbox", "Snap X threshold (50 = one half key width snap size)",
-                "snapYTextbox", "Snap Y threshold (50 = one half key height snap size)",
+                "CloseButton", "Close",
+                "LockButton", "Lock the key and prevent mouse interaction",
+                "StatsButton", "Open the key stats window",
+                "SnapXTextbox", "Snap X threshold (50 = one half key width snap size)",
+                "SnapYTextbox", "Snap Y threshold (50 = one half key height snap size)",
             };
             #endregion
 
             // configure tooltips
             for (int i = 0; i < tooltipMap.Length; i += 2)
-                KeyTooltip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
+                KeyToolTip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
 
             // configure tooltip draw
-            KeyTooltip.AutoPopDelay = 10000;
-            KeyTooltip.OwnerDraw = true;
-            KeyTooltip.BackColor = Color.FromArgb(0, 0, 0);
-            KeyTooltip.ForeColor = Color.FromArgb(255, 255, 255);
+            KeyToolTip.AutoPopDelay = 10000;
+            KeyToolTip.OwnerDraw = true;
+            KeyToolTip.BackColor = Color.FromArgb(0, 0, 0);
+            KeyToolTip.ForeColor = Color.FromArgb(255, 255, 255);
 
             WriteConfig();
 
@@ -170,28 +176,21 @@ namespace Keystrokes
             ControllerPanel.SendToBack();
 
             Random random_rgb = new Random();
-            keyData.transparencyKeyR = keyData.transparencyKeyR == 0 ? random_rgb.Next(256) / 5 : keyData.transparencyKeyR;
-            keyData.transparencyKeyG = keyData.transparencyKeyG == 0 ? random_rgb.Next(256) / 5 : keyData.transparencyKeyG;
-            keyData.transparencyKeyB = keyData.transparencyKeyB == 0 ? random_rgb.Next(256) / 5 : keyData.transparencyKeyB;
+            keyData.keyTransparencyKeyR = keyData.keyTransparencyKeyR == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyR;
+            keyData.keyTransparencyKeyG = keyData.keyTransparencyKeyG == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyG;
+            keyData.keyTransparencyKeyB = keyData.keyTransparencyKeyB == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyB;
 
             // update key colors
             if (keyData.useTransparentBackground == true)
             {
-                BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
-                TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
+                TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
             }
 
             // fix flickering issue
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, ControllerPanel, new object[] { true });
 
             startTime = DateTime.Now;
-
-            keyData.KEY_BIRTHDAY = DateTime.Now.ToString("M/d/y h:m:s");
-
-
-            Random random = new Random();
-            int index = random.Next(key_names.Length);
-            keyData.KEY_NICKNAME = keyData.KEY_NICKNAME == null ? key_names[index] : keyData.KEY_NICKNAME;
         }
         // hide in task manager
         protected override CreateParams CreateParams
@@ -238,8 +237,7 @@ namespace Keystrokes
                         ControllerDebugLabel.Text = rotate.ToString();
                         ControllerDebugLabel.Location = new Point(Width - ControllerDebugLabel.Width, Height - ControllerDebugLabel.Height);
                     });
-                }
-                catch { }
+                } catch { }
 
                 int r = keyData.keyTextColorR;
                 int g = keyData.keyTextColorG;
@@ -249,7 +247,7 @@ namespace Keystrokes
                 {
                     if (keyPressed == false)
                     {
-                        keyData.KEY_PRESSED_COUNT++;
+                        keyData.KEY_PRESSED_AMOUNT++;
                         WriteConfig();
                     }
 
@@ -258,15 +256,14 @@ namespace Keystrokes
                     // update key colors
                     if (keyData.useTransparentBackground == true)
                     {
-                        BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                        BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                         try
                         {
                             Invoke((MethodInvoker)delegate
                             {
-                                TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                                TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                             });
-                        }
-                        catch { }
+                        } catch { }
                     }
                     else
                     {
@@ -294,15 +291,14 @@ namespace Keystrokes
                     // restore key colors
                     if (keyData.useTransparentBackground == true)
                     {
-                        BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                        BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                         try
                         {
                             Invoke((MethodInvoker)delegate
                             {
-                                TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                                TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                             });
-                        }
-                        catch { }
+                        } catch { }
                     }
                     else
                         BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
@@ -337,8 +333,7 @@ namespace Keystrokes
                     {
                         ControllerPanel.BackgroundImage = joystick_image;
                     });
-                }
-                catch { }
+                } catch { }
 
                 return;
             }
@@ -388,8 +383,7 @@ namespace Keystrokes
                     {
                         ControllerPanel.BackgroundImage = trigger_image;
                     });
-                }
-                catch { }
+                } catch { }
             }
             #endregion
 
@@ -502,8 +496,7 @@ namespace Keystrokes
                     {
                         ControllerPanel.BackgroundImage = dpad_image;
                     });
-                }
-                catch { }
+                } catch { }
             }
             #endregion
 
@@ -517,7 +510,7 @@ namespace Keystrokes
                     return;
                 keyPressed = true;
 
-                keyData.KEY_PRESSED_COUNT++;
+                keyData.KEY_PRESSED_AMOUNT++;
                 WriteConfig();
 
                 if (useBackgroundImagePressed == true)
@@ -525,24 +518,28 @@ namespace Keystrokes
 
                 if (useSoundPressed == true)
                 {
-                    var mediaPlayer = new Media.MediaPlayer();
-                    mediaPlayer.Open(new Uri(keyData.soundPressed, UriKind.RelativeOrAbsolute));
-                    mediaPlayer.Volume = keyData.soundPressedVolume;
-                    mediaPlayer.Play();
+                    try
+                    {
+                        Invoke((MethodInvoker)delegate
+                        {
+                            soundPressed.Open(new Uri(keyData.keySoundPressed, UriKind.RelativeOrAbsolute));
+                            soundPressed.Volume = keyData.keySoundPressedVolume;
+                            soundPressed.Play();
+                        });
+                    } catch { }
                 }
 
                 // update key colors
                 if (keyData.useTransparentBackground == true)
                 {
-                    BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                    BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                     try
                     {
                         Invoke((MethodInvoker)delegate
                         {
-                            TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                            TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                         });
-                    }
-                    catch { }
+                    } catch { }
                 }
                 else
                 {
@@ -553,13 +550,9 @@ namespace Keystrokes
                 }
 
                 if (keyData.keyTextColorPressedInvert == true)
-                {
                     KeyLabel.ForeColor = Color.FromArgb(255, (byte)~keyData.keyTextColorR, (byte)~keyData.keyTextColorG, (byte)~keyData.keyTextColorB);
-                }
                 else
-                {
                     KeyLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorPressedR, keyData.keyTextColorPressedG, keyData.keyTextColorPressedB);
-                }
             }
             else
             {
@@ -572,24 +565,28 @@ namespace Keystrokes
 
                 if (useSound == true)
                 {
-                    var mediaPlayer = new Media.MediaPlayer();
-                    mediaPlayer.Open(new Uri(keyData.sound, UriKind.RelativeOrAbsolute));
-                    mediaPlayer.Volume = keyData.soundVolume;
-                    mediaPlayer.Play();
+                    try
+                    {
+                        Invoke((MethodInvoker)delegate
+                        {
+                            sound.Open(new Uri(keyData.keySound, UriKind.RelativeOrAbsolute));
+                            sound.Volume = keyData.keySoundVolume;
+                            sound.Play();
+                        });
+                    } catch { }
                 }
 
                 // restore key colors
                 if (keyData.useTransparentBackground == true)
                 {
-                    BackColor = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                    BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                     try
                     {
                         Invoke((MethodInvoker)delegate
                         {
-                            TransparencyKey = Color.FromArgb(255, keyData.transparencyKeyR, keyData.transparencyKeyG, keyData.transparencyKeyB);
+                            TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                         });
-                    }
-                    catch { }
+                    } catch { }
                 }
                 else
                     BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
@@ -620,8 +617,7 @@ namespace Keystrokes
                         }
                     }
                 });
-            }
-            catch { }
+            } catch { }
         }
         private void WiggleMode_return()
         {
@@ -653,8 +649,7 @@ namespace Keystrokes
                         Top = wiggleModeTempLocY;
                     }
                 });
-            }
-            catch { }
+            } catch { }
         }
 
         private void CloseButton_Click(object sender, EventArgs e)
@@ -671,6 +666,20 @@ namespace Keystrokes
 
             ToggleControls();
             WriteConfig();
+        }
+
+        private void StatsButton_Click(object sender, EventArgs e)
+        {
+            TimeSpan duration = DateTime.Now - startTime;
+
+            string keyStats = "Times Pressed: " + keyData.KEY_PRESSED_AMOUNT + "\n" +
+                              "Times Clicked On: " + keyData.KEY_CLICKED_AMOUNT + "\n\n" +
+
+                              "Distance Travelled (meters): " + keyData.KEY_DISTANCE_AMOUNT + "\n\n" +
+
+                              "Creation Date: " + keyData.KEY_CREATION_DATE + "\n" +
+                              "Key Age: " + (keyData.KEY_AGE_DAYS + duration.Days) + ":" + (keyData.KEY_AGE_HOURS + duration.Hours) + ":" + (keyData.KEY_AGE_MINUTES + duration.Minutes) + ":" + (keyData.KEY_AGE_SECONDS + duration.Seconds);
+            MessageBox.Show(keyStats);
         }
 
         private void SnapXTextbox_TextChanged(object sender, EventArgs e)
@@ -715,9 +724,13 @@ namespace Keystrokes
 
         private void MoveKey(MouseEventArgs e)
         {
+            int x_location_current = Location.X;
+            int y_location_current = Location.Y;
+
             // move form
             if (e.Button == MouseButtons.Left && keyData.KEY_LOCKED == false)
             {
+                keyData.KEY_CLICKED_AMOUNT++;
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
@@ -731,9 +744,9 @@ namespace Keystrokes
             keyData.KEY_SNAP_Y = 50;
 
             // load snap textboxes into keyData
-            if (IsNumber(SnapXTextbox.Text, "int") == true && SnapXTextbox.Text != "")
+            if (IsNumber(SnapXTextbox.Text, "int") == true && SnapXTextbox.Text != "" && SnapXTextbox.Text != "0")
                 keyData.KEY_SNAP_X = int.Parse(SnapXTextbox.Text);
-            if (IsNumber(SnapYTextbox.Text, "int") == true && SnapYTextbox.Text != "")
+            if (IsNumber(SnapYTextbox.Text, "int") == true && SnapYTextbox.Text != "" && SnapYTextbox.Text != "0")
                 keyData.KEY_SNAP_Y = int.Parse(SnapYTextbox.Text);
 
             // calculate snap grid
@@ -757,6 +770,8 @@ namespace Keystrokes
 
             keyData.KEY_LOCATION_X = Location.X;
             keyData.KEY_LOCATION_Y = Location.Y;
+
+            keyData.KEY_DISTANCE_AMOUNT += (Math.Abs(Location.X - x_location_current) + Math.Abs(Location.Y - y_location_current)) / (float)(96 * 39.3701);
 
             // write changes to config
             WriteConfig();
@@ -803,10 +818,10 @@ namespace Keystrokes
         private void HandleClose(bool deleteKey)
         {
             TimeSpan duration = DateTime.Now - startTime;
-            keyData.KEY_LIFE_SECONDS += duration.Seconds;
-            keyData.KEY_LIFE_MINUTES += duration.Minutes;
-            keyData.KEY_LIFE_HOURS += duration.Hours;
-            keyData.KEY_LIFE_DAYS += duration.Days;
+            keyData.KEY_AGE_SECONDS += duration.Seconds;
+            keyData.KEY_AGE_MINUTES += duration.Minutes;
+            keyData.KEY_AGE_HOURS += duration.Hours;
+            keyData.KEY_AGE_DAYS += duration.Days;
             WriteConfig();
 
             // does preset exist? if yes, delete the key file
@@ -846,27 +861,6 @@ namespace Keystrokes
         private void ControllerDebugLabel_MouseDown(object sender, MouseEventArgs e)
         {
             MoveKey(e);
-        }
-
-        private void StatsButton_Click(object sender, EventArgs e)
-        {
-/*            // prevent multiple editors from being opened
-            FormCollection allForms = Application.OpenForms;
-            foreach (Form form in allForms)
-                if (form.Name == "KeyStats")
-                    return;
-
-            // display key with keyData_ settings
-            KeyStats newKeyStats = new KeyStats(keyData);
-            newKeyStats.Show();*/
-
-            TimeSpan duration = DateTime.Now - startTime;
-
-            string stats = "Times Pressed: " + keyData.KEY_PRESSED_COUNT + "\n\n" +
-                           "Nickname: " + keyData.KEY_NICKNAME + "\n" +
-                           "Birthday: " + keyData.KEY_BIRTHDAY + "\n" +
-                           "Key Age: " + (keyData.KEY_LIFE_DAYS + duration.Days) + ":" + (keyData.KEY_LIFE_HOURS + duration.Hours) + ":" + (keyData.KEY_LIFE_MINUTES + duration.Minutes) + ":" + (keyData.KEY_LIFE_SECONDS + duration.Seconds);
-            MessageBox.Show(stats);
         }
     }
 }

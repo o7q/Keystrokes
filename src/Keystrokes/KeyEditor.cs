@@ -138,13 +138,13 @@ namespace Keystrokes
 
             // configure tooltips
             for (int i = 0; i < tooltipMap.Length; i += 2)
-                KeyEditorTooltip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
+                KeyEditorToolTip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
 
             // configure tooltip draw
-            KeyEditorTooltip.AutoPopDelay = 10000;
-            KeyEditorTooltip.OwnerDraw = true;
-            KeyEditorTooltip.BackColor = Color.FromArgb(20, 22, 20);
-            KeyEditorTooltip.ForeColor = Color.FromArgb(150, 152, 150);
+            KeyEditorToolTip.AutoPopDelay = 10000;
+            KeyEditorToolTip.OwnerDraw = true;
+            KeyEditorToolTip.BackColor = Color.FromArgb(20, 22, 20);
+            KeyEditorToolTip.ForeColor = Color.FromArgb(150, 152, 150);
         }
 
         private void KeyEditorTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -242,7 +242,7 @@ namespace Keystrokes
             {
                 // create key
                 FinalizeKeyFields();
-                keyData_.fontSize = fontSize + controller_detect.Item3;
+                keyData_.keyFontSize = fontSize + controller_detect.Item3;
                 Directory.CreateDirectory("Keystrokes\\presets\\" + keyData_.presetName + "\\assets");
 
                 // display key with keyData_ settings
@@ -277,8 +277,8 @@ namespace Keystrokes
 
             // configure controller font size
             keyData_.keyFont = keyData_.keyFont == null ? "Microsoft Sans Serif" : keyData_.keyFont;
-            keyData_.fontSize = keyData_.isControllerKey == true ? keyData_.fontSize : fontSize;
-            keyData_.fontStyle = keyData_.fontStyle == FontStyle.Regular ? FontStyle.Regular : keyData_.fontStyle;
+            keyData_.keyFontSize = keyData_.isControllerKey == true ? keyData_.keyFontSize : fontSize;
+            keyData_.keyFontStyle = keyData_.keyFontStyle == FontStyle.Regular ? FontStyle.Regular : keyData_.keyFontStyle;
             keyData_.showText = ShowTextCheckbox.Checked;
 
             keyData_.keyColorPressedInvert = KeyColorPressedInvertCheckbox.Checked;
@@ -286,8 +286,8 @@ namespace Keystrokes
 
             keyData_.keyOpacity = float.Parse(KeyOpacityTextbox.Text) / 100;
 
-            keyData_.soundVolume = float.Parse(SoundVolumeTextbox.Text) / 100;
-            keyData_.soundPressedVolume = float.Parse(SoundPressedVolumeTextbox.Text) / 100;
+            keyData_.keySoundVolume = float.Parse(SoundVolumeTextbox.Text) / 100;
+            keyData_.keySoundPressedVolume = float.Parse(SoundPressedVolumeTextbox.Text) / 100;
 
             // configure border style
             switch (KeyBorderCombobox.Text)
@@ -301,6 +301,8 @@ namespace Keystrokes
 
             if (keyData_.useTransparentBackground == true)
                 keyData_.keyBorder = ButtonBorderStyle.None;
+
+            keyData_.KEY_CREATION_DATE = DateTime.Now.ToString("M/d/y h:m:s");
 
             keyData_.wiggleMode = WiggleModeCheckbox.Checked == true ? true : false;
             keyData_.wiggleMode_wiggleAmount = int.Parse(WiggleAmountTextbox.Text);
@@ -369,7 +371,7 @@ namespace Keystrokes
                 if (selectedFont.Italic == true) fontStyle = FontStyle.Italic;
                 if (selectedFont.Strikeout == true) fontStyle = FontStyle.Strikeout;
                 if (selectedFont.Underline == true) fontStyle = FontStyle.Underline;
-                keyData_.fontStyle = fontStyle;
+                keyData_.keyFontStyle = fontStyle;
 
                 // update key previews
                 KeyPreviewTextLabel.Font = new Font(selectedFont.Name, selectedFont.Size, fontStyle);
@@ -505,32 +507,32 @@ namespace Keystrokes
 
         private void SoundButton_Click(object sender, EventArgs e)
         {
-            keyData_.sound = PrepareAudioDialog();
+            keyData_.keySound = PrepareAudioDialog();
 
-            if (keyData_.sound == "")
+            if (keyData_.keySound == "")
                 return;
             SoundDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void SoundDisposeButton_Click(object sender, EventArgs e)
         {
-            keyData_.sound = "";
+            keyData_.keySound = "";
 
             SoundDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
 
         private void SoundPressedButton_Click(object sender, EventArgs e)
         {
-            keyData_.soundPressed = PrepareAudioDialog();
+            keyData_.keySoundPressed = PrepareAudioDialog();
 
-            if (keyData_.soundPressed == "")
+            if (keyData_.keySoundPressed == "")
                 return;
             SoundPressedDisposeButton.ForeColor = Color.FromArgb(255, 250, 220, 220);
         }
 
         private void SoundPressedDisposeButton_Click(object sender, EventArgs e)
         {
-            keyData_.soundPressed = "";
+            keyData_.keySoundPressed = "";
 
             SoundPressedDisposeButton.ForeColor = Color.FromArgb(255, 150, 150, 150);
         }
@@ -642,15 +644,23 @@ namespace Keystrokes
 
         private void ResizeForm()
         {
-            if (form_SizeX + KeyPreviewPanel.Width - 60 < form_SizeX)
-                return;
-            if (form_SizeY + KeyPreviewPanel.Height - 60 < form_SizeY)
-                return;
-
             // scale and move form and components
             Size = new Size(form_SizeX + KeyPreviewPanel.Width * 2 - 120, form_SizeY + KeyPreviewPanel.Height - 60);
             TitlebarPanel.Size = new Size(titlebarPanel_SizeX + KeyPreviewPanel.Width * 2 - 120, titlebarPanel_SizeY);
             CloseButton.Location = new Point(closeButton_LocationX + KeyPreviewPanel.Width * 2 - 120, closeButton_LocationY);
+
+            if (Width < form_SizeX)
+            {
+                Size = new Size(form_SizeX, Height);
+                TitlebarPanel.Size = new Size(titlebarPanel_SizeX, TitlebarPanel.Height);
+                CloseButton.Location = new Point(closeButton_LocationX, CloseButton.Location.Y);
+            }
+            if (Height < form_SizeY)
+            {
+                Size = new Size(Width, form_SizeY);
+                TitlebarPanel.Size = new Size(TitlebarPanel.Width, titlebarPanel_SizeY);
+                CloseButton.Location = new Point(CloseButton.Location.X, closeButton_LocationY);
+            }
         }
 
         private void TitlebarPanel_MouseDown(object sender, MouseEventArgs e)

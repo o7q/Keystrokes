@@ -34,7 +34,7 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.SnapXTextbox = new System.Windows.Forms.TextBox();
             this.SnapYTextbox = new System.Windows.Forms.TextBox();
-            this.KeyTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.KeyToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.LockButton = new System.Windows.Forms.Button();
             this.ControllerPanel = new System.Windows.Forms.Panel();
             this.ControllerDebugLabel = new System.Windows.Forms.Label();
@@ -71,29 +71,29 @@
             // 
             // SnapXTextbox
             // 
-            this.SnapXTextbox.BackColor = System.Drawing.Color.Black;
+            this.SnapXTextbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.SnapXTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SnapXTextbox.ForeColor = System.Drawing.Color.White;
-            this.SnapXTextbox.Location = new System.Drawing.Point(26, 0);
+            this.SnapXTextbox.Location = new System.Drawing.Point(20, 0);
             this.SnapXTextbox.Name = "SnapXTextbox";
-            this.SnapXTextbox.Size = new System.Drawing.Size(52, 13);
-            this.SnapXTextbox.TabIndex = 2;
+            this.SnapXTextbox.Size = new System.Drawing.Size(43, 13);
+            this.SnapXTextbox.TabIndex = 3;
             this.SnapXTextbox.TextChanged += new System.EventHandler(this.SnapXTextbox_TextChanged);
             // 
             // SnapYTextbox
             // 
-            this.SnapYTextbox.BackColor = System.Drawing.Color.Black;
+            this.SnapYTextbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.SnapYTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SnapYTextbox.ForeColor = System.Drawing.Color.White;
-            this.SnapYTextbox.Location = new System.Drawing.Point(26, 13);
+            this.SnapYTextbox.Location = new System.Drawing.Point(20, 13);
             this.SnapYTextbox.Name = "SnapYTextbox";
-            this.SnapYTextbox.Size = new System.Drawing.Size(52, 13);
-            this.SnapYTextbox.TabIndex = 3;
+            this.SnapYTextbox.Size = new System.Drawing.Size(43, 13);
+            this.SnapYTextbox.TabIndex = 4;
             this.SnapYTextbox.TextChanged += new System.EventHandler(this.SnapYTextbox_TextChanged);
             // 
-            // KeyTooltip
+            // KeyToolTip
             // 
-            this.KeyTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.KeyTooltip_Draw);
+            this.KeyToolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.KeyTooltip_Draw);
             // 
             // LockButton
             // 
@@ -139,7 +139,7 @@
             this.StatsButton.Location = new System.Drawing.Point(0, 40);
             this.StatsButton.Name = "StatsButton";
             this.StatsButton.Size = new System.Drawing.Size(20, 20);
-            this.StatsButton.TabIndex = 4;
+            this.StatsButton.TabIndex = 2;
             this.StatsButton.Text = "📚";
             this.StatsButton.UseVisualStyleBackColor = false;
             this.StatsButton.Click += new System.EventHandler(this.StatsButton_Click);
@@ -182,7 +182,7 @@
         private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.TextBox SnapXTextbox;
         private System.Windows.Forms.TextBox SnapYTextbox;
-        private System.Windows.Forms.ToolTip KeyTooltip;
+        private System.Windows.Forms.ToolTip KeyToolTip;
         private System.Windows.Forms.Button LockButton;
         private System.Windows.Forms.Panel ControllerPanel;
         private System.Windows.Forms.Label ControllerDebugLabel;

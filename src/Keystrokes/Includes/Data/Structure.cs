@@ -17,8 +17,8 @@ namespace Keystrokes.Data
         public int keySizeY;
 
         public string keyFont;
-        public float fontSize;
-        public FontStyle fontStyle;
+        public float keyFontSize;
+        public FontStyle keyFontStyle;
         public bool showText;
 
         public int keyColorR;
@@ -42,18 +42,18 @@ namespace Keystrokes.Data
         public float keyOpacity;
 
         public bool useTransparentBackground;
-        public int transparencyKeyR;
-        public int transparencyKeyG;
-        public int transparencyKeyB;
+        public int keyTransparencyKeyR;
+        public int keyTransparencyKeyG;
+        public int keyTransparencyKeyB;
 
         public string keyBackgroundImage;
         public string keyBackgroundImagePressed;
 
-        public string sound;
-        public float soundVolume;
+        public string keySound;
+        public float keySoundVolume;
         //
-        public string soundPressed;
-        public float soundPressedVolume;
+        public string keySoundPressed;
+        public float keySoundPressedVolume;
 
         public ButtonBorderStyle keyBorder;
 
@@ -67,13 +67,16 @@ namespace Keystrokes.Data
         public bool KEY_LOCKED;
 
         // stats
-        public int KEY_PRESSED_COUNT;
-        public string KEY_NICKNAME;
-        public string KEY_BIRTHDAY;
-        public int KEY_LIFE_SECONDS;
-        public int KEY_LIFE_MINUTES;
-        public int KEY_LIFE_HOURS;
-        public int KEY_LIFE_DAYS;
+        public int KEY_PRESSED_AMOUNT;
+        public int KEY_CLICKED_AMOUNT;
+
+        public float KEY_DISTANCE_AMOUNT;
+
+        public string KEY_CREATION_DATE;
+        public int KEY_AGE_SECONDS;
+        public int KEY_AGE_MINUTES;
+        public int KEY_AGE_HOURS;
+        public int KEY_AGE_DAYS;
 
         // secret
         public bool wiggleMode;

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Keystrokes.Data;
 using static Keystrokes.Data.Storage;
+using System.Threading;
 
 namespace Keystrokes
 {
@@ -40,7 +41,7 @@ namespace Keystrokes
             // bind tooltips
             string[] tooltipMap =
             {
-                "MinimizeButton", "Minimize",
+                "MinimizeButton", "Minimize to system tray",
                 "CloseButton", "Close",
                 "PresetListbox", "List of user presets",
                 "CreditLabel", "Keystrokes " + VERSION + " by o7q",
@@ -55,13 +56,13 @@ namespace Keystrokes
 
             // configure tooltips
             for (int i = 0; i < tooltipMap.Length; i += 2)
-                MainTooltip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
+                MainToolTip.SetToolTip(Controls.Find(tooltipMap[i], true)[0], tooltipMap[i + 1]);
 
             // configure tooltip draw
-            MainTooltip.AutoPopDelay = 10000;
-            MainTooltip.OwnerDraw = true;
-            MainTooltip.BackColor = Color.FromArgb(20, 20, 20);
-            MainTooltip.ForeColor = Color.FromArgb(150, 150, 150);
+            MainToolTip.AutoPopDelay = 10000;
+            MainToolTip.OwnerDraw = true;
+            MainToolTip.BackColor = Color.FromArgb(20, 20, 20);
+            MainToolTip.ForeColor = Color.FromArgb(150, 150, 150);
         }
 
         private void MainTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -105,8 +106,8 @@ namespace Keystrokes
                             case "keySizeY": keyData_.keySizeY = int.Parse(keySettingPair[1]); break;
 
                             case "keyFont": keyData_.keyFont = keySettingPair[1]; break;
-                            case "fontSize": keyData_.fontSize = float.Parse(keySettingPair[1]); break;
-                            case "fontStyle": keyData_.fontStyle = (FontStyle)Enum.Parse(typeof(FontStyle), keySettingPair[1]); break;
+                            case "keyFontSize": keyData_.keyFontSize = float.Parse(keySettingPair[1]); break;
+                            case "keyFontStyle": keyData_.keyFontStyle = (FontStyle)Enum.Parse(typeof(FontStyle), keySettingPair[1]); break;
                             case "showText": keyData_.showText = bool.Parse(keySettingPair[1]); break;
 
                             case "keyColorR": keyData_.keyColorR = int.Parse(keySettingPair[1]); break;
@@ -130,18 +131,18 @@ namespace Keystrokes
                             case "keyOpacity": keyData_.keyOpacity = float.Parse(keySettingPair[1]); break;
 
                             case "useTransparentBackground": keyData_.useTransparentBackground = bool.Parse(keySettingPair[1]); break;
-                            case "transparencyKeyR": keyData_.transparencyKeyR = int.Parse(keySettingPair[1]); break;
-                            case "transparencyKeyG": keyData_.transparencyKeyG = int.Parse(keySettingPair[1]); break;
-                            case "transparencyKeyB": keyData_.transparencyKeyB = int.Parse(keySettingPair[1]); break;
+                            case "keyTransparencyKeyR": keyData_.keyTransparencyKeyR = int.Parse(keySettingPair[1]); break;
+                            case "keyTransparencyKeyG": keyData_.keyTransparencyKeyG = int.Parse(keySettingPair[1]); break;
+                            case "keyTransparencyKeyB": keyData_.keyTransparencyKeyB = int.Parse(keySettingPair[1]); break;
 
                             case "keyBackgroundImage": keyData_.keyBackgroundImage = keySettingPair[1]; break;
                             case "keyBackgroundImagePressed": keyData_.keyBackgroundImagePressed = keySettingPair[1]; break;
 
-                            case "sound": keyData_.sound = keySettingPair[1]; break;
-                            case "soundVolume": keyData_.soundVolume = float.Parse(keySettingPair[1]); break;
+                            case "keySound": keyData_.keySound = keySettingPair[1]; break;
+                            case "keySoundVolume": keyData_.keySoundVolume = float.Parse(keySettingPair[1]); break;
                             //
-                            case "soundPressed": keyData_.soundPressed = keySettingPair[1]; break;
-                            case "soundPressedVolume": keyData_.soundPressedVolume = float.Parse(keySettingPair[1]); break;
+                            case "keySoundPressed": keyData_.keySoundPressed = keySettingPair[1]; break;
+                            case "keySoundPressedVolume": keyData_.keySoundPressedVolume = float.Parse(keySettingPair[1]); break;
 
                             case "keyBorder": keyData_.keyBorder = (ButtonBorderStyle)Enum.Parse(typeof(ButtonBorderStyle), keySettingPair[1]); break;
 
@@ -155,13 +156,16 @@ namespace Keystrokes
                             case "KEY_LOCKED": keyData_.KEY_LOCKED = bool.Parse(keySettingPair[1]); break;
 
                             // stats
-                            case "KEY_PRESSED_COUNT": keyData_.KEY_PRESSED_COUNT = int.Parse(keySettingPair[1]); break;
-                            case "KEY_NICKNAME": keyData_.KEY_NICKNAME = keySettingPair[1]; break;
-                            case "KEY_BIRTHDAY": keyData_.KEY_BIRTHDAY = keySettingPair[1]; break;
-                            case "KEY_LIFE_SECONDS": keyData_.KEY_LIFE_SECONDS = int.Parse(keySettingPair[1]); break;
-                            case "KEY_LIFE_MINUTES": keyData_.KEY_LIFE_MINUTES = int.Parse(keySettingPair[1]); break;
-                            case "KEY_LIFE_HOURS": keyData_.KEY_LIFE_HOURS = int.Parse(keySettingPair[1]); break;
-                            case "KEY_LIFE_DAYS": keyData_.KEY_LIFE_DAYS = int.Parse(keySettingPair[1]); break;
+                            case "KEY_PRESSED_AMOUNT": keyData_.KEY_PRESSED_AMOUNT = int.Parse(keySettingPair[1]); break;
+                            case "KEY_CLICKED_AMOUNT": keyData_.KEY_CLICKED_AMOUNT = int.Parse(keySettingPair[1]); break;
+
+                            case "KEY_DISTANCE_AMOUNT": keyData_.KEY_DISTANCE_AMOUNT = float.Parse(keySettingPair[1]); break;
+
+                            case "KEY_CREATION_DATE": keyData_.KEY_CREATION_DATE = keySettingPair[1]; break;
+                            case "KEY_AGE_SECONDS": keyData_.KEY_AGE_SECONDS = int.Parse(keySettingPair[1]); break;
+                            case "KEY_AGE_MINUTES": keyData_.KEY_AGE_MINUTES = int.Parse(keySettingPair[1]); break;
+                            case "KEY_AGE_HOURS": keyData_.KEY_AGE_HOURS = int.Parse(keySettingPair[1]); break;
+                            case "KEY_AGE_DAYS": keyData_.KEY_AGE_DAYS = int.Parse(keySettingPair[1]); break;
 
                             // secret
                             case "wiggleMode": keyData_.wiggleMode = bool.Parse(keySettingPair[1]); break;
@@ -174,7 +178,7 @@ namespace Keystrokes
                     }
                     catch (Exception ex)
                     {
-                        DialogResult prompt = MessageBox.Show("Unable to load key: " + name + "\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
+                        DialogResult prompt = MessageBox.Show("Unable to correctly load key: " + name + "\nWas it created in an older version?\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
                         if (prompt == DialogResult.Cancel)
                             return;
                         continue;
@@ -234,6 +238,15 @@ namespace Keystrokes
         private void MinimizeButton_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
+            ShowInTaskbar = false;
+            MainNotifyIcon.Visible = true;
+        }
+
+        private void MainNotifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = true;
+            MainNotifyIcon.Visible = false;
         }
 
         private void CloseButton_Click(object sender, EventArgs e)
