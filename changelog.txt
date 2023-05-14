@@ -1,3 +1,6 @@
+~ v1.6.0.0
+- Added a key stats window
+
 ~ v1.5.1.0
 - Fixed bug with keys not being created some of the time
 
