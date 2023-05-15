@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using Keystrokes.Data;
 using static Keystrokes.Data.Fixes;
 using static Keystrokes.Data.Storage;
+using static Keystrokes.Tools.Fonts;
 using static Keystrokes.Tools.Numbers;
 using static Keystrokes.Tools.Input.ControllerInput;
 
@@ -43,7 +44,9 @@ namespace Keystrokes
             InitializeComponent();
         }
 
-        System.Timers.Timer controllerPing = new System.Timers.Timer();
+        readonly System.Timers.Timer controllerPing = new System.Timers.Timer();
+
+        FontFamily nexa;
 
         private void KeyEditor_Load(object sender, EventArgs e)
         {
@@ -145,6 +148,18 @@ namespace Keystrokes
             KeyEditorToolTip.OwnerDraw = true;
             KeyEditorToolTip.BackColor = Color.FromArgb(20, 22, 20);
             KeyEditorToolTip.ForeColor = Color.FromArgb(150, 152, 150);
+
+            nexa = InitializeFont("Keystrokes.fonts.nexa_heavy.ttf");
+            CreateKeyButton.Font = new Font(nexa, 15.75f, FontStyle.Bold);
+            ConfigureKeyLabel.Font = new Font(nexa, 14.25f, FontStyle.Bold);
+            PresetNameLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeySizeLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeyTextLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeyColorLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeyColorPressedLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeyBorderStyleLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeyOpacityLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
+            KeyPreviewLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
         }
 
         private void KeyEditorTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -158,7 +173,7 @@ namespace Keystrokes
         private void CreateKeyButton_Click(object sender, EventArgs e)
         {
             // ask user to input key
-            CreateKeyButton.Font = new Font(CreateKeyButton.Font.Name, 10, FontStyle.Bold);
+            CreateKeyButton.Font = new Font(nexa, 10, FontStyle.Bold);
             CreateKeyButton.Text = "Press a key...";
 
             allowKeyCreation = true;
@@ -257,7 +272,7 @@ namespace Keystrokes
         {
             // restore create button text
             CreateKeyButton.Text = "Create Key";
-            CreateKeyButton.Font = new Font(CreateKeyButton.Font.Name, 16, FontStyle.Bold);
+            CreateKeyButton.Font = new Font(nexa, 16, FontStyle.Bold);
 
             // are user options valid? if not, assign them the default values
             if (IsNumber(KeyWidthTextbox.Text, "int") == false) KeyWidthTextbox.Text = "60";
@@ -547,6 +562,11 @@ namespace Keystrokes
             FormatKeyPreview();
         }
 
+        private void UseTransparentBackgroundCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            keyData_.useTransparentBackground = UseTransparentBackgroundCheckbox.Checked;
+        }
+
         private void CloseButton_Click(object sender, EventArgs e)
         {
             Close();
@@ -579,11 +599,18 @@ namespace Keystrokes
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (PresetNameCombobox.Text == "") PresetNameCombobox.Text = "Default";
+                if (PresetNameCombobox.Text == "")
+                    PresetNameCombobox.Text = "Default";
 
                 Directory.CreateDirectory("Keystrokes\\presets\\" + PresetNameCombobox.Text + "\\assets");
 
                 Image image = Image.FromFile(fileDialog.FileName);
+
+                // resize image
+                int x_size = (IsNumber(KeyWidthTextbox.Text, "int") || KeyWidthTextbox.Text != "0") == true ? int.Parse(KeyWidthTextbox.Text) : 60;
+                int y_size = (IsNumber(KeyHeightTextbox.Text, "int") || KeyHeightTextbox.Text != "0") == true ? int.Parse(KeyHeightTextbox.Text) : 60;
+                image = new Bitmap(image, new Size(x_size, y_size));
+
                 ImageCodecInfo codec = ImageCodecInfo.GetImageDecoders().FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
 
                 EncoderParameters parameters = new EncoderParameters(1);
@@ -663,27 +690,23 @@ namespace Keystrokes
             }
         }
 
-        private void TitlebarPanel_MouseDown(object sender, MouseEventArgs e)
+        private void MoveForm(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
+        }
+
+        private void TitlebarPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            MoveForm(e);
         }
 
         private void BannerPicture_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
-        }
-
-        private void UseTransparentBackgroundCheckbox_CheckedChanged(object sender, EventArgs e)
-        {
-            keyData_.useTransparentBackground = UseTransparentBackgroundCheckbox.Checked;
+            MoveForm(e);
         }
     }
 }

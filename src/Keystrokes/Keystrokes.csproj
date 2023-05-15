@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Includes\Data\Fixes.cs" />
     <Compile Include="Includes\Data\Storage.cs" />
+    <Compile Include="Includes\Tools\FontInitializer.cs" />
     <Compile Include="Includes\Tools\Input\ControllerInput\ControllerInput.cs" />
     <Compile Include="Includes\Tools\Input\ControllerInput\XInput.cs" />
     <Compile Include="Includes\Tools\Numbers.cs" />
@@ -97,6 +98,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="fonts\nexa_heavy.ttf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -128,5 +130,6 @@
     <None Include="Resources\program_banner_editor.png" />
     <None Include="Resources\program_banner.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

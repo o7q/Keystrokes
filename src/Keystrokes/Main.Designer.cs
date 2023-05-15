@@ -46,8 +46,13 @@
             this.DeletePresetButton = new System.Windows.Forms.Button();
             this.LoadPresetButton = new System.Windows.Forms.Button();
             this.MainNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.MainContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.UnloadKeysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TitlebarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).BeginInit();
+            this.MainContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // AddKeyButton
@@ -239,6 +244,36 @@
             this.MainNotifyIcon.Text = "Keystrokes";
             this.MainNotifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainNotifyIcon_MouseClick);
             // 
+            // MainContextMenuStrip
+            // 
+            this.MainContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowToolStripMenuItem,
+            this.UnloadKeysToolStripMenuItem,
+            this.ExitToolStripMenuItem});
+            this.MainContextMenuStrip.Name = "MainContextMenuStrip";
+            this.MainContextMenuStrip.Size = new System.Drawing.Size(181, 92);
+            // 
+            // ExitToolStripMenuItem
+            // 
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ExitToolStripMenuItem.Text = "Exit";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            // 
+            // ShowToolStripMenuItem
+            // 
+            this.ShowToolStripMenuItem.Name = "ShowToolStripMenuItem";
+            this.ShowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ShowToolStripMenuItem.Text = "Show";
+            this.ShowToolStripMenuItem.Click += new System.EventHandler(this.ShowToolStripMenuItem_Click);
+            // 
+            // UnloadKeysToolStripMenuItem
+            // 
+            this.UnloadKeysToolStripMenuItem.Name = "UnloadKeysToolStripMenuItem";
+            this.UnloadKeysToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.UnloadKeysToolStripMenuItem.Text = "Unload Keys";
+            this.UnloadKeysToolStripMenuItem.Click += new System.EventHandler(this.UnloadKeysToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -263,6 +298,7 @@
             this.Load += new System.EventHandler(this.Main_Load);
             this.TitlebarPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.BannerPicture)).EndInit();
+            this.MainContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -286,6 +322,10 @@
         private System.Windows.Forms.ToolTip MainToolTip;
         private System.Windows.Forms.Button OpenPresetsButton;
         private System.Windows.Forms.NotifyIcon MainNotifyIcon;
+        private System.Windows.Forms.ContextMenuStrip MainContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ShowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UnloadKeysToolStripMenuItem;
     }
 }
 

@@ -29,15 +29,15 @@ namespace Keystrokes
 
         KeyInfo keyData = new KeyInfo();
 
-        System.Timers.Timer inputPing = new System.Timers.Timer();
+        readonly System.Timers.Timer inputPing = new System.Timers.Timer();
 
         Image backgroundImage;
         Image backgroundImagePressed;
         bool useBackgroundImage = false;
         bool useBackgroundImagePressed = false;
 
-        Media.MediaPlayer sound = new Media.MediaPlayer();
-        Media.MediaPlayer soundPressed = new Media.MediaPlayer();
+        readonly Media.MediaPlayer sound = new Media.MediaPlayer();
+        readonly Media.MediaPlayer soundPressed = new Media.MediaPlayer();
 
         bool useSound = false;
         bool useSoundPressed = false;

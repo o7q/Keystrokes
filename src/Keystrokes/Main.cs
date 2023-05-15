@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Keystrokes.Data;
+using static Keystrokes.Tools.Fonts;
 using static Keystrokes.Data.Storage;
-using System.Threading;
 
 namespace Keystrokes
 {
@@ -48,7 +48,7 @@ namespace Keystrokes
                 "Credit2Label", "Keystrokes " + VERSION + " by o7q",
                 "RefreshPresetsButton", "Refresh presets list",
                 "LoadPresetButton", "Load selected preset",
-                "ClearKeysButton", "Unload all presets",
+                "ClearKeysButton", "Unload all keys",
                 "DeletePresetButton", "Delete selected preset",
                 "AddKeyButton", "Open key editor"
             };
@@ -63,6 +63,9 @@ namespace Keystrokes
             MainToolTip.OwnerDraw = true;
             MainToolTip.BackColor = Color.FromArgb(20, 20, 20);
             MainToolTip.ForeColor = Color.FromArgb(150, 150, 150);
+
+            FontFamily nexa = InitializeFont("Keystrokes.fonts.nexa_heavy.ttf");
+            AddKeyButton.Font = new Font(nexa, 9f, FontStyle.Bold);
         }
 
         private void MainTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -194,10 +197,7 @@ namespace Keystrokes
 
         private void ClearKeysButton_Click(object sender, EventArgs e)
         {
-            // dispose of all child forms
-            foreach (Form childForm in keys)
-                childForm.Close();
-            keys.Clear();
+            UnloadKeys();
         }
 
         private void DeletePresetButton_Click(object sender, EventArgs e)
@@ -235,6 +235,32 @@ namespace Keystrokes
             RefreshPresetList();
         }
 
+        private void MainNotifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                MainContextMenuStrip.Show(Cursor.Position);
+                return;
+            }
+
+            ShowForm();
+        }
+
+        private void ShowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowForm();
+        }
+
+        private void UnloadKeysToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UnloadKeys();
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
         private void MinimizeButton_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
@@ -242,16 +268,14 @@ namespace Keystrokes
             MainNotifyIcon.Visible = true;
         }
 
-        private void MainNotifyIcon_MouseClick(object sender, MouseEventArgs e)
-        {
-            WindowState = FormWindowState.Normal;
-            ShowInTaskbar = true;
-            MainNotifyIcon.Visible = false;
-        }
-
         private void CloseButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void KeymakerFormClosed(object sender, FormClosedEventArgs e)
+        {
+            RefreshPresetList();
         }
 
         private void RefreshPresetList()
@@ -266,27 +290,38 @@ namespace Keystrokes
                 PresetListbox.SelectedIndex = 0;
         }
 
-        private void KeymakerFormClosed(object sender, FormClosedEventArgs e)
+        private void UnloadKeys()
         {
-            RefreshPresetList();
+            // dispose of all child forms
+            foreach (Form childForm in keys)
+                childForm.Close();
+            keys.Clear();
+        }
+
+        private void ShowForm()
+        {
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = true;
+            MainNotifyIcon.Visible = false;
+        }
+
+        private void MoveForm(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
 
         private void TitlebarPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+            MoveForm(e);
         }
 
         private void BannerPicture_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+            MoveForm(e);
         }
     }
 }

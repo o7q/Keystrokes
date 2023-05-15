@@ -1,8 +1,10 @@
 ~ v1.6.0.0
 - Added a key stats window
 - The main window now minimizes to the system tray
-- Fixed a memory leak with sound effects system
+- Optimized the key image system
+- Updated the menu fonts
 - Fixed a bug within the key editor causing the window to scale incorrectly
+- Fixed a memory leak with the key sound effects system
 
 ~ v1.5.1.0
 - Fixed bug with keys not being created some of the time
