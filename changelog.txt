@@ -1,3 +1,6 @@
+~ v1.6.1.0
+- Fixed the main menu crash relating to font changes
+
 ~ v1.6.0.0
 - Added a key stats window
 - The main window now minimizes to the system tray

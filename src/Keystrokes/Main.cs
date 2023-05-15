@@ -64,8 +64,7 @@ namespace Keystrokes
             MainToolTip.BackColor = Color.FromArgb(20, 20, 20);
             MainToolTip.ForeColor = Color.FromArgb(150, 150, 150);
 
-            FontFamily nexa = InitializeFont("Keystrokes.fonts.nexa_heavy.ttf");
-            AddKeyButton.Font = new Font(nexa, 9f, FontStyle.Bold);
+            SetupFonts();
         }
 
         private void MainTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -303,6 +302,7 @@ namespace Keystrokes
             WindowState = FormWindowState.Normal;
             ShowInTaskbar = true;
             MainNotifyIcon.Visible = false;
+            SetupFonts();
         }
 
         private void MoveForm(MouseEventArgs e)
@@ -312,6 +312,12 @@ namespace Keystrokes
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
+        }
+
+        private void SetupFonts()
+        {
+            FontFamily nexa = InitializeFont("Keystrokes.fonts.nexa_heavy.ttf");
+            AddKeyButton.Font = new Font(nexa, 9f, FontStyle.Bold);
         }
 
         private void TitlebarPanel_MouseDown(object sender, MouseEventArgs e)
