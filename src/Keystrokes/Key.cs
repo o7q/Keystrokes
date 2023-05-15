@@ -727,10 +727,11 @@ namespace Keystrokes
             int x_location_current = Location.X;
             int y_location_current = Location.Y;
 
+            keyData.KEY_CLICKED_AMOUNT++;
+
             // move form
             if (e.Button == MouseButtons.Left && keyData.KEY_LOCKED == false)
             {
-                keyData.KEY_CLICKED_AMOUNT++;
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }

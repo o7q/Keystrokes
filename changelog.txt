@@ -1,3 +1,7 @@
+~ v1.6.2.0
+- Fixed a bug relating to locked keys not updating the "Timed Clicked On" stat
+- Reverted the new menu font to old one
+
 ~ v1.6.1.0
 - Fixed the main menu crash relating to font changes
 

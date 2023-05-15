@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using Keystrokes.Data;
 using static Keystrokes.Data.Fixes;
 using static Keystrokes.Data.Storage;
-using static Keystrokes.Tools.Fonts;
 using static Keystrokes.Tools.Numbers;
 using static Keystrokes.Tools.Input.ControllerInput;
 
@@ -45,8 +44,6 @@ namespace Keystrokes
         }
 
         readonly System.Timers.Timer controllerPing = new System.Timers.Timer();
-
-        FontFamily nexa;
 
         private void KeyEditor_Load(object sender, EventArgs e)
         {
@@ -148,18 +145,6 @@ namespace Keystrokes
             KeyEditorToolTip.OwnerDraw = true;
             KeyEditorToolTip.BackColor = Color.FromArgb(20, 22, 20);
             KeyEditorToolTip.ForeColor = Color.FromArgb(150, 152, 150);
-
-            nexa = InitializeFont("Keystrokes.fonts.nexa_heavy.ttf");
-            CreateKeyButton.Font = new Font(nexa, 15.75f, FontStyle.Bold);
-            ConfigureKeyLabel.Font = new Font(nexa, 14.25f, FontStyle.Bold);
-            PresetNameLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeySizeLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeyTextLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeyColorLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeyColorPressedLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeyBorderStyleLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeyOpacityLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
-            KeyPreviewLabel.Font = new Font(nexa, 9.75f, FontStyle.Regular);
         }
 
         private void KeyEditorTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -173,7 +158,7 @@ namespace Keystrokes
         private void CreateKeyButton_Click(object sender, EventArgs e)
         {
             // ask user to input key
-            CreateKeyButton.Font = new Font(nexa, 10, FontStyle.Bold);
+            CreateKeyButton.Font = new Font(CreateKeyButton.Font.Name, 10, FontStyle.Bold);
             CreateKeyButton.Text = "Press a key...";
 
             allowKeyCreation = true;
@@ -272,7 +257,7 @@ namespace Keystrokes
         {
             // restore create button text
             CreateKeyButton.Text = "Create Key";
-            CreateKeyButton.Font = new Font(nexa, 16, FontStyle.Bold);
+            CreateKeyButton.Font = new Font(CreateKeyButton.Font.Name, 16, FontStyle.Bold);
 
             // are user options valid? if not, assign them the default values
             if (IsNumber(KeyWidthTextbox.Text, "int") == false) KeyWidthTextbox.Text = "60";
