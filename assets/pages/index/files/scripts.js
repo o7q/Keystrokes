@@ -5,7 +5,7 @@ function bodyInit()
 
 function dlConfig()
 {
-    var ver = "v1.5.1.0";
+    var ver = "v1.6.0.0";
 
     document.getElementById("dlID").href = "https://github.com/o7q/Keystrokes/releases/download/" + ver + "/Keystrokes.exe";
     document.getElementById("dlID").innerHTML = "Download " + ver;
