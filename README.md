@@ -1,6 +1,6 @@
 <img src="assets/images/banner.png">
 
-# [<b>>> Download Latest</b>](https://github.com/o7q/Keystrokes/releases/download/v1.6.2.0/Keystrokes.exe)
+# [<b>>> Download Latest</b>](https://github.com/o7q/Keystrokes/releases/download/v1.7.0.0/Keystrokes.exe)
 ### Welcome! Keystrokes is a simple, highly customizable keystrokes visualizer. It allows the user to easily create and load multiple presets for different games, programs, and more.
 
 ---
