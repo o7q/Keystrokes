@@ -1,3 +1,10 @@
+~ v1.7.0.0
+- Added an option to display the clicks per second
+- Added an option to modify the key refresh rate
+- Updated the MessageBox and system tray icon visuals
+- Updated the stats menu
+- Fixed several minor bugs
+
 ~ v1.6.2.0
 - Fixed a bug relating to locked keys not updating the "Timed Clicked On" stat
 - Reverted the new menu font to old one

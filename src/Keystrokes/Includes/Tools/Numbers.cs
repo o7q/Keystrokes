@@ -7,11 +7,14 @@ namespace Keystrokes.Tools
         public static bool IsNumber(string input, string type)
         {
             if (type == "int")
-                if (int.TryParse(input, out _) == true) return true;
+                if (int.TryParse(input, out _) == true)
+                    return true;
             if (type == "float")
-                if (float.TryParse(input, out _) == true) return true;
+                if (float.TryParse(input, out _) == true)
+                    return true;
             if (type == "double")
-                if (double.TryParse(input, out _) == true) return true;
+                if (double.TryParse(input, out _) == true)
+                    return true;
             if (input == "")
                 return false;
 

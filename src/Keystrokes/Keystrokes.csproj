@@ -53,6 +53,13 @@
   <ItemGroup>
     <Compile Include="Includes\Data\Fixes.cs" />
     <Compile Include="Includes\Data\Storage.cs" />
+    <Compile Include="Includes\Tools\CustomMessageBox\CustomMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Includes\Tools\CustomMessageBox\CustomMessageBox.Designer.cs">
+      <DependentUpon>CustomMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Includes\Tools\Forms.cs" />
     <Compile Include="Includes\Tools\Input\ControllerInput\ControllerInput.cs" />
     <Compile Include="Includes\Tools\Input\ControllerInput\XInput.cs" />
     <Compile Include="Includes\Tools\Numbers.cs" />
@@ -78,6 +85,9 @@
     <Compile Include="Init.cs" />
     <Compile Include="Includes\Data\Structure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Includes\Tools\CustomMessageBox\CustomMessageBox.resx">
+      <DependentUpon>CustomMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Key.resx">
       <DependentUpon>Key.cs</DependentUpon>
     </EmbeddedResource>

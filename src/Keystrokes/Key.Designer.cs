@@ -39,6 +39,7 @@
             this.ControllerPanel = new System.Windows.Forms.Panel();
             this.ControllerDebugLabel = new System.Windows.Forms.Label();
             this.StatsButton = new System.Windows.Forms.Button();
+            this.CpsLabel = new System.Windows.Forms.Label();
             this.ControllerPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -144,12 +145,26 @@
             this.StatsButton.UseVisualStyleBackColor = false;
             this.StatsButton.Click += new System.EventHandler(this.StatsButton_Click);
             // 
+            // CpsLabel
+            // 
+            this.CpsLabel.AutoSize = true;
+            this.CpsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CpsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CpsLabel.ForeColor = System.Drawing.Color.White;
+            this.CpsLabel.Location = new System.Drawing.Point(0, 87);
+            this.CpsLabel.Name = "CpsLabel";
+            this.CpsLabel.Size = new System.Drawing.Size(13, 13);
+            this.CpsLabel.TabIndex = 0;
+            this.CpsLabel.Text = "0";
+            this.CpsLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CpsLabel_MouseDown);
+            // 
             // Key
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(100, 100);
+            this.Controls.Add(this.CpsLabel);
             this.Controls.Add(this.StatsButton);
             this.Controls.Add(this.ControllerPanel);
             this.Controls.Add(this.LockButton);
@@ -187,5 +202,6 @@
         private System.Windows.Forms.Panel ControllerPanel;
         private System.Windows.Forms.Label ControllerDebugLabel;
         private System.Windows.Forms.Button StatsButton;
+        private System.Windows.Forms.Label CpsLabel;
     }
 }

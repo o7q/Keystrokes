@@ -12,14 +12,17 @@ namespace Keystrokes.Data
         public string keyText;
         public string keyCode;
         public bool isControllerKey;
+        public int keyRefreshRate;
 
         public int keySizeX;
         public int keySizeY;
 
+        public bool displayCps;
+
         public string keyFont;
         public float keyFontSize;
         public FontStyle keyFontStyle;
-        public bool showText;
+        public bool displayText;
 
         public int keyColorR;
         public int keyColorG;
@@ -69,14 +72,15 @@ namespace Keystrokes.Data
         // stats
         public int KEY_PRESSED_AMOUNT;
         public int KEY_CLICKED_AMOUNT;
+        public int KEY_HIGHEST_CPS;
 
-        public float KEY_DISTANCE_AMOUNT;
+        public int KEY_PIXEL_DISTANCE;
+        public int MOUSE_PIXEL_DISTANCE;
+        public int JOYSTICK_ANGLE;
 
-        public string KEY_CREATION_DATE;
+        public string KEY_NICKNAME;
         public int KEY_AGE_SECONDS;
-        public int KEY_AGE_MINUTES;
-        public int KEY_AGE_HOURS;
-        public int KEY_AGE_DAYS;
+        public string KEY_CREATION_DATE;
 
         // secret
         public bool wiggleMode;

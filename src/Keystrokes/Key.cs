@@ -6,9 +6,11 @@ using System.Drawing;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using Media = System.Windows.Media;
 using Keystrokes.Data;
+using Keystrokes.Tools.CustomMessageBox;
+using static Keystrokes.Tools.Forms;
+using static Keystrokes.Data.Storage;
 using static Keystrokes.Tools.Numbers;
 using static Keystrokes.Tools.Input.KeyInput;
 using static Keystrokes.Tools.Input.ControllerInput;
@@ -17,19 +19,10 @@ namespace Keystrokes
 {
     public partial class Key : Form
     {
-        // configure mouse window events
-        public const int HT_CAPTION = 0x2;
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-
-        // grab dlls for mousedown
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
         KeyInfo keyData = new KeyInfo();
 
         readonly System.Timers.Timer inputPing = new System.Timers.Timer();
+        readonly System.Timers.Timer secPing = new System.Timers.Timer();
 
         Image backgroundImage;
         Image backgroundImagePressed;
@@ -42,10 +35,8 @@ namespace Keystrokes
         bool useSound = false;
         bool useSoundPressed = false;
 
-        int wiggleModeTempLocX = 0;
-        int wiggleModeTempLocY = 0;
-
-        DateTime startTime;
+        int wiggleModeLocationX_temp = 0;
+        int wiggleModeLocationY_temp = 0;
 
         public Key(KeyInfo keyData_)
         {
@@ -57,9 +48,15 @@ namespace Keystrokes
 
         private void Key_Load(object sender, EventArgs e)
         {
+            #region guiConfig
+
             // format key with keyData
             Left = keyData.KEY_LOCATION_X;
             Top = keyData.KEY_LOCATION_Y;
+            wiggleModeLocationX_temp = Left;
+            wiggleModeLocationY_temp = Top;
+            mouseLocationX_previous = Cursor.Position.X;
+            mouseLocationY_previous = Cursor.Position.Y;
 
             // set form and font size
             Size = new Size(keyData.keySizeX, keyData.keySizeY);
@@ -70,9 +67,12 @@ namespace Keystrokes
 
             // update text
             Text = keyData.keyText;
-            KeyLabel.Text = keyData.showText == true ? keyData.keyText : "";
+            KeyLabel.Text = keyData.displayText == true ? keyData.keyText : "";
             KeyLabel.Font = new Font(keyData.keyFont, keyData.keyFontSize, keyData.keyFontStyle);
             KeyLabel.Location = new Point((Width / 2) - (KeyLabel.Width / 2), (Height / 2) - (KeyLabel.Height / 2));
+            // update snap textboxes
+            SnapXTextbox.Text = keyData.KEY_SNAP_X.ToString();
+            SnapYTextbox.Text = keyData.KEY_SNAP_Y.ToString();
 
             // configure form color and opacity
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
@@ -101,9 +101,15 @@ namespace Keystrokes
             if (keyData.keySoundPressed != null && keyData.keySoundPressed != "")
                 useSoundPressed = true;
 
-            // update snap textboxes
-            SnapXTextbox.Text = keyData.KEY_SNAP_X.ToString();
-            SnapYTextbox.Text = keyData.KEY_SNAP_Y.ToString();
+            // generate id for key if it doesn't have one
+            if (keyData.keyId == null)
+                keyData.keyId = keyData.keyCode + "_" + GenerateID(8);
+
+            Random random_nickname = new Random();
+            int index = random_nickname.Next(key_names.Length);
+            keyData.KEY_NICKNAME = (keyData.KEY_NICKNAME == null || keyData.KEY_NICKNAME == "") ? key_names[index] : keyData.KEY_NICKNAME;
+
+            #region configureComponents
 
             // hide components
             CloseButton.Visible = false;
@@ -114,12 +120,59 @@ namespace Keystrokes
             ControllerDebugLabel.Visible = false;
             ControllerPanel.Visible = keyData.isControllerKey == true ? true : false;
 
+            CloseButton.Width = 20 * Width / 60;
+            CloseButton.Height = 20 * Height / 60;
+
+            LockButton.Width = 20 * Width / 60;
+            LockButton.Height = 20 * Height / 60;
+            LockButton.Location = new Point(LockButton.Left, CloseButton.Height);
+
+            StatsButton.Width = 20 * Width / 60;
+            StatsButton.Height = 20 * Height / 60;
+            StatsButton.Location = new Point(StatsButton.Left, CloseButton.Height + LockButton.Height);
+
+            SnapXTextbox.Location = new Point(CloseButton.Width, SnapXTextbox.Top);
+            SnapYTextbox.Location = new Point(CloseButton.Width, SnapYTextbox.Top);
+
+            CpsLabel.Location = new Point(CpsLabel.Location.X, Height - 16);
+            CpsLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
+            if (keyData.displayCps == true)
+                CpsLabel.Visible = true;
+            else
+                CpsLabel.Visible = false;
+            CpsLabel.SendToBack();
+
+            // configure controller panel
+            ControllerPanel.Width = Width;
+            ControllerPanel.Height = Height;
+            ControllerPanel.Location = new Point((Width / 2) - (ControllerPanel.Width / 2), (Height / 2) - (ControllerPanel.Height / 2));
+            ControllerPanel.BackColor = Color.Transparent;
+            ControllerPanel.BackgroundImageLayout = ImageLayout.None;
+            ControllerPanel.SendToBack();
+
+            #endregion
+
+            #region configureTransparencyKey
+
+            Random random_rgb = new Random();
+            keyData.keyTransparencyKeyR = keyData.keyTransparencyKeyR == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyR;
+            keyData.keyTransparencyKeyG = keyData.keyTransparencyKeyG == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyG;
+            keyData.keyTransparencyKeyB = keyData.keyTransparencyKeyB == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyB;
+
+            // update key colors
+            if (keyData.useTransparentBackground == true)
+            {
+                BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
+                TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
+            }
+
+            #endregion
+
+            // fix flickering issue
+            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, ControllerPanel, new object[] { true });
+
             // draw over everything
             TopMost = true;
-
-            // generate id for key if it doesn't have one
-            if (keyData.keyId == null)
-                keyData.keyId = keyData.keyCode + "_" + GenerateID(8);
 
             #region tooltipDictionary
             // bind tooltips
@@ -143,54 +196,19 @@ namespace Keystrokes
             KeyToolTip.BackColor = Color.FromArgb(0, 0, 0);
             KeyToolTip.ForeColor = Color.FromArgb(255, 255, 255);
 
+            #endregion
+
             WriteConfig();
 
             // configure and start inputPing
             inputPing.Elapsed += new ElapsedEventHandler(InputRefresh);
-            inputPing.Interval = 1;
+            inputPing.Interval = keyData.keyRefreshRate;
             inputPing.Enabled = true;
 
-            wiggleModeTempLocX = Left;
-            wiggleModeTempLocY = Top;
-
-            CloseButton.Width = 20 * Width / 60;
-            CloseButton.Height = 20 * Height / 60;
-
-            LockButton.Width = 20 * Width / 60;
-            LockButton.Height = 20 * Height / 60;
-            LockButton.Location = new Point(LockButton.Left, CloseButton.Height);
-
-            StatsButton.Width = 20 * Width / 60;
-            StatsButton.Height = 20 * Height / 60;
-            StatsButton.Location = new Point(StatsButton.Left, CloseButton.Height + LockButton.Height);
-
-            SnapXTextbox.Location = new Point(CloseButton.Width, SnapXTextbox.Top);
-            SnapYTextbox.Location = new Point(CloseButton.Width, SnapYTextbox.Top);
-
-            // configure controller panel
-            ControllerPanel.Width = Width;
-            ControllerPanel.Height = Height;
-            ControllerPanel.Location = new Point((Width / 2) - (ControllerPanel.Width / 2), (Height / 2) - (ControllerPanel.Height / 2));
-            ControllerPanel.BackColor = Color.Transparent;
-            ControllerPanel.BackgroundImageLayout = ImageLayout.None;
-            ControllerPanel.SendToBack();
-
-            Random random_rgb = new Random();
-            keyData.keyTransparencyKeyR = keyData.keyTransparencyKeyR == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyR;
-            keyData.keyTransparencyKeyG = keyData.keyTransparencyKeyG == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyG;
-            keyData.keyTransparencyKeyB = keyData.keyTransparencyKeyB == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyB;
-
-            // update key colors
-            if (keyData.useTransparentBackground == true)
-            {
-                BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
-                TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
-            }
-
-            // fix flickering issue
-            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, ControllerPanel, new object[] { true });
-
-            startTime = DateTime.Now;
+            // configure and start secPing
+            secPing.Elapsed += new ElapsedEventHandler(secRefresh);
+            secPing.Interval = 1000;
+            secPing.Enabled = true;
         }
         // hide in task manager
         protected override CreateParams CreateParams
@@ -219,9 +237,20 @@ namespace Keystrokes
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(255, r, g, b), keyData.keyBorder);
         }
 
+        float rotate_previous;
         bool keyPressed = false;
+
+        int mouseLocationX_previous;
+        int mouseLocationY_previous;
         private void InputRefresh(object source, ElapsedEventArgs e)
         {
+            if ((Math.Abs(Cursor.Position.X - mouseLocationX_previous) + Math.Abs(Cursor.Position.Y - mouseLocationY_previous)) != 0)
+            {
+                keyData.MOUSE_PIXEL_DISTANCE += Math.Abs(Cursor.Position.X - mouseLocationX_previous) + Math.Abs(Cursor.Position.Y - mouseLocationY_previous);
+                mouseLocationX_previous = Cursor.Position.X;
+                mouseLocationY_previous = Cursor.Position.Y;
+            }
+
             #region CONTROLLER_JOYSTICK
             if (keyData.keyCode == "CONTROLLER_LEFT_JOYSTICK" || keyData.keyCode == "CONTROLLER_RIGHT_JOYSTICK")
             {
@@ -229,6 +258,12 @@ namespace Keystrokes
                 int x = (int)(ControllerPanel.Width / 5 * joystick_state.Item1);
                 int y = (int)(ControllerPanel.Height / 5 * joystick_state.Item2);
                 float rotate = joystick_state.Item3;
+
+                if (Math.Abs(rotate_previous - rotate) > 10)
+                {
+                    keyData.JOYSTICK_ANGLE += 10;
+                    rotate_previous = rotate;
+                }
 
                 try
                 {
@@ -246,10 +281,7 @@ namespace Keystrokes
                 if (KeyDetect(keyData.keyCode, keyData.isControllerKey) == true)
                 {
                     if (keyPressed == false)
-                    {
                         keyData.KEY_PRESSED_AMOUNT++;
-                        WriteConfig();
-                    }
 
                     keyPressed = true;
 
@@ -278,12 +310,14 @@ namespace Keystrokes
                         r = (byte)~keyData.keyTextColorR;
                         g = (byte)~keyData.keyTextColorG;
                         b = (byte)~keyData.keyTextColorB;
+                        CpsLabel.ForeColor = Color.FromArgb(255, (byte)~keyData.keyTextColorR, (byte)~keyData.keyTextColorG, (byte)~keyData.keyTextColorB);
                     }
                     else
                     {
                         r = keyData.keyTextColorPressedR;
                         g = keyData.keyTextColorPressedG;
                         b = keyData.keyTextColorPressedB;
+                        CpsLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorPressedR, keyData.keyTextColorPressedG, keyData.keyTextColorPressedB);
                     }
                 }
                 else
@@ -306,6 +340,7 @@ namespace Keystrokes
                     r = keyData.keyTextColorR;
                     g = keyData.keyTextColorG;
                     b = keyData.keyTextColorB;
+                    CpsLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
 
                     keyPressed = false;
                 }
@@ -343,6 +378,14 @@ namespace Keystrokes
             if (keyData.keyCode == "CONTROLLER_LEFT_TRIGGER" || keyData.keyCode == "CONTROLLER_RIGHT_TRIGGER")
             {
                 float trigger_state = CalculateTrigger(keyData.keyCode);
+
+                if (trigger_state > 0.5 && keyPressed == false)
+                {
+                    keyData.KEY_PRESSED_AMOUNT++;
+                    keyPressed = true;
+                }
+                if (trigger_state < 0.5)
+                    keyPressed = false;
 
                 int r = keyData.keyTextColorR;
                 int g = keyData.keyTextColorG;
@@ -384,6 +427,8 @@ namespace Keystrokes
                         ControllerPanel.BackgroundImage = trigger_image;
                     });
                 } catch { }
+
+                return;
             }
             #endregion
 
@@ -497,6 +542,8 @@ namespace Keystrokes
                         ControllerPanel.BackgroundImage = dpad_image;
                     });
                 } catch { }
+
+                return;
             }
             #endregion
 
@@ -510,8 +557,9 @@ namespace Keystrokes
                     return;
                 keyPressed = true;
 
+                clicks++;
+                clicks_total++;
                 keyData.KEY_PRESSED_AMOUNT++;
-                WriteConfig();
 
                 if (useBackgroundImagePressed == true)
                     BackgroundImage = backgroundImagePressed;
@@ -550,9 +598,15 @@ namespace Keystrokes
                 }
 
                 if (keyData.keyTextColorPressedInvert == true)
+                {
                     KeyLabel.ForeColor = Color.FromArgb(255, (byte)~keyData.keyTextColorR, (byte)~keyData.keyTextColorG, (byte)~keyData.keyTextColorB);
+                    CpsLabel.ForeColor = Color.FromArgb(255, (byte)~keyData.keyTextColorR, (byte)~keyData.keyTextColorG, (byte)~keyData.keyTextColorB);
+                }
                 else
+                {
                     KeyLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorPressedR, keyData.keyTextColorPressedG, keyData.keyTextColorPressedB);
+                    CpsLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorPressedR, keyData.keyTextColorPressedG, keyData.keyTextColorPressedB);
+                }
             }
             else
             {
@@ -592,6 +646,7 @@ namespace Keystrokes
                     BackColor = Color.FromArgb(255, keyData.keyColorR, keyData.keyColorG, keyData.keyColorB);
 
                 KeyLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
+                CpsLabel.ForeColor = Color.FromArgb(255, keyData.keyTextColorR, keyData.keyTextColorG, keyData.keyTextColorB);
 
                 WiggleMode_return();
             }
@@ -610,10 +665,22 @@ namespace Keystrokes
 
                         switch (direction)
                         {
-                            case 0: Top -= 1 + keyData.wiggleMode_biasUp; break;
-                            case 1: Top += 1 + keyData.wiggleMode_biasDown; break;
-                            case 2: Left -= 1 + keyData.wiggleMode_biasLeft; break;
-                            case 3: Left += 1 + keyData.wiggleMode_biasRight; break;
+                            case 0:
+                                Top -= 1 + keyData.wiggleMode_biasUp;
+                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasUp;
+                                break;
+                            case 1:
+                                Top += 1 + keyData.wiggleMode_biasDown;
+                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasDown;
+                                break;
+                            case 2:
+                                Left -= 1 + keyData.wiggleMode_biasLeft;
+                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasLeft;
+                                break;
+                            case 3:
+                                Left += 1 + keyData.wiggleMode_biasRight;
+                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasRight;
+                                break;
                         }
                     }
                 });
@@ -630,8 +697,8 @@ namespace Keystrokes
                         keyPressed = false;
                         int startX = Location.X;
                         int startY = Location.Y;
-                        int endX = wiggleModeTempLocX;
-                        int endY = wiggleModeTempLocY;
+                        int endX = wiggleModeLocationX_temp;
+                        int endY = wiggleModeLocationY_temp;
                         int steps = 25;
                         double delay = 0.0025;
 
@@ -641,15 +708,42 @@ namespace Keystrokes
                             int y = startY + (endY - startY) * i / steps;
                             Location = new Point(x, y);
 
+                            keyData.KEY_PIXEL_DISTANCE += x + y;
+
                             var sw = Stopwatch.StartNew();
                             while (sw.ElapsedTicks < Math.Round(delay * Stopwatch.Frequency)) { }
                         }
 
-                        Left = wiggleModeTempLocX;
-                        Top = wiggleModeTempLocY;
+                        Left = wiggleModeLocationX_temp;
+                        Top = wiggleModeLocationY_temp;
                     }
                 });
             } catch { }
+        }
+
+        int clicks = 0;
+        int clicks_total = 0;
+        int sec = 0;
+        private void secRefresh(object source, ElapsedEventArgs e)
+        {
+            sec++;
+            int cps = clicks_total / sec;
+            keyData.KEY_HIGHEST_CPS = keyData.KEY_HIGHEST_CPS < cps ? cps : keyData.KEY_HIGHEST_CPS;
+            try
+            {
+                Invoke((MethodInvoker)delegate
+                {
+                    CpsLabel.Text = cps.ToString();
+                });
+            }
+            catch { }
+            if (clicks == 0)
+            {
+                clicks_total = 0;
+                sec = 0;
+            }
+            clicks = 0;
+            keyData.KEY_AGE_SECONDS++;
         }
 
         private void CloseButton_Click(object sender, EventArgs e)
@@ -665,21 +759,35 @@ namespace Keystrokes
                 keyData.KEY_LOCKED = false;
 
             ToggleControls();
-            WriteConfig();
         }
 
         private void StatsButton_Click(object sender, EventArgs e)
         {
-            TimeSpan duration = DateTime.Now - startTime;
+            float key_distance = (keyData.KEY_PIXEL_DISTANCE / (float)96) / (float)12;
+            float mouse_distance = (keyData.MOUSE_PIXEL_DISTANCE / (float)96) / (float)63360;
+            float joystick_odometer = (float)(((2.1 * Math.PI) * (keyData.JOYSTICK_ANGLE / (float)360)) / (float)160900);
 
-            string keyStats = "Times Pressed: " + keyData.KEY_PRESSED_AMOUNT + "\n" +
-                              "Times Clicked On: " + keyData.KEY_CLICKED_AMOUNT + "\n\n" +
+            int days = keyData.KEY_AGE_SECONDS / (24 * 60 * 60);
+            int hours = (keyData.KEY_AGE_SECONDS % (24 * 60 * 60)) / (60 * 60);
+            int minutes = (keyData.KEY_AGE_SECONDS % (60 * 60)) / 60;
+            int seconds = keyData.KEY_AGE_SECONDS % 60;
+            string formattedTime = string.Format("{0:00}:{1:00}:{2:00}:{3:00}", days, hours, minutes, seconds);
 
-                              "Distance Travelled (meters): " + keyData.KEY_DISTANCE_AMOUNT + "\n\n" +
+            string keyStats = "Key Stats:\n\n" + 
+                              "Times Pressed: " + keyData.KEY_PRESSED_AMOUNT + "\n" +
+                              "Times Clicked On: " + keyData.KEY_CLICKED_AMOUNT + "\n" +
+                              "Highest CPS: " + keyData.KEY_HIGHEST_CPS + "\n\n" +
 
-                              "Creation Date: " + keyData.KEY_CREATION_DATE + "\n" +
-                              "Key Age: " + (keyData.KEY_AGE_DAYS + duration.Days) + ":" + (keyData.KEY_AGE_HOURS + duration.Hours) + ":" + (keyData.KEY_AGE_MINUTES + duration.Minutes) + ":" + (keyData.KEY_AGE_SECONDS + duration.Seconds);
-            MessageBox.Show(keyStats);
+                              "Key Distance Travelled: " + key_distance + " feet \n" +
+                              "Mouse Distance Travelled: " + mouse_distance + " miles \n" +
+                              "Joystick Odometer: " + joystick_odometer + " miles \n\n" +
+
+                              "Nickname: " + keyData.KEY_NICKNAME + "\n" +
+                              "Key Age: " + formattedTime + "\n" +
+                              "Creation Date: " + keyData.KEY_CREATION_DATE;
+            CustomMessageBox statsWindow = new CustomMessageBox();
+            statsWindow.MessageText = keyStats;
+            statsWindow.ShowDialog();
         }
 
         private void SnapXTextbox_TextChanged(object sender, EventArgs e)
@@ -766,16 +874,13 @@ namespace Keystrokes
             Left = x_location_new;
             Top = y_location_new;
 
-            wiggleModeTempLocX = Left;
-            wiggleModeTempLocY = Top;
+            wiggleModeLocationX_temp = Left;
+            wiggleModeLocationY_temp = Top;
 
             keyData.KEY_LOCATION_X = Location.X;
             keyData.KEY_LOCATION_Y = Location.Y;
 
-            keyData.KEY_DISTANCE_AMOUNT += (Math.Abs(Location.X - x_location_current) + Math.Abs(Location.Y - y_location_current)) / (float)(96 * 39.3701);
-
-            // write changes to config
-            WriteConfig();
+            keyData.KEY_PIXEL_DISTANCE += Math.Abs(Location.X - x_location_current) + Math.Abs(Location.Y - y_location_current);
         }
 
         private void ToggleControls()
@@ -818,11 +923,6 @@ namespace Keystrokes
 
         private void HandleClose(bool deleteKey)
         {
-            TimeSpan duration = DateTime.Now - startTime;
-            keyData.KEY_AGE_SECONDS += duration.Seconds;
-            keyData.KEY_AGE_MINUTES += duration.Minutes;
-            keyData.KEY_AGE_HOURS += duration.Hours;
-            keyData.KEY_AGE_DAYS += duration.Days;
             WriteConfig();
 
             // does preset exist? if yes, delete the key file
@@ -849,7 +949,7 @@ namespace Keystrokes
             MoveKey(e);
         }
 
-        private void CountLabel_MouseDown(object sender, MouseEventArgs e)
+        private void CpsLabel_MouseDown(object sender, MouseEventArgs e)
         {
             MoveKey(e);
         }

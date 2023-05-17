@@ -108,7 +108,7 @@
             // 
             this.MinimizeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MinimizeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.MinimizeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.MinimizeButton.Location = new System.Drawing.Point(183, 3);
             this.MinimizeButton.Name = "MinimizeButton";
             this.MinimizeButton.Size = new System.Drawing.Size(25, 25);
@@ -121,7 +121,7 @@
             // 
             this.CloseButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.CloseButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.CloseButton.Location = new System.Drawing.Point(208, 3);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(25, 25);
@@ -246,31 +246,34 @@
             // 
             // MainContextMenuStrip
             // 
+            this.MainContextMenuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.MainContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ShowToolStripMenuItem,
             this.UnloadKeysToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.MainContextMenuStrip.Name = "MainContextMenuStrip";
-            this.MainContextMenuStrip.Size = new System.Drawing.Size(140, 70);
+            this.MainContextMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.MainContextMenuStrip.ShowImageMargin = false;
+            this.MainContextMenuStrip.Size = new System.Drawing.Size(115, 70);
             // 
             // ShowToolStripMenuItem
             // 
             this.ShowToolStripMenuItem.Name = "ShowToolStripMenuItem";
-            this.ShowToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.ShowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ShowToolStripMenuItem.Text = "Show";
             this.ShowToolStripMenuItem.Click += new System.EventHandler(this.ShowToolStripMenuItem_Click);
             // 
             // UnloadKeysToolStripMenuItem
             // 
             this.UnloadKeysToolStripMenuItem.Name = "UnloadKeysToolStripMenuItem";
-            this.UnloadKeysToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.UnloadKeysToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.UnloadKeysToolStripMenuItem.Text = "Unload Keys";
             this.UnloadKeysToolStripMenuItem.Click += new System.EventHandler(this.UnloadKeysToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ExitToolStripMenuItem.Text = "Exit";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 

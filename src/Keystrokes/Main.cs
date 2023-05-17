@@ -3,24 +3,15 @@ using System.IO;
 using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using Keystrokes.Data;
+using static Keystrokes.Tools.Forms;
 using static Keystrokes.Data.Storage;
+using Keystrokes.Tools.CustomMessageBox;
 
 namespace Keystrokes
 {
     public partial class Main : Form
     {
-        // configure mouse window events
-        public const int HT_CAPTION = 0x2;
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-
-        // grab dlls for mousedown
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
         public Main()
         {
             InitializeComponent();
@@ -62,6 +53,9 @@ namespace Keystrokes
             MainToolTip.OwnerDraw = true;
             MainToolTip.BackColor = Color.FromArgb(20, 20, 20);
             MainToolTip.ForeColor = Color.FromArgb(150, 150, 150);
+
+            CustomRenderer renderer = new CustomRenderer();
+            MainContextMenuStrip.Renderer = renderer;
         }
 
         private void MainTooltip_Draw(object sender, DrawToolTipEventArgs e)
@@ -100,14 +94,17 @@ namespace Keystrokes
                             case "keyText": keyData_.keyText = keySettingPair[1]; break;
                             case "keyCode": keyData_.keyCode = keySettingPair[1]; break;
                             case "isControllerKey": keyData_.isControllerKey = bool.Parse(keySettingPair[1]); break;
+                            case "keyRefreshRate": keyData_.keyRefreshRate = int.Parse(keySettingPair[1]); break;
 
                             case "keySizeX": keyData_.keySizeX = int.Parse(keySettingPair[1]); break;
                             case "keySizeY": keyData_.keySizeY = int.Parse(keySettingPair[1]); break;
 
+                            case "displayCps": keyData_.displayCps = bool.Parse(keySettingPair[1]); break;
+
                             case "keyFont": keyData_.keyFont = keySettingPair[1]; break;
                             case "keyFontSize": keyData_.keyFontSize = float.Parse(keySettingPair[1]); break;
                             case "keyFontStyle": keyData_.keyFontStyle = (FontStyle)Enum.Parse(typeof(FontStyle), keySettingPair[1]); break;
-                            case "showText": keyData_.showText = bool.Parse(keySettingPair[1]); break;
+                            case "displayText": keyData_.displayText = bool.Parse(keySettingPair[1]); break;
 
                             case "keyColorR": keyData_.keyColorR = int.Parse(keySettingPair[1]); break;
                             case "keyColorG": keyData_.keyColorG = int.Parse(keySettingPair[1]); break;
@@ -157,14 +154,15 @@ namespace Keystrokes
                             // stats
                             case "KEY_PRESSED_AMOUNT": keyData_.KEY_PRESSED_AMOUNT = int.Parse(keySettingPair[1]); break;
                             case "KEY_CLICKED_AMOUNT": keyData_.KEY_CLICKED_AMOUNT = int.Parse(keySettingPair[1]); break;
+                            case "KEY_HIGHEST_CPS": keyData_.KEY_HIGHEST_CPS = int.Parse(keySettingPair[1]); break;
 
-                            case "KEY_DISTANCE_AMOUNT": keyData_.KEY_DISTANCE_AMOUNT = float.Parse(keySettingPair[1]); break;
+                            case "KEY_PIXEL_DISTANCE": keyData_.KEY_PIXEL_DISTANCE= int.Parse(keySettingPair[1]); break;
+                            case "MOUSE_PIXEL_DISTANCE": keyData_.MOUSE_PIXEL_DISTANCE = int.Parse(keySettingPair[1]); break;
+                            case "JOYSTICK_ANGLE": keyData_.JOYSTICK_ANGLE = int.Parse(keySettingPair[1]); break;
 
-                            case "KEY_CREATION_DATE": keyData_.KEY_CREATION_DATE = keySettingPair[1]; break;
+                            case "KEY_NICKNAME": keyData_.KEY_NICKNAME = keySettingPair[1]; break;
                             case "KEY_AGE_SECONDS": keyData_.KEY_AGE_SECONDS = int.Parse(keySettingPair[1]); break;
-                            case "KEY_AGE_MINUTES": keyData_.KEY_AGE_MINUTES = int.Parse(keySettingPair[1]); break;
-                            case "KEY_AGE_HOURS": keyData_.KEY_AGE_HOURS = int.Parse(keySettingPair[1]); break;
-                            case "KEY_AGE_DAYS": keyData_.KEY_AGE_DAYS = int.Parse(keySettingPair[1]); break;
+                            case "KEY_CREATION_DATE": keyData_.KEY_CREATION_DATE = keySettingPair[1]; break;
 
                             // secret
                             case "wiggleMode": keyData_.wiggleMode = bool.Parse(keySettingPair[1]); break;
@@ -177,8 +175,11 @@ namespace Keystrokes
                     }
                     catch (Exception ex)
                     {
-                        DialogResult prompt = MessageBox.Show("Unable to correctly load key: " + name + "\nWas it created in an older version?\n\nPress OK to attempt farther loading\nPress CANCEL to abort\n\n" + ex, "", MessageBoxButtons.OKCancel);
-                        if (prompt == DialogResult.Cancel)
+                        CustomMessageBox promptWindow = new CustomMessageBox();
+                        promptWindow.MessageText = "Unable to correctly load key: " + name + "\nWas it created in an older version?\n\nPress OK to attempt farther loading\nPress CLOSE to abort\n\n" + ex;
+                        promptWindow.ShowDialog();
+                        
+                        if (promptWindow.Result == DialogResult.Cancel)
                             return;
                         continue;
                     }
@@ -217,7 +218,7 @@ namespace Keystrokes
 
             // open key editor
             KeyEditor keyEditor = new KeyEditor();
-            keyEditor.FormClosed += KeymakerFormClosed;
+            keyEditor.FormClosed += KeyEditorFormClosed;
             keyEditor.Show();
         }
 
@@ -266,10 +267,11 @@ namespace Keystrokes
 
         private void CloseButton_Click(object sender, EventArgs e)
         {
+            UnloadKeys();
             Close();
         }
 
-        private void KeymakerFormClosed(object sender, FormClosedEventArgs e)
+        private void KeyEditorFormClosed(object sender, FormClosedEventArgs e)
         {
             RefreshPresetList();
         }
@@ -301,23 +303,36 @@ namespace Keystrokes
             MainNotifyIcon.Visible = false;
         }
 
-        private void MoveForm(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
-        }
-
         private void TitlebarPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            MoveForm(e);
+            MoveForm(Handle, e);
         }
 
         private void BannerPicture_MouseDown(object sender, MouseEventArgs e)
         {
-            MoveForm(e);
+            MoveForm(Handle, e);
+        }
+
+        public class CustomRenderer : ToolStripProfessionalRenderer
+        {
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                // change the text color
+                e.TextColor = Color.FromArgb(255, 200, 200, 200);
+                base.OnRenderItemText(e);
+            }
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                // change the background color
+                if (e.Item.Selected)
+                {
+                    using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 50, 50, 50)))
+                        e.Graphics.FillRectangle(brush, e.Item.ContentRectangle);
+                }
+                else
+                    base.OnRenderMenuItemBackground(e);
+            }
         }
     }
 }
