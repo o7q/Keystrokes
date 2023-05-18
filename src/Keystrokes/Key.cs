@@ -45,6 +45,8 @@ namespace Keystrokes
             // load keyData_ into keyData
             keyData = keyData_;
             keyData.VERSION = VERSION;
+            if (keyData.VERSION_CREATED_ON == null)
+                keyData.VERSION_CREATED_ON = VERSION;
         }
 
         private void Key_Load(object sender, EventArgs e)
@@ -807,7 +809,8 @@ namespace Keystrokes
 
                               "Nickname: " + keyData.KEY_NICKNAME + "\n" +
                               "Key Age: " + formattedTime + "\n" +
-                              "Creation Date: " + keyData.KEY_CREATION_DATE;
+                              "Creation Date: " + keyData.KEY_CREATION_DATE + "\n" +
+                              "Created On Version: " + keyData.VERSION_CREATED_ON;
             CustomMessageBox statsWindow = new CustomMessageBox();
             statsWindow.MessageText = keyStats;
             statsWindow.ShowDialog();
@@ -966,6 +969,7 @@ namespace Keystrokes
 
             // disable the input ping
             inputPing.Enabled = false;
+            secPing.Enabled = false;
 
             // dispose the background images if they are being used
             if (useBackgroundImage == true)

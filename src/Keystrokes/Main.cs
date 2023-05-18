@@ -88,6 +88,7 @@ namespace Keystrokes
                         switch (keySettingPair[0])
                         {
                             case "VERSION": keyData_.VERSION = keySettingPair[1]; break;
+                            case "VERSION_CREATED_ON": keyData_.VERSION_CREATED_ON = keySettingPair[1]; break;
 
                             case "presetName": keyData_.presetName = keySettingPair[1]; break;
 

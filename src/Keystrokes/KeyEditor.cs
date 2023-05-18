@@ -210,6 +210,7 @@ namespace Keystrokes
 
             // lock create button
             allowKeyCreation = false;
+            allowControllerCreation = false;
         }
 
         bool allowControllerCreation = false;
@@ -239,6 +240,7 @@ namespace Keystrokes
             // disable ControllerRefresh
             controllerPing.Enabled = false;
             allowControllerCreation = false;
+            allowKeyCreation = false;
 
             Invoke((MethodInvoker)delegate
             {

@@ -5,7 +5,7 @@ namespace Keystrokes.Data
 {
     public static class Storage
     {
-        public static string VERSION = "v1.7.1";
+        public static string VERSION = "v1.7.2";
         public static List<Form> keys = new List<Form>();
 
         public static string[] key_names =
