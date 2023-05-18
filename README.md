@@ -13,6 +13,12 @@
 # Overview
 Keystrokes allows the user to create and customize key presets that are displayed on the screen.
 
+## Features
+* Full Keyboard Support
+* Full Xbox Controller Support
+* Highly customizable with a well documented and intuitive interface
+* Support for images, audio, custom fonts, and more
+
 ---
 
 # Usage

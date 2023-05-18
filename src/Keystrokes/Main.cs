@@ -67,15 +67,14 @@ namespace Keystrokes
 
         private void LoadPresetButton_Click(object sender, EventArgs e)
         {
-            KeyInfo keyData_ = new KeyInfo();
-
             // load keys into array
             string[] files = Directory.GetFiles("Keystrokes\\presets\\" + PresetListbox.SelectedItem, "*.key");
             foreach (string file in files)
             {
-                var name = new FileInfo(file).Name;
+                KeyInfo keyData_ = new KeyInfo();
 
                 // load data from file
+                var name = new FileInfo(file).Name;
                 string keyFile = File.ReadAllText("Keystrokes\\presets\\" + PresetListbox.SelectedItem + "\\" + name);
                 string[] keySetting = keyFile.Split('\n');
 
