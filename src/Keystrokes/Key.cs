@@ -797,7 +797,7 @@ namespace Keystrokes
             int seconds = keyData.KEY_AGE_SECONDS % 60;
             string formattedTime = string.Format("{0:00}:{1:00}:{2:00}:{3:00}", days, hours, minutes, seconds);
 
-            string keyStats = "Key Stats:\n\n" + 
+            string keyStats = "Key Stats\n\n" + 
 
                               "Times Pressed: " + keyData.KEY_PRESSED_AMOUNT + "\n" +
                               "Times Clicked On: " + keyData.KEY_CLICKED_AMOUNT + "\n" +
