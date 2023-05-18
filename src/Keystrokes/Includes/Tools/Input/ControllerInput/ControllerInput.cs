@@ -39,8 +39,8 @@ namespace Keystrokes.Tools.Input
 
         public static Tuple<bool, string> TriggerDetect()
         {
-            // checks the state of the triggers (analog buttons) on the controller.
-            // it retrieves the analog state using the XInput library.
+            // checks the state of the triggers (analog buttons) on the controller
+            // it retrieves the analog state using the XInput library
             // if either the left or right trigger exceeds a threshold value, it returns a tuple indicating the trigger is pressed and its name
             // otherwise, it returns a tuple indicating no triggers are pressed
 
