@@ -7,6 +7,10 @@ namespace Keystrokes.Tools.Input
     {
         public static Tuple<string, string, int> ControllerDetect()
         {
+            // checks the state of the controller connected to the system
+            // uses the XInput library to retrieve the controller state
+            // depending on the buttons pressed on the controller, it returns a tuple containing the detected input
+
             if (XInputGetState(controllerIndex, ref controllerState) == XInputConstants.ERROR_SUCCESS)
             {
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_A) != 0) return Tuple.Create("CONTROLLER_A", "Ⓐ", 15);
@@ -29,11 +33,17 @@ namespace Keystrokes.Tools.Input
                 if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_RIGHT) != 0) return Tuple.Create("CONTROLLER_DPAD", "", 0);
             }
 
+            // if no buttons are pressed or the controller is not connected, return an empty tuple
             return Tuple.Create("", "", 0);
         }
 
         public static Tuple<bool, string> TriggerDetect()
         {
+            // checks the state of the triggers (analog buttons) on the controller.
+            // it retrieves the analog state using the XInput library.
+            // if either the left or right trigger exceeds a threshold value, it returns a tuple indicating the trigger is pressed and its name
+            // otherwise, it returns a tuple indicating no triggers are pressed
+
             XInputAnalogState state = new XInputAnalogState();
             XInputGetAnalogState(controllerIndex, ref state);
 
@@ -50,6 +60,10 @@ namespace Keystrokes.Tools.Input
 
         public static Tuple<float, float, float> CalculateJoystick(string joystickKey)
         {
+            // calculates the values of the specified joystick on the controller
+            // retrieves the analog state using the XInput library and determines the position and angle of the joystick
+            // returns a tuple containing the x-axis position, y-axis position, and angle of the joystick
+
             XInputAnalogState state = new XInputAnalogState();
             XInputGetAnalogState(controllerIndex, ref state);
 
@@ -81,6 +95,10 @@ namespace Keystrokes.Tools.Input
 
         public static float CalculateTrigger(string triggerKey)
         {
+            // calculates the position of the specified trigger on the controller
+            // retrieves the analog state using the XInput library and returns the normalized position of the trigger
+            // returns the normalized trigger state
+
             XInputAnalogState state = new XInputAnalogState();
             XInputGetAnalogState(controllerIndex, ref state);
 
@@ -97,8 +115,11 @@ namespace Keystrokes.Tools.Input
 
         public static string CalculateDpad()
         {
-            XInputAnalogState state = new XInputAnalogState();
-            XInputGetAnalogState(controllerIndex, ref state);
+            // checks the state of the d-pad on the controller
+            // retrieves the current controller state using the XInput library and determines which d-pad button is pressed
+            // returns a string indicating the direction of the d-pad or an empty string if no button is pressed
+
+            XInputGetState(controllerIndex, ref controllerState);
 
             if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_UP) != 0) return "up";
             if ((controllerState.Gamepad.Buttons & XINPUT_GAMEPAD_DPAD_DOWN) != 0) return "down";

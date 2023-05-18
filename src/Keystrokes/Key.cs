@@ -44,12 +44,12 @@ namespace Keystrokes
 
             // load keyData_ into keyData
             keyData = keyData_;
+            keyData.VERSION = VERSION;
         }
 
         private void Key_Load(object sender, EventArgs e)
         {
             #region guiConfig
-
             // format key with keyData
             Left = keyData.KEY_LOCATION_X;
             Top = keyData.KEY_LOCATION_Y;
@@ -110,7 +110,6 @@ namespace Keystrokes
             keyData.KEY_NICKNAME = (keyData.KEY_NICKNAME == null || keyData.KEY_NICKNAME == "") ? key_names[index] : keyData.KEY_NICKNAME;
 
             #region configureComponents
-
             // hide components
             CloseButton.Visible = false;
             LockButton.Visible = false;
@@ -140,7 +139,6 @@ namespace Keystrokes
                 CpsLabel.Visible = true;
             else
                 CpsLabel.Visible = false;
-            CpsLabel.SendToBack();
 
             // configure controller panel
             ControllerPanel.Width = Width;
@@ -149,11 +147,9 @@ namespace Keystrokes
             ControllerPanel.BackColor = Color.Transparent;
             ControllerPanel.BackgroundImageLayout = ImageLayout.None;
             ControllerPanel.SendToBack();
-
             #endregion
 
             #region configureTransparencyKey
-
             Random random_rgb = new Random();
             keyData.keyTransparencyKeyR = keyData.keyTransparencyKeyR == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyR;
             keyData.keyTransparencyKeyG = keyData.keyTransparencyKeyG == 0 ? random_rgb.Next(256) / 5 : keyData.keyTransparencyKeyG;
@@ -165,7 +161,6 @@ namespace Keystrokes
                 BackColor = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
                 TransparencyKey = Color.FromArgb(255, keyData.keyTransparencyKeyR, keyData.keyTransparencyKeyG, keyData.keyTransparencyKeyB);
             }
-
             #endregion
 
             // fix flickering issue
@@ -195,7 +190,6 @@ namespace Keystrokes
             KeyToolTip.OwnerDraw = true;
             KeyToolTip.BackColor = Color.FromArgb(0, 0, 0);
             KeyToolTip.ForeColor = Color.FromArgb(255, 255, 255);
-
             #endregion
 
             WriteConfig();
@@ -242,6 +236,8 @@ namespace Keystrokes
 
         int mouseLocationX_previous;
         int mouseLocationY_previous;
+
+        string dpadState_previous = "";
         private void InputRefresh(object source, ElapsedEventArgs e)
         {
             if ((Math.Abs(Cursor.Position.X - mouseLocationX_previous) + Math.Abs(Cursor.Position.Y - mouseLocationY_previous)) != 0)
@@ -281,7 +277,11 @@ namespace Keystrokes
                 if (KeyDetect(keyData.keyCode, keyData.isControllerKey) == true)
                 {
                     if (keyPressed == false)
+                    {
+                        clicks++;
+                        clicks_total++;
                         keyData.KEY_PRESSED_AMOUNT++;
+                    }
 
                     keyPressed = true;
 
@@ -345,21 +345,21 @@ namespace Keystrokes
                     keyPressed = false;
                 }
 
-                float size = 1.25f;
-                float size_background = 2.5f;
+                float size = 2.5f;
+                float size_background = 1.25f;
 
                 Bitmap joystick_image = new Bitmap(ControllerPanel.Width, ControllerPanel.Height);
                 using (Graphics graphics = Graphics.FromImage(joystick_image))
                 {
                     SolidBrush joystick_background = new SolidBrush(Color.FromArgb(255, r / 2 + 15, g / 2 + 15, b / 2 + 15));
-                    int x_loc = (ControllerPanel.Width / 2) - (int)(ControllerPanel.Width / (size * 2));
-                    int y_loc = (ControllerPanel.Height / 2) - (int)(ControllerPanel.Height / (size * 2));
-                    graphics.FillEllipse(joystick_background, new Rectangle(x_loc, y_loc, (int)(ControllerPanel.Width / size), (int)(ControllerPanel.Height / size)));
+                    int x_loc = (ControllerPanel.Width / 2) - (int)(ControllerPanel.Width / (size_background * 2));
+                    int y_loc = (ControllerPanel.Height / 2) - (int)(ControllerPanel.Height / (size_background * 2));
+                    graphics.FillEllipse(joystick_background, new Rectangle(x_loc, y_loc, (int)(ControllerPanel.Width / size_background), (int)(ControllerPanel.Height / size_background)));
 
                     SolidBrush joystick = new SolidBrush(Color.FromArgb(255, r, g, b));
-                    x_loc = x + ControllerPanel.Width / 2 - (int)(ControllerPanel.Width / (size_background * 2));
-                    y_loc = y + ControllerPanel.Height / 2 - (int)(ControllerPanel.Height / (size_background * 2));
-                    graphics.FillEllipse(joystick, new Rectangle(x_loc, y_loc, (int)(ControllerPanel.Width / size_background), (int)(ControllerPanel.Height / size_background)));
+                    x_loc = x + ControllerPanel.Width / 2 - (int)(ControllerPanel.Width / (size * 2));
+                    y_loc = y + ControllerPanel.Height / 2 - (int)(ControllerPanel.Height / (size * 2));
+                    graphics.FillEllipse(joystick, new Rectangle(x_loc, y_loc, (int)(ControllerPanel.Width / size), (int)(ControllerPanel.Height / size)));
                 }
 
                 try
@@ -381,7 +381,10 @@ namespace Keystrokes
 
                 if (trigger_state > 0.5 && keyPressed == false)
                 {
+                    clicks++;
+                    clicks_total++;
                     keyData.KEY_PRESSED_AMOUNT++;
+
                     keyPressed = true;
                 }
                 if (trigger_state < 0.5)
@@ -435,7 +438,7 @@ namespace Keystrokes
             #region CONTROLLER_DPAD
             if (keyData.keyCode == "CONTROLLER_DPAD")
             {
-                string dpad_state = CalculateDpad();
+                string dpadState = CalculateDpad();
 
                 int r_up = keyData.keyTextColorR;
                 int g_up = keyData.keyTextColorG;
@@ -450,9 +453,17 @@ namespace Keystrokes
                 int g_right = keyData.keyTextColorG;
                 int b_right = keyData.keyTextColorB;
 
+                if (dpadState_previous != dpadState && dpadState_previous != "")
+                {
+                    clicks++;
+                    clicks_total++;
+                    keyData.KEY_PRESSED_AMOUNT++;
+                }
+                dpadState_previous = dpadState;
+
                 if (keyData.keyTextColorPressedInvert == true)
                 {
-                    switch (dpad_state)
+                    switch (dpadState)
                     {
                         case "up":
                             r_up = (byte)~keyData.keyTextColorR;
@@ -478,7 +489,7 @@ namespace Keystrokes
                 }
                 else
                 {
-                    switch (dpad_state)
+                    switch (dpadState)
                     {
                         case "up":
                             r_up = keyData.keyTextColorPressedR;
@@ -666,20 +677,20 @@ namespace Keystrokes
                         switch (direction)
                         {
                             case 0:
-                                Top -= 1 + keyData.wiggleMode_biasUp;
-                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasUp;
+                                Top -= keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasUp;
+                                keyData.KEY_PIXEL_DISTANCE += keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasUp;
                                 break;
                             case 1:
-                                Top += 1 + keyData.wiggleMode_biasDown;
-                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasDown;
+                                Top += keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasDown;
+                                keyData.KEY_PIXEL_DISTANCE += keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasDown;
                                 break;
                             case 2:
-                                Left -= 1 + keyData.wiggleMode_biasLeft;
-                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasLeft;
+                                Left -= keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasLeft;
+                                keyData.KEY_PIXEL_DISTANCE += keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasLeft;
                                 break;
                             case 3:
-                                Left += 1 + keyData.wiggleMode_biasRight;
-                                keyData.KEY_PIXEL_DISTANCE += 1 + keyData.wiggleMode_biasRight;
+                                Left += keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasRight;
+                                keyData.KEY_PIXEL_DISTANCE += keyData.wiggleMode_wiggleAmount + keyData.wiggleMode_biasRight;
                                 break;
                         }
                     }
@@ -708,7 +719,7 @@ namespace Keystrokes
                             int y = startY + (endY - startY) * i / steps;
                             Location = new Point(x, y);
 
-                            keyData.KEY_PIXEL_DISTANCE += x + y;
+                            keyData.KEY_PIXEL_DISTANCE++;
 
                             var sw = Stopwatch.StartNew();
                             while (sw.ElapsedTicks < Math.Round(delay * Stopwatch.Frequency)) { }
@@ -723,11 +734,14 @@ namespace Keystrokes
 
         int clicks = 0;
         int clicks_total = 0;
-        int sec = 0;
+        int click_seconds = 0;
+
+        int autosave_timer = 0;
         private void secRefresh(object source, ElapsedEventArgs e)
         {
-            sec++;
-            int cps = clicks_total / sec;
+            #region cpsCounter
+            click_seconds++;
+            int cps = clicks_total / click_seconds;
             keyData.KEY_HIGHEST_CPS = keyData.KEY_HIGHEST_CPS < cps ? cps : keyData.KEY_HIGHEST_CPS;
             try
             {
@@ -735,15 +749,23 @@ namespace Keystrokes
                 {
                     CpsLabel.Text = cps.ToString();
                 });
-            }
-            catch { }
+            } catch { }
             if (clicks == 0)
             {
                 clicks_total = 0;
-                sec = 0;
+                click_seconds = 0;
             }
             clicks = 0;
+            #endregion
+
             keyData.KEY_AGE_SECONDS++;
+
+            autosave_timer++;
+            if (autosave_timer == 60)
+            {
+                WriteConfig();
+                autosave_timer = 0;
+            }
         }
 
         private void CloseButton_Click(object sender, EventArgs e)
@@ -774,6 +796,7 @@ namespace Keystrokes
             string formattedTime = string.Format("{0:00}:{1:00}:{2:00}:{3:00}", days, hours, minutes, seconds);
 
             string keyStats = "Key Stats:\n\n" + 
+
                               "Times Pressed: " + keyData.KEY_PRESSED_AMOUNT + "\n" +
                               "Times Clicked On: " + keyData.KEY_CLICKED_AMOUNT + "\n" +
                               "Highest CPS: " + keyData.KEY_HIGHEST_CPS + "\n\n" +
@@ -806,16 +829,17 @@ namespace Keystrokes
 
         private void WriteConfig()
         {
+            // set default snap values if SnapXTextbox or SnapYTextbox input is invalid or empty
             if (IsNumber(SnapXTextbox.Text, "int") == false || SnapXTextbox.Text == "")
                 keyData.KEY_SNAP_X = 50;
             if (IsNumber(SnapYTextbox.Text, "int") == false || SnapYTextbox.Text == "")
                 keyData.KEY_SNAP_Y = 50;
 
-            // does the preset exist? if not, return
+            // check if the preset directory exists, if not, return
             if (Directory.Exists("Keystrokes\\presets\\" + keyData.presetName) == false)
                 return;
 
-            // write keyData to a designated key file
+            // format keyData for exporting
             var sb = new StringBuilder();
             foreach (var field in typeof(KeyInfo).GetFields())
             {
@@ -827,6 +851,7 @@ namespace Keystrokes
             sb.Length--;
             string config = sb.ToString();
 
+            // save the keyData configuration to a file
             File.WriteAllText("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key", config);
         }
 
@@ -837,7 +862,7 @@ namespace Keystrokes
 
             keyData.KEY_CLICKED_AMOUNT++;
 
-            // move form
+            // move the form when the left mouse button is clicked, and the key is not locked
             if (e.Button == MouseButtons.Left && keyData.KEY_LOCKED == false)
             {
                 ReleaseCapture();
@@ -848,21 +873,21 @@ namespace Keystrokes
             if (e.Button == MouseButtons.Left && e.Clicks == 2)
                 ToggleControls();
 
-            // default snap settings (50% of key)
+            // set default snap settings to 50% of key
             keyData.KEY_SNAP_X = 50;
             keyData.KEY_SNAP_Y = 50;
 
-            // load snap textboxes into keyData
+            // load snap textboxes into keyData if they are valid integers and not empty or zero
             if (IsNumber(SnapXTextbox.Text, "int") == true && SnapXTextbox.Text != "" && SnapXTextbox.Text != "0")
                 keyData.KEY_SNAP_X = int.Parse(SnapXTextbox.Text);
             if (IsNumber(SnapYTextbox.Text, "int") == true && SnapYTextbox.Text != "" && SnapYTextbox.Text != "0")
                 keyData.KEY_SNAP_Y = int.Parse(SnapYTextbox.Text);
 
-            // calculate snap grid
+            // calculate snap grid based on snap percentages
             double x_snap = Width * ((double)keyData.KEY_SNAP_X / 100);
             double y_snap = Height * ((double)keyData.KEY_SNAP_Y / 100);
 
-            // calculate snap threshold
+            // calculate snap threshold based on current form position
             double x_snap_location = Left * (1 / x_snap);
             double y_snap_location = Top * (1 / y_snap);
 
@@ -870,16 +895,19 @@ namespace Keystrokes
             int x_location_new = (int)(Math.Floor(x_snap_location) * x_snap);
             int y_location_new = (int)(Math.Floor(y_snap_location) * y_snap);
 
-            // snap form to new location
+            // snap the form to the new location
             Left = x_location_new;
             Top = y_location_new;
 
+            // store the temporary location for wiggle mode
             wiggleModeLocationX_temp = Left;
             wiggleModeLocationY_temp = Top;
 
+            // update key location in keyData
             keyData.KEY_LOCATION_X = Location.X;
             keyData.KEY_LOCATION_Y = Location.Y;
 
+            // update pixel distance in keyData
             keyData.KEY_PIXEL_DISTANCE += Math.Abs(Location.X - x_location_current) + Math.Abs(Location.Y - y_location_current);
         }
 
@@ -896,9 +924,15 @@ namespace Keystrokes
                 LockButton.Visible = false;
 
             if (StatsButton.Visible == false)
+            {
                 StatsButton.Visible = true;
+                CpsLabel.SendToBack();
+            }
             else
+            {
                 StatsButton.Visible = false;
+                CpsLabel.BringToFront();
+            }
 
             if (SnapXTextbox.Visible == false)
                 SnapXTextbox.Visible = true;
@@ -923,19 +957,23 @@ namespace Keystrokes
 
         private void HandleClose(bool deleteKey)
         {
+            // save the configuration settings
             WriteConfig();
 
-            // does preset exist? if yes, delete the key file
+            // check if the preset exists and delete the key file if deleteKey is true
             if (deleteKey == true && Directory.Exists("Keystrokes\\presets\\" + keyData.presetName) == true)
                 File.Delete("Keystrokes\\presets\\" + keyData.presetName + "\\" + keyData.keyId + ".key");
 
+            // disable the input ping
             inputPing.Enabled = false;
 
+            // dispose the background images if they are being used
             if (useBackgroundImage == true)
                 backgroundImage.Dispose();
             if (useBackgroundImagePressed == true)
                 backgroundImagePressed.Dispose();
 
+            // dispose the current key
             Dispose();
         }
 

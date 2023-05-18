@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Keystrokes.Data;
+using Keystrokes.Tools.CustomMessageBox;
 using static Keystrokes.Tools.Forms;
 using static Keystrokes.Data.Storage;
-using Keystrokes.Tools.CustomMessageBox;
 
 namespace Keystrokes
 {
@@ -87,6 +87,8 @@ namespace Keystrokes
                     {
                         switch (keySettingPair[0])
                         {
+                            case "VERSION": keyData_.VERSION = keySettingPair[1]; break;
+
                             case "presetName": keyData_.presetName = keySettingPair[1]; break;
 
                             case "keyId": keyData_.keyId = keySettingPair[1]; break;
@@ -255,6 +257,7 @@ namespace Keystrokes
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            UnloadKeys();
             Close();
         }
 

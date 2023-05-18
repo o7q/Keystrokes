@@ -1,3 +1,8 @@
+~ v1.7.1.0
+- Fixed the autosave system
+- Fixed the cps counter to work with controller
+- Fixed weird small bugs
+
 ~ v1.7.0.0
 - Added an option to display the clicks per second
 - Added an option to modify the key refresh rate

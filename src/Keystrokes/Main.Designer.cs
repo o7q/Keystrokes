@@ -259,21 +259,21 @@
             // ShowToolStripMenuItem
             // 
             this.ShowToolStripMenuItem.Name = "ShowToolStripMenuItem";
-            this.ShowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ShowToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.ShowToolStripMenuItem.Text = "Show";
             this.ShowToolStripMenuItem.Click += new System.EventHandler(this.ShowToolStripMenuItem_Click);
             // 
             // UnloadKeysToolStripMenuItem
             // 
             this.UnloadKeysToolStripMenuItem.Name = "UnloadKeysToolStripMenuItem";
-            this.UnloadKeysToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.UnloadKeysToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.UnloadKeysToolStripMenuItem.Text = "Unload Keys";
             this.UnloadKeysToolStripMenuItem.Click += new System.EventHandler(this.UnloadKeysToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.ExitToolStripMenuItem.Text = "Exit";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 

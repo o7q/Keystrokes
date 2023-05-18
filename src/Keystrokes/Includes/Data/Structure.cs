@@ -5,6 +5,8 @@ namespace Keystrokes.Data
 {
     public struct KeyInfo
     {
+        public string VERSION;
+
         public string presetName;
 
         public string keyId;
