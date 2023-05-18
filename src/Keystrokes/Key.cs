@@ -257,7 +257,7 @@ namespace Keystrokes
 
                 if (Math.Abs(rotate_previous - rotate) > 10)
                 {
-                    keyData.JOYSTICK_ANGLE += 10;
+                    keyData.JOYSTICK_ANGLE_SUM += 10;
                     rotate_previous = rotate;
                 }
 
@@ -787,7 +787,7 @@ namespace Keystrokes
         {
             float key_distance = (keyData.KEY_PIXEL_DISTANCE / (float)96) / (float)12;
             float mouse_distance = (keyData.MOUSE_PIXEL_DISTANCE / (float)96) / (float)63360;
-            float joystick_odometer = (float)(((2.1 * Math.PI) * (keyData.JOYSTICK_ANGLE / (float)360)) / (float)160900);
+            float joystick_odometer = (float)(((2.1 * Math.PI) * (keyData.JOYSTICK_ANGLE_SUM / (float)360)) / (float)160900);
 
             int days = keyData.KEY_AGE_SECONDS / (24 * 60 * 60);
             int hours = (keyData.KEY_AGE_SECONDS % (24 * 60 * 60)) / (60 * 60);

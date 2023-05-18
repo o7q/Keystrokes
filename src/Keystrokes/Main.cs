@@ -160,7 +160,7 @@ namespace Keystrokes
 
                             case "KEY_PIXEL_DISTANCE": keyData_.KEY_PIXEL_DISTANCE= int.Parse(keySettingPair[1]); break;
                             case "MOUSE_PIXEL_DISTANCE": keyData_.MOUSE_PIXEL_DISTANCE = int.Parse(keySettingPair[1]); break;
-                            case "JOYSTICK_ANGLE": keyData_.JOYSTICK_ANGLE = int.Parse(keySettingPair[1]); break;
+                            case "JOYSTICK_ANGLE_SUM": keyData_.JOYSTICK_ANGLE_SUM = int.Parse(keySettingPair[1]); break;
 
                             case "KEY_NICKNAME": keyData_.KEY_NICKNAME = keySettingPair[1]; break;
                             case "KEY_AGE_SECONDS": keyData_.KEY_AGE_SECONDS = int.Parse(keySettingPair[1]); break;

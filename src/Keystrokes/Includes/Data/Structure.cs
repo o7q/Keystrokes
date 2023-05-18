@@ -78,7 +78,7 @@ namespace Keystrokes.Data
 
         public int KEY_PIXEL_DISTANCE;
         public int MOUSE_PIXEL_DISTANCE;
-        public int JOYSTICK_ANGLE;
+        public int JOYSTICK_ANGLE_SUM;
 
         public string KEY_NICKNAME;
         public int KEY_AGE_SECONDS;
