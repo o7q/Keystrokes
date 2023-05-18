@@ -60,7 +60,8 @@ You can double-click on a key to edit its snapping settings.
     - **Preset Name Dropdown** The selected preset, any changes will be applied to this preset
     - **Key Size Textboxes** The width and height of the key
     - **Edit Font Button** Opens the font settings for the key
-    - **Show Text** Choose to show text on the key or not
+    - **Display Text Checkbox** Choose to display text on the key or not
+    - **Display CPS Checkbox** Choose to display a clicks per second counter
     - **Key Unpressed**
         - **Color 1 Button** Opens the color picker for the background of the key
         - **Color 2 Button** Opens the color picker for the text of the key
@@ -77,10 +78,12 @@ You can double-click on a key to edit its snapping settings.
      - **Transparent Background Checkbox** Option to make the key background completely transparent
     - **Display Counter** Displays a counter that displays how many times you clicked the key
     - **Key Border Style Dropdown** The border style of the key
+    - **Refresh Rate Textbox** The rate at which the key updates its visuals
 - Key
     - **Double-Click** Double-click the key to show key settings
         - **Close Button** Closes the key
         - **Lock Button** Lock the key and prevent mouse interaction
+        - **Stats Button** Opens the key stats window
         - **X and Y snapping options** Defines the key snapping grid related to the size of the key (100% means each grid unit is one key length)
 
 ---
